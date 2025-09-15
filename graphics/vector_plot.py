@@ -3,9 +3,9 @@ import matplotlib.colors as mcolors
 import pandas as pd
 from scipy.interpolate import griddata
 
-import column_labels as clab
-import graph as gr
-import geometry as geo
+import list.column_labels as clab
+import graphics.graph as gr
+import calculus.geometry as geo
 
 '''
 tabulate a vector field given by an analytical expression

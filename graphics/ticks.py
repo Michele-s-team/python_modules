@@ -6,7 +6,7 @@ import proplot as pplt
 import math
 import warnings
 
-import list as lis
+import list.list as lis
 
 '''
 generate the ticks for a plot on an axis between a minimum and a maximum value

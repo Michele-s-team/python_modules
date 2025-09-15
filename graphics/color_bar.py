@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import graph as gr
-import ticks
+import graphics.graph as gr
+import graphics.ticks as ticks
 
 color_map_type = plt.cm.get_cmap(
     'jet')  # 'plasma' or 'viridis'values_sigma = data_sigma[label_sigma_column].apply( lambda x: gr.scale( x, sigma_min, scale_factor_sigma ) )

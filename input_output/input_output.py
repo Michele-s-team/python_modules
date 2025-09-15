@@ -7,7 +7,7 @@ module_path = '/Users/michelecastellana/Documents/paper-membrane/figures/modules
 sys.path.append(module_path)
 sys.path.append(module_path)
 
-import paths as paths
+import system.paths as paths
 
 number_of_decimals = 2
 

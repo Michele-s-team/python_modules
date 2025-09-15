@@ -13,12 +13,10 @@ from sympy.codegen.ast import RuntimeError_
 from sympy.polys.benchmarks.bench_solvers import R_165
 
 # do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
-import color_bar as cb
-import column_labels as clab
-import images
-import mask
-import ticks as ti
-import vector_plot as vp
+import graphics.color_bar as cb
+import list.column_labels as clab
+import graphics.ticks as ti
+import graphics.vector_plot as vp
 
 epsilon = 1e-6
 epsilon_axes = 5e-2
