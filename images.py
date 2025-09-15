@@ -1,0 +1,70 @@
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import numpy as np
+import os
+from pdf2image import convert_from_path
+import re
+
+import paths
+
+print("paths.figures_path =", paths.figures_path)
+print("paths.py file loaded from =", paths.__file__)
+
+'''
+import a pdf image 
+- 'image_path': the absolute path of the pdf image
+- 'zoom': the zoom factor, setting how big the importe image will be
+- 'position': position where the image wil be placed in 'ax'
+- 'box_alignment': the location of the image which will be located at 'position'
+- 'dpi': the resolution of the image
+- 'ax': the axis where the image will be imported
+'''
+
+
+def import_pdf_image(image_path, zoom, position, box_alignment, dpi, ax):
+    images = convert_from_path(image_path, dpi=dpi)
+    # Choose the first page as the image (you can change the index if needed)
+    image = images[0]
+
+    # Convert the image to a format Matplotlib can use
+    image = np.array(image)
+
+    # Now, insert the PDF image into the plot
+    image_box = OffsetImage(image, zoom=zoom)  # Adjust zoom to resize the image
+    annotation_box = AnnotationBbox(image_box, (position[0], position[1]), frameon=False, xycoords='axes fraction',
+                                    boxcoords="axes fraction",
+                                    box_alignment=(box_alignment[0], box_alignment[1]))
+    ax.add_artist(annotation_box)
+
+
+'''
+draw a symbol through a latex file: this method takes the file templet_plot_symbol.tex, which has some generic words in it, replaces the 
+words with the correct ones relative to the runpath and to the symbol which is to be plotted here, and runs pdflatex from system to generate
+the symbol
+- 'symbol_name' the name of the symbol as defined in definitions.tex, for example 'pomcirc' to draw \partial \Omega _{circle}
+'''
+
+
+def draw_symbol(symbol_name):
+    # replace the correct paths in file '{paths.figures_path}templet_plot_symbol.tex'
+    # Read the input file
+    with open(f"{paths.figures_path}templet_plot_symbol.tex", "r") as infile:
+        content = infile.read()
+
+    # replace the root path, and the name of the symbol to plot
+    replacement = '\\\\' + symbol_name  # Results in '\\pomcirc'
+
+    # Perform the substitutions
+    content = re.sub(r"ROOT_PATH_TO_REPLACE", paths.root_path, content)
+    content = re.sub(r"%SYMBOL_TO_PLOT", replacement, content)
+
+    # Write the output to a new file called {symbol_name}.tex
+    with open(f"{symbol_name}.tex", "w") as outfile:
+        outfile.write(content)
+
+    os.system(f"pdflatex {symbol_name}.tex")
+
+
+# draw a list of symbols 'symbol_names'
+def draw_symbols(symbol_names):
+    for symbol_name in symbol_names:
+        draw_symbol(symbol_name)
