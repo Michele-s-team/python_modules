@@ -731,8 +731,9 @@ def plot_curve_grid(ax, X, color_bar=None, line_color='black', line_width=1,  pl
         points = X.reshape(-1, 1, 2)
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
         
-        print(f'segments = {segments}')
-        print(f'points = {points}')
+        # print(f'segments = {segments}')
+        # print(f'points = {points}')
+        
         # Create line collection with colors
         lc = LineCollection(segments, colors=color_bar[:-1], linewidth=line_width)
         ax.add_collection(lc)
