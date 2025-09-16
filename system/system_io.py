@@ -9,7 +9,14 @@ count the number of files of type string_* in folder 'folder' and returns it
 def count_v_files(string, folder: str) -> int:
     return len(fnmatch.filter(os.listdir(folder), string + '*'))
 
-
+'''
+given a list of files ending with an integer in a path, returns the minimal and maximal integer in the file list
+Input values:
+- 'pattern': the pattern of the files, e.g. 'X_n_12_' for files X_n_12_1.csv, X_n_12_2.csv, ...
+- 'path': the path where to look for the files
+Return values:
+- 'n_min', 'n_max': the minimal and maximal integers 
+'''
 def n_min_max(pattern, path):
 
     # Pattern to match pattern}n.csv files where n is a number
