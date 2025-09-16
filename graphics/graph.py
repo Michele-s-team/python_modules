@@ -9,11 +9,13 @@ import proplot as pplt
 from pandas.core.methods.selectn import SelectNSeries
 from scipy.interpolate import griddata
 from scipy.interpolate import Rbf
+from scipy.interpolate import interp1d
 from sympy.codegen.ast import RuntimeError_
 from sympy.polys.benchmarks.bench_solvers import R_165
 
 # do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
 import graphics.color_bar as cb
+import input_output.input_output as io
 import list.column_labels as clab
 import graphics.ticks as ti
 import graphics.vector_plot as vp
@@ -718,6 +720,25 @@ def scale_list(v, mins, scale_factors):
     return [scale(v[i], mins[i], scale_factors[i]) for i in range(len(mins))]
 
 
+def plot_curve_grid(ax, X, color_bar=None, line_color='black', line_width=1,  plot_label=''):
+    
+    if color_bar is None:
+        plt.plot(X[:, 0], X[:, 1], '-', color=line_color, linewidth=line_width, label=plot_label)
+    else:
+        from matplotlib.collections import LineCollection
+        
+        # Create line segments
+        points = X.reshape(-1, 1, 2)
+        segments = np.concatenate([points[:-1], points[1:]], axis=1)
+        
+        print(f'segments = {segments}')
+        print(f'points = {points}')
+        # Create line collection with colors
+        lc = LineCollection(segments, colors=color_bar[:-1], linewidth=line_width)
+        ax.add_collection(lc)
+        ax.autoscale()
+        
+
 '''
 plot a surface from the data in 'X', 'Y' and 'grid', with colormap 'color_map', with surface stride 'stride_surface' and opacity 'alpha_surface' 
 Plot  a grid on top of the surface with the same data, stride 'stride_grid' and line_width 'line_width_grid' 
@@ -757,6 +778,8 @@ def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surfa
                                   )
 
     return (surface, surface_grid)
+
+
 
 
 def set_axes_limits(ax, mins, maxs):
@@ -1017,6 +1040,30 @@ def interpolate_surface(data, mins, maxs, f_min, n_bins, scale_factor, label_x_c
 
     return X, Y, Z
 
+'''
+given a set of discrete data for a curve in a two-dimensional planer, interpolate it into a grid of  points
+Input values: 
+- 'data'  <class 'pandas.core.frame.DataFrame'>: the array containing the values of the curve
+- 'x_min', 'x_max' <class 'float'>: the bounds of the interval for the parameter t by which the curve is parameterized
+- 'n_bins' <class 'int'>: the number of bins in which the interval [x_min, x_max] is divided
+
+Return values: 
+- 'values_grid' <class 'numpy.ndarray'>: the array containing the values of the curve interpolated on the grid of n_bins points, [X_1, X_2]
+'''
+def interpolate_curve(data, x_min, x_max, n_bins):
+
+    points_grid = np.linspace(x_min, x_max, n_bins)
+
+    points = data[":0"].values
+    values_X1 = data["f:0"].values
+    values_X2 = data["f:1"].values
+
+    X1 = interp1d(points, values_X1, kind='cubic')
+    X2 = interp1d(points, values_X2, kind='cubic')
+
+    values_grid = np.array(list(zip(X1(points_grid), X2(points_grid))))
+
+    return values_grid, points_grid
 
 '''
 set the limits of a 2d axis:

@@ -1,3 +1,4 @@
+import csv
 import os
 import matplotlib.pyplot as plt
 import sys
@@ -50,4 +51,86 @@ def time_to_string(t, format, number_of_decimals):
         result = rf'${hours} \hour \, {minutes} \, \minute \, {seconds:.{number_of_decimals}f}\, \second$'
 
 
+
     return result
+
+'''
+print the type of a variable
+Input values: 
+- x <any>: the variable
+'''
+def print_type(x, var_name=None):
+    if var_name is None:
+        print(f'type of variable is {type(x)}')
+    else:
+        print(f'type of {var_name} is {type(x)}')
+        
+        
+'''
+Read a set of parameters from a csv file
+Input values:
+- 'file_path': the path of the file, including file name and extension
+Return value:
+- the list of parameter names and values, e.g., [('L', 0.4334), ('x_p', 2.23), ('resolution', 0.01)]
+'''
+def read_parameters_from_csv_file(file_path):
+    
+    print_type(file_path,'file_path')
+
+    print(f'Reading parameters from {file_path}...',flush=True)
+
+    file = open(file_path, newline='')
+
+    reader = csv.reader(file)
+
+    parameter_names = next(reader)
+    parameter_values = next(reader)
+
+    # print(f'parameter_names: {parameter_names}')
+    # print(f'parameter_values: {[string_to_value(parameter_value) for parameter_value in parameter_values]}')
+
+    file.close()
+    print('... close.',flush=True)
+
+    result = dict([(parameter_name, string_to_value(parameter_value)) for parameter_name, parameter_value in zip(parameter_names, parameter_values)])
+    print(f'Read parameters : {result}.',flush=True)
+
+    return result
+
+
+'''
+Convert a string containing a numerical value to a number
+Input values :
+- 'string': the string containing the value (it may be an int, a float or a list)
+
+Example of usage:
+    string_to_value('13')
+    string_to_value('2.43')
+    string_to_value('[1,2]')
+'''
+def string_to_value(value):
+    value = value.strip()
+
+    # check whether 'value' is a list
+    if value.startswith("[") and value.endswith("]"):
+        try:
+            parsed = ast.literal_eval(value)
+            if isinstance(parsed, list):
+                return parsed
+        except (ValueError, SyntaxError):
+            pass
+
+    # Try int
+    try:
+        return int(value)
+    except ValueError:
+        pass
+
+    # Try float
+    try:
+        return float(value)
+    except ValueError:
+        pass
+
+    # Fallback: return as string
+    return value

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 import graphics.graph as gr
 import graphics.ticks as ticks
+from scipy.interpolate import interp1d
 
 color_map_type = plt.cm.get_cmap(
     'jet')  # 'plasma' or 'viridis'values_sigma = data_sigma[label_sigma_column].apply( lambda x: gr.scale( x, sigma_min, scale_factor_sigma ) )
@@ -47,24 +48,48 @@ def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  posi
     return color_map
 
 '''
-def make_colorbar(figure, grid_values, min, max, scale_factor, n_ticks, position, size, angle, label_pad, label, font_size):
+create a colorbar for a curve, by plotting the value of a field along the curve in terms of a color map
+Input values: 
+- 'figure' : the figure where the colorbar is made
+- 't_values': a list with the grid of the values of the parametric coordinate t which parametrizes the curve
+- 'f_values': a dataframe with the values of the field f along the curve
+- 'f_min_value', 'f_max_value' the minimal , maximal value of the field f on the curve
+- 'position': position of the colorbar
+- 'size': size of the colorbar
+- 'angle' : rotation angle of the colorbar
+- 'label_pad': displacement of the label of the colorbar
+- 'label' the label of the colorbar
+- 'font_size' : the font size of all texts in the colorbar
+'''
 
-    scaled_max = gr.scale(max, min, scale_factor)
+def make_curve_colorbar(figure, t_values, f_values, f_min_value, f_max_value,  
+                        position, size, angle, label_pad, label, font_size):
 
-    color_normalization = plt.Normalize(vmin=min, vmax=scaled_max)
-    color_map = color_map_type(color_normalization(grid_values))
+    colorbar_ticks = ticks.generate_ticks(f_min_value, f_max_value)
+
+    
+    f_interpolated = interp1d(f_values[":0"].values, f_values["f"].values, kind='cubic')
+
+    color_normalization = plt.Normalize(vmin=min(colorbar_ticks), vmax=max(colorbar_ticks))
 
     mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
-    mappable.set_array(grid_values)
+    
+    field_values = f_values['f'].values[::-1]  # Extract just the 'f' column
+    field_values = f_interpolated(t_values)
+    
+    mappable.set_array(field_values)
+    color_map = color_map_type(color_normalization(field_values))
+
 
     colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
-    colorbar_ticks = np.linspace(min, scaled_max, num=n_ticks)  # Adjust tick count as needed
     colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_position)
-    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min, scale_factor, font_size)
+    gr.set_colorbar_ticks(colorbar, colorbar_ticks, f_min_value, 1, font_size)
     colorbar.set_label(label, rotation=angle, fontsize=font_size)
 
     # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
     colorbar.ax.yaxis.set_label_coords(label_pad[0], label_pad[1])  # Adjust -1.2 for spacing
+    colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
 
     return color_map
-'''
+
+
