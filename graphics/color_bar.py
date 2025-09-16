@@ -53,7 +53,7 @@ Input values:
 - 'figure' : the figure where the colorbar is made
 - 't_values': a list with the grid of the values of the parametric coordinate t which parametrizes the curve
 - 'f_values': a dataframe with the values of the field f along the curve
-- 'f_min_max': a list with two entries, the min and max of the field along the curve
+- 'min_max' [optional]: a list with two entries, the min and max of the values which will bound the color bar. If none, this method will compute the min and max values of the field f along the curve and assign them to min_max
 - 'position': position of the colorbar
 - 'size': size of the colorbar
 - 'angle' : rotation angle of the colorbar
@@ -63,7 +63,7 @@ Input values:
 '''
 
 def make_curve_colorbar(figure, t_values, f_values,  
-                        position, size, angle, label_pad, label, font_size, f_min_max=None):
+                        position, size, angle, label_pad, label, font_size, min_max=None):
 
     colorbar_ticks = ticks.generate_ticks(f_min_value, f_max_value)
 
