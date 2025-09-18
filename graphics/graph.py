@@ -1106,9 +1106,6 @@ Input values:
 
 Return values: 
 - 'abs_min', 'abs_max': the minimal and maximal values of the field across the snapshots
-
-Example of usage: 
-    z_min_abs, z_max_abs = gr.min_max_file_list('z_n_12_', snapshots_path, columns_z, clab.label_z_column, [n_early_snapshot, n_late_snapshot])
 '''
 
 def min_max_files(file_name, file_path, coordinates_columns_name, field_column_name, n_file_min, n_file_max, n_file_stride):
