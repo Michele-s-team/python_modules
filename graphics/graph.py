@@ -1094,12 +1094,29 @@ def min_max_file(file_name, columns_name, column_name):
     return min, max
 
 
-def min_max_files(file_name, file_path, columns_name, column_name, n_file_min, n_file_max, n_file_stride):
-    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_min) + '.csv', columns_name, column_name)
+'''
+compute the minimal and maximal value of a field across multiple snapshots, where each snapshot is stored in a file
+Input values: 
+- 'file_name': the pattern of the file name
+- 'file_path': the path where the snapshots are located
+- 'coordinates_columns_name': the labels of the x, y, z, coordinates for the field
+- 'field_column_name': the name of the column containing the values of the field
+- 'n_file_min', 'n_file_max': the integers of the first and last file to consider
+- 'n_file_stride': the stride with which the files will be read
+
+Return values: 
+- 'abs_min', 'abs_max': the minimal and maximal values of the field across the snapshots
+
+Example of usage: 
+    z_min_abs, z_max_abs = gr.min_max_file_list('z_n_12_', snapshots_path, columns_z, clab.label_z_column, [n_early_snapshot, n_late_snapshot])
+'''
+
+def min_max_files(file_name, file_path, coordinates_columns_name, field_column_name, n_file_min, n_file_max, n_file_stride):
+    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_min) + '.csv', coordinates_columns_name, field_column_name)
 
     for i in range(n_file_min + 1, n_file_max + 1, n_file_stride):
 
-        min, max = min_max_file(file_path + file_name + str(i) + '.csv', columns_name, column_name)
+        min, max = min_max_file(file_path + file_name + str(i) + '.csv', coordinates_columns_name, field_column_name)
 
         if min < abs_min:
             abs_min = min
