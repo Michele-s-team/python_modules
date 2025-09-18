@@ -1113,7 +1113,7 @@ def min_max_files(file_name, file_path, coordinates_columns_name, field_column_n
     abs_min = None
     abs_max = None
 
-    for i in range(n_file_min , n_file_max, n_file_stride):
+    for i in range(n_file_min , n_file_max+1, n_file_stride):
 
         min, max = min_max_file(file_path + file_name + str(i) + '.csv', field_column_name)
 
