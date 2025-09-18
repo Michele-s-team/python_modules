@@ -720,9 +720,9 @@ def scale_list(v, mins, scale_factors):
     return [scale(v[i], mins[i], scale_factors[i]) for i in range(len(mins))]
 
 
-def plot_curve_grid(ax, X, color_bar=None, line_color='black', line_width=1,  plot_label=''):
+def plot_curve_grid(ax, X, color_map=None, line_color='black', line_width=1,  plot_label=''):
     
-    if color_bar is None:
+    if color_map is None:
         plt.plot(X[:, 0], X[:, 1], '-', color=line_color, linewidth=line_width, label=plot_label)
     else:
         from matplotlib.collections import LineCollection
@@ -735,7 +735,7 @@ def plot_curve_grid(ax, X, color_bar=None, line_color='black', line_width=1,  pl
         # print(f'points = {points}')
         
         # Create line collection with colors
-        lc = LineCollection(segments, colors=color_bar[:-1], linewidth=line_width)
+        lc = LineCollection(segments, colors=color_map[:-1], linewidth=line_width)
         ax.add_collection(lc)
         ax.autoscale()
         
@@ -916,8 +916,11 @@ plot an arrow
 '''
 
 
-def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, mins,
-               scale_factors, threshold_arrow_length, line_width, color, alpha, z_order):
+def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, 
+               head_over_shaft_length, head_angle, 
+               mins,
+               scale_factors, threshold_arrow_length, line_width, 
+               color, alpha, z_order):
     head_length = head_over_shaft_length * shaft_length
 
     # plot the shaft
@@ -1112,7 +1115,7 @@ Return values:
 - 'abs_min', 'abs_max': the minimal and maximal values of the field across the snapshots
 '''
 
-def min_max_files(file_name, file_path, coordinates_columns_name, field_column_name, n_file_min, n_file_max, n_file_stride):
+def min_max_files(file_name, file_path, field_column_name, n_file_min, n_file_max, n_file_stride):
     
     abs_min = None
     abs_max = None

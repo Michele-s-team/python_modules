@@ -21,7 +21,7 @@ tick_threshold = 2e-1
 
 def generate_ticks(min, max):
 
-    if min < max:
+    if min <= max:
         sorted_min = min
         sorted_max = max
     else:
@@ -30,7 +30,7 @@ def generate_ticks(min, max):
 
 
 
-    if ((sorted_min >= 0) and (sorted_max > 0)):
+    if ((sorted_min >= 0) and (sorted_max >= 0)):
 
         n_max = math.floor(np.log10(sorted_max))
         X_max = 10 ** (n_max - 1) * math.ceil(sorted_max / 10 ** (n_max - 1))
