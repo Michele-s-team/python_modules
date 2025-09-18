@@ -1085,8 +1085,8 @@ compute the min and max values occurring in column 'column_name' of csv file 'fi
 '''
 
 
-def min_max_file(file_name, columns_name, column_name):
-    data = pd.read_csv(file_name, usecols=columns_name)
+def min_max_file(file_name, column_name):
+    data = pd.read_csv(file_name, usecols=[column_name])
 
     min = np.min(data[column_name])
     max = np.max(data[column_name])
@@ -1109,27 +1109,33 @@ Return values:
 '''
 
 def min_max_files(file_name, file_path, coordinates_columns_name, field_column_name, n_file_min, n_file_max, n_file_stride):
-    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_min) + '.csv', coordinates_columns_name, field_column_name)
+    
+    abs_min = None
+    abs_max = None
 
-    for i in range(n_file_min + 1, n_file_max + 1, n_file_stride):
+    for i in range(n_file_min , n_file_max, n_file_stride):
 
-        min, max = min_max_file(file_path + file_name + str(i) + '.csv', coordinates_columns_name, field_column_name)
+        min, max = min_max_file(file_path + file_name + str(i) + '.csv', field_column_name)
 
-        if min < abs_min:
+        if abs_min is None:
+            abs_min = min
+        elif min < abs_min:
             abs_min = min
 
-        if max > abs_max:
+        if abs_max is None:
+            abs_max = max
+        elif max > abs_max:
             abs_max = max
 
     return abs_min, abs_max
 
 
 def min_max_file_list(file_name, file_path, columns_name, column_name, n_file_list):
-    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_list[0]) + '.csv', columns_name, column_name)
+    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_list[0]) + '.csv', column_name)
 
     for n_file in n_file_list:
 
-        min, max = min_max_file(file_path + file_name + str(n_file) + '.csv', columns_name, column_name)
+        min, max = min_max_file(file_path + file_name + str(n_file) + '.csv', column_name)
 
         if min < abs_min:
             abs_min = min
