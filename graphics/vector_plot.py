@@ -57,7 +57,9 @@ def plot_analytical_vector_field_on_surface_outside_disk(ax, v, f, mins, maxs, r
     plot_vector_field(ax, [X, Y, Z], V, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle,
                       threshold_arrow_length, line_width, alpha, color, z_order)
 
-
+'''
+plot a vector field
+'''
 def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle, threshold_arrow_length,
                       line_width, alpha, color, z_order):
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
@@ -75,7 +77,7 @@ def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, h
             gr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
                           np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
                                  [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]), \
-                          shaft_length * vector_norm, head_over_shaft_length, head_angle, [0, 0, z_min],
+                          shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
                           [1, 1, scale_factor_z], threshold_arrow_length,
                           line_width, arrow_color, alpha, z_order)
 
