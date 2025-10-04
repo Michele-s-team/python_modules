@@ -1,3 +1,6 @@
+import numpy as np
+import pandas as pd
+
 '''
 return a list which has the same structure as a given list, but with all entries filled with the same value
 - 'refrence_list': the given list
@@ -74,3 +77,23 @@ Example of usage:
 
 def add_lists_of_lists(list_a, list_b):
     return [[A - B for A, B in zip(row_A, row_B)] for row_A, row_B in zip(list_a, list_b)]
+
+
+'''
+combine the data for nu and psi for a 1d manifold in the arc-length gauge to obtain the data for omega = \partial_1 X^alpha
+Input values:
+- 'data_nu': the data for nu, the stetch factor
+- 'data_psi': the data for psi, the angle of the tangent vector
+Return values:
+- the data for omega, a data frame with columns 'f:0', 'f:1', 'f:2', ':0', ':1', ':2'
+'''
+def data_omega(data_nu, data_psi):
+    
+    return pd.DataFrame({
+        'f:0': data_nu['f'] * np.cos(data_psi['f']),
+        'f:1': -data_nu['f'] * np.sin(data_psi['f']),
+        'f:2': 0,
+        ':0': data_nu[':0'],
+        ':1': data_nu[':1'],
+        ':2': data_nu[':2']
+    })
