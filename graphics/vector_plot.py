@@ -176,6 +176,18 @@ def norm_2d_vector_field(grid_v):
 
     return grid_norm_v, norm_v_min, norm_v_max, norm_v
 
+'''
+interpolate a vector field on the tangent bundle of a 2d manifold parameterized with the arc-length gauge
+Input values: 
+- 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored. 
+- 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored. 
+
+Output values:
+
+Example of usage: 
+'''
+def interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X):
+    
 
 '''
 interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
