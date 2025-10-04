@@ -178,9 +178,8 @@ def norm_2d_vector_field(grid_v):
 
 
 '''
-interpolate a vector field on the tangent bundle of a manifold
+interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
 '''
-
 
 def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega, mins, maxs, z_min, N_bins_v, label_x_column, label_y_column,
                                label_z_column, label_v_column, label_omega_column):
