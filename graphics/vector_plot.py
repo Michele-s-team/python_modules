@@ -186,7 +186,18 @@ Output values:
 
 Example of usage: 
 '''
-def interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X, label_x_column, label_y_column, label_v_column):
+def interpolate_t_vector_field_2d_arc_length_gauge(data_v, 
+                                                   data_X,
+                                                   N_bins_v,
+                                                   label_x_column, label_y_column, label_v_column):
+    
+    x_min = np.min(data_X[label_x_column])
+    x_max = np.max(data_X[label_x_column])
+    
+    points = np.linspace(x_min, x_max, N_bins_v)
+    
+    np.interp(xnew, data_v[label_x_column], data_v[label_v_column + label_x_column])
+    data_v[label_v_column + label_x_column]
     
     return 0
 
