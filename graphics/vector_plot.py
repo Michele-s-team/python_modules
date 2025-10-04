@@ -181,10 +181,17 @@ interpolate a vector field on the tangent bundle of a 2d manifold parameterized 
 Input values: 
 - 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored. 
 - 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored. 
+- 'n_bins_v': number of bins of the grid where to interpolate the vector field
+- 'label_x_column': label of the column of the coordinate x^1 in data_v
+- 'label_y_column': label of the column of the coordinate x^2 in data_v
+- 'label_v_column': label of the column of the vector field in data_v
 
 Output values:
+- a list [(x_1, v_1), (x_2, v_2), ..., (x_n, v_n)], where x_i are the values of the coordinate x^1 on the grid where the vector field is interpolated, and v_i are the values of the vector field on the same grid
 
 Example of usage: 
+    interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X, parameters['n_bins'], ':0', ':1', 'f')
+
 '''
 def interpolate_t_vector_field_2d_arc_length_gauge(data_v, 
                                                    data_X,
@@ -202,14 +209,16 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_v,
     v_interpolated = np.interp(x_interpolated, x_non_interpolated, v_non_interpolated, period=x_max - x_min)
     data_v[label_v_column + label_x_column]
     
-    return 0
+    return list(zip(x_interpolated, v_interpolated))
 
 '''
 interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
 '''
 
-def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega, mins, maxs, z_min, N_bins_v, label_x_column, label_y_column,
-                               label_z_column, label_v_column, label_omega_column):
+def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega, 
+                                              mins, maxs, z_min, N_bins_v, 
+                                              label_x_column, label_y_column, label_z_column, label_v_column, label_omega_column):
+    
     X_v, Y_v, Z_v = gr.interpolate_surface(data_z, mins, maxs, z_min, N_bins_v, 1, label_x_column,
                                            label_y_column, label_z_column)
 
