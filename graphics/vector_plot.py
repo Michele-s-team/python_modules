@@ -194,9 +194,12 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_v,
     x_min = np.min(data_X[label_x_column])
     x_max = np.max(data_X[label_x_column])
     
-    points = np.linspace(x_min, x_max, N_bins_v)
+    x_non_interpolated = data_v[label_x_column]
+    v_non_interpolated = data_v[label_v_column + label_x_column]
+    x_interpolated = np.linspace(x_min, x_max, N_bins_v)
     
-    np.interp(xnew, data_v[label_x_column], data_v[label_v_column + label_x_column])
+    # interpolate by setting period = x_max - x_min in order to handle also non-increasing sequences of x_non_interpolated
+    v_interpolated = np.interp(x_interpolated, x_non_interpolated, v_non_interpolated, period=x_max - x_min)
     data_v[label_v_column + label_x_column]
     
     return 0
