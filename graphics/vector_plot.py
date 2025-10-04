@@ -146,6 +146,13 @@ def plot_vector_field_alpha_map(ax, grid_r, grid_v, scale_factor_z, z_min, shaft
                           [1, 1, scale_factor_z], threshold_arrow_length,
                           line_width, color, alpha_map[i][j], z_order)
 
+'''
+compute the minimum and maximum norm of a vector field
+Input values:
+- 'grid_v': the vector field on a grid, given as a list of three tables, one for each component of the vector field
+Return values:
+- 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field across the grid
+'''
 
 def min_max_vector_field(grid_v):
     grid_norm_v = np.sqrt(grid_v[0] ** 2 + grid_v[1] ** 2 + grid_v[2] ** 2)
