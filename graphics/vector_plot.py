@@ -186,8 +186,9 @@ Output values:
 
 Example of usage: 
 '''
-def interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X):
+def interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X, label_x_column, label_y_column, label_v_column):
     
+    return 0
 
 '''
 interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
