@@ -182,7 +182,7 @@ interpolate a vector field on the tangent bundle of a manifold
 '''
 
 
-def interpolate_t_vector_field(data_v, data_z, data_omega, mins, maxs, z_min, N_bins_v, label_x_column, label_y_column,
+def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega, mins, maxs, z_min, N_bins_v, label_x_column, label_y_column,
                                label_z_column, label_v_column, label_omega_column):
     X_v, Y_v, Z_v = gr.interpolate_surface(data_z, mins, maxs, z_min, N_bins_v, 1, label_x_column,
                                            label_y_column, label_z_column)
