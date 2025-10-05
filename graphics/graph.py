@@ -10,7 +10,6 @@ from pandas.core.methods.selectn import SelectNSeries
 from scipy.interpolate import griddata
 from scipy.interpolate import Rbf
 from scipy.interpolate import interp1d
-from sympy.codegen.ast import RuntimeError_
 from sympy.polys.benchmarks.bench_solvers import R_165
 
 # do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
