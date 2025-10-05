@@ -270,8 +270,8 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     
     # interpolate the values of the parametric curve 
     values_X_interpolated = pd.DataFrame({
-        'f:0': np.interp(points_interpolated, points, data_X['f:0']),
-        'f:1': np.interp(points_interpolated, points, data_X['f:1']),
+        'f:0': np.interp(points_interpolated, points.iloc[idx].values, data_X['f:0'].iloc[idx].values),
+        'f:1': np.interp(points_interpolated, points.iloc[idx].values, data_X['f:1'].iloc[idx].values),
         'f:2': 0,
         ':0': points_interpolated,
         ':1': 0,
@@ -280,8 +280,8 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     
     # interpolate the values of the vector field in the 2d euclidean space where the manifold is embedded
     values_v_2d_interpolated = pd.DataFrame({
-        'f:0': np.interp(points_interpolated, points, values_v_2d['f:0']),
-        'f:1': np.interp(points_interpolated, points, values_v_2d['f:1']),
+        'f:0': np.interp(points_interpolated, points.iloc[idx].values, values_v_2d['f:0'].iloc[idx].values),
+        'f:1': np.interp(points_interpolated, points.iloc[idx].values, values_v_2d['f:1'].iloc[idx].values),
         'f:2': 0,
         ':0': points_interpolated,
         ':1': 0,
