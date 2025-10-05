@@ -120,7 +120,7 @@ def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
         gr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
                             np.add([grid_r[0][i], grid_r[1][i]],
                                 [grid_v[0][i], grid_v[1][i]]), \
-                            shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
+                            shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order, 'no')
             
 
 
@@ -242,6 +242,8 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
                                                    N_bins_v):
     
     
+    print(f'data_X = {data_X}')
+    
     # transform the value v^1 of the vector field in the tangent manifold into the value v^{2d alpha} of the vector field in the 2d euclidean space where the manifold is embedded, by using data_omega
     values_v_2d = pd.DataFrame({
         'f:0': data_v['f:0'] * data_omega['f:0'] ,
@@ -260,6 +262,11 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     points = data_v[':0']
     # the interpolated points of the fields to interpolate
     points_interpolated = np.linspace(x_min, x_max, N_bins_v)
+    
+    idx = data_v[':0'].argsort()
+
+    
+    print(f'points iloc = {data_X["f:0"].iloc[idx]}')
     
     # interpolate the values of the parametric curve 
     values_X_interpolated = pd.DataFrame({

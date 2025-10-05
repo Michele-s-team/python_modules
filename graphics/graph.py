@@ -962,13 +962,14 @@ plot a 2d arrow
 '''
 
 
-def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, line_width, color, alpha, z_order):
+def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, line_width, color, alpha, z_order, apply_threshold='yes'):
     head_length = head_over_shaft_length * shaft_length
 
     # plot the shaft
     dr_shaft = np.subtract(shaft_end_position, shaft_start_position)
 
-    if (np.sqrt(np.dot(dr_shaft, dr_shaft)) > threshold_arrow_length):
+    if ((apply_threshold == 'yes') and ((np.sqrt(np.dot(dr_shaft, dr_shaft)) > threshold_arrow_length))) or (apply_threshold == 'no'): 
+
         dr_shaft = dr_shaft * shaft_length / np.sqrt(np.dot(dr_shaft, dr_shaft))
 
         ax.plot([shaft_start_position[0], shaft_start_position[0] + dr_shaft[0]], [shaft_start_position[1], shaft_start_position[1] + dr_shaft[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order)
