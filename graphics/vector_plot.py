@@ -198,6 +198,17 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
                                                    data_v,
                                                    N_bins_v):
     
+    
+    # transform the value v^1 of the vector field in the tangent manifold into the value v^{2d alpha} of the vector field in the 2d euclidean space where the manifold is embedded, by using data_omega
+    values_v_2d = pd.DataFrame({
+        'f:0': data_v['f:0'] * data_omega['f:0'] ,
+        'f:1': data_v['f:0'] * data_omega['f:1'] ,
+        'f:2': 0,
+        ':0': data_v[':0'],
+        ':1': 0,
+        ':2': 0
+    })
+    
     # compute min and max of the coordinate x^1
     x_min = np.min(data_X[':0'])
     x_max = np.max(data_X[':0'])
@@ -218,7 +229,11 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
         ':2': 0
     })
     '''
+    
 
+    
+
+    # interpolate the values of the parametric curve 
     values_X_interpolated = pd.DataFrame({
         'f:0': np.interp(points_interpolated, points, data_X['f:0'], period = x_max-x_min),
         'f:1': np.interp(points_interpolated, points, data_X['f:1'], period = x_max-x_min),
