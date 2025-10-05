@@ -82,16 +82,58 @@ def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, h
                           line_width, arrow_color, alpha, z_order)
 
 
+
 '''
-plot a two-dimensional vector field
+plot a vector field defined on a 1d manifold 
+Input values: 
+- 'ax': the axis where to plot
+- 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector
+- 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field
+- 'shaft_length': length of the shaft of the arrows
+- 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
+- 'head_angle': angle of between the head and the shaft of the arrows
+- 'line_width': line width of the arrows
+- 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
+- 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
+- 'z_order': z-order of the arrows
+
+Example of usage: 
+
+    gr.vp.plot_1d_vector_field(ax, [X_v, Y_v], [V_x, V_y], 
+                               parameters['shaft_length'], parameters['head_over_shaft_length'], parameters['head_angle'], 
+                               parameters['line_width'], parameters['alpha'], 'red', 0)
 '''
+def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
+    
+    # grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
+
+    for i in range(len(grid_r[0])):
+            
+        vector_norm = np.sqrt(grid_v[0][i] ** 2 + grid_v[1][i] ** 2)
+
+        if color == 'color_from_map':
+            # Get corresponding arrow_color from colormap
+            arrow_color = gr.cb.color_map_type(norm_v(vector_norm))
+        else:
+            arrow_color = color
+
+        gr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
+                            np.add([grid_r[0][i], grid_r[1][i]],
+                                [grid_v[0][i], grid_v[1][i]]), \
+                            shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
+            
 
 
+'''
+plot a vector field defined on a 2d manifold 
+'''
 def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
+    
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
+            
             vector_norm = grid_norm_v[i, j]
 
             if color == 'color_from_map':
@@ -104,6 +146,7 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
                                     [grid_v[0][i, j], grid_v[1][i, j]]), \
                              shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
+            
 
 def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
@@ -218,38 +261,28 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     # the interpolated points of the fields to interpolate
     points_interpolated = np.linspace(x_min, x_max, N_bins_v)
     
-
-    '''
-    pd.DataFrame({
-        'f:0': np.interp(points_interpolated, points, data_X['f:0'], period = x_max-x_min),
-        'f:1': np.interp(points_interpolated, points, data_X['f:1'], period = x_max-x_min),
-        'f:2': 0,
-        ':0': points_interpolated[':0'],
-        ':1': points_interpolated[':1'],
-        ':2': 0
-    })
-    '''
-    
-
-    
-
     # interpolate the values of the parametric curve 
     values_X_interpolated = pd.DataFrame({
-        'f:0': np.interp(points_interpolated, points, data_X['f:0'], period = x_max-x_min),
-        'f:1': np.interp(points_interpolated, points, data_X['f:1'], period = x_max-x_min),
+        'f:0': np.interp(points_interpolated, points, data_X['f:0']),
+        'f:1': np.interp(points_interpolated, points, data_X['f:1']),
         'f:2': 0,
         ':0': points_interpolated,
         ':1': 0,
         ':2': 0
     })
     
-                             
+    # interpolate the values of the vector field in the 2d euclidean space where the manifold is embedded
+    values_v_2d_interpolated = pd.DataFrame({
+        'f:0': np.interp(points_interpolated, points, values_v_2d['f:0']),
+        'f:1': np.interp(points_interpolated, points, values_v_2d['f:1']),
+        'f:2': 0,
+        ':0': points_interpolated,
+        ':1': 0,
+        ':2': 0
+    })
     
-    
-    # interpolate by setting period = x_max - x_min in order to handle also non-increasing sequences of x_non_interpolated
-    values_v_interpolated = np.interp(points_interpolated, points, values_v, period=x_max - x_min)
-    
-    return list(zip(points_interpolated, values_v_interpolated))
+                                
+    return values_X_interpolated['f:0'], values_X_interpolated['f:1'], values_v_2d_interpolated['f:0'], values_v_2d_interpolated['f:1']
 
 '''
 interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
