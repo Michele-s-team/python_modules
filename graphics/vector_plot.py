@@ -227,11 +227,14 @@ Input values:
 - 'n_bins': number of bins of the grid where to interpolate the vector field
 
 Return values:
-- a list [(x_1, v_1), (x_2, v_2), ..., (x_n, v_n)], where x_i are the values of the coordinate x^1 on the grid where the vector field is interpolated, and v_i are the values of the vector field on the same grid
-
-Example of usage: 
-    interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X, parameters['n_bins'], ':0', ':1', 'f')
-
+- 'X' the table of the x coordinates of interpolated points of the manifold
+- 'Y' the table of the y coordinates of interpolated points of the manifold
+- 'V_x' the table of the x components of the interpolated vector field
+- 'V_y' the table of the y components of the interpolated vector field
+- 'grid_norm_v' the table of the norm of the interpolated vector field
+- 'norm_v_min' the minimum of the norm of the interpolated vector field
+- 'norm_v_max' the maximum of the norm of the interpolated vector field
+- 'norm_v' the normalization function for color maps, with respect to the norm of the interpolated vector field
 '''
 def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
                                                    data_omega,
