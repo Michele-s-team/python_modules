@@ -193,19 +193,43 @@ Example of usage:
     interpolate_t_vector_field_2d_arc_length_gauge(data_v, data_X, parameters['n_bins'], ':0', ':1', 'f')
 
 '''
-def interpolate_t_vector_field_2d_arc_length_gauge(data_v, 
-                                                   data_X,
-                                                   deta_omega,
-                                                   N_bins_v,
-                                                   label_x_column, label_y_column, label_v_column):
+def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
+                                                   data_omega,
+                                                   data_v,
+                                                   N_bins_v):
     
-    x_min = np.min(data_X[label_x_column])
-    x_max = np.max(data_X[label_x_column])
+    # compute min and max of the coordinate x^1
+    x_min = np.min(data_X[':0'])
+    x_max = np.max(data_X[':0'])
     
-    points = data_v[label_x_column]
-    values_v = data_v[label_v_column + label_x_column]
-    
+    # the non-interpolated  (abscissa) points of the fields to interpolate
+    points = data_v[':0']
+    # the interpolated points of the fields to interpolate
     points_interpolated = np.linspace(x_min, x_max, N_bins_v)
+    
+
+    '''
+    pd.DataFrame({
+        'f:0': np.interp(points_interpolated, points, data_X['f:0'], period = x_max-x_min),
+        'f:1': np.interp(points_interpolated, points, data_X['f:1'], period = x_max-x_min),
+        'f:2': 0,
+        ':0': points_interpolated[':0'],
+        ':1': points_interpolated[':1'],
+        ':2': 0
+    })
+    '''
+
+    values_X_interpolated = pd.DataFrame({
+        'f:0': np.interp(points_interpolated, points, data_X['f:0'], period = x_max-x_min),
+        'f:1': np.interp(points_interpolated, points, data_X['f:1'], period = x_max-x_min),
+        'f:2': 0,
+        ':0': points_interpolated,
+        ':1': 0,
+        ':2': 0
+    })
+    
+                             
+    
     
     # interpolate by setting period = x_max - x_min in order to handle also non-increasing sequences of x_non_interpolated
     values_v_interpolated = np.interp(points_interpolated, points, values_v, period=x_max - x_min)
