@@ -105,11 +105,11 @@ Example of usage:
 '''
 def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
     
-    # grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
             
-        vector_norm = np.sqrt(grid_v[0][i] ** 2 + grid_v[1][i] ** 2)
+        vector_norm = grid_norm_v[i]
 
         if color == 'color_from_map':
             # Get corresponding arrow_color from colormap
@@ -229,7 +229,7 @@ Input values:
 - 'label_y_column': label of the column of the coordinate x^2 in data_v
 - 'label_v_column': label of the column of the vector field in data_v
 
-Output values:
+Return values:
 - a list [(x_1, v_1), (x_2, v_2), ..., (x_n, v_n)], where x_i are the values of the coordinate x^1 on the grid where the vector field is interpolated, and v_i are the values of the vector field on the same grid
 
 Example of usage: 
@@ -281,8 +281,15 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
         ':2': 0
     })
     
+    X = values_X_interpolated['f:0']
+    Y = values_X_interpolated['f:1']
+    
+    V_x = values_v_2d_interpolated['f:0']
+    V_y = values_v_2d_interpolated['f:1']
+    
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = gr.vp.norm_2d_vector_field([V_x, V_y])
                                 
-    return values_X_interpolated['f:0'], values_X_interpolated['f:1'], values_v_2d_interpolated['f:0'], values_v_2d_interpolated['f:1']
+    return X, Y, V_x, V_y, grid_norm_v, norm_v_min, norm_v_max, norm_v
 
 '''
 interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
