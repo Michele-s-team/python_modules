@@ -28,9 +28,17 @@ def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  posi
 
     scaled_max = gr.scale(max_value, min_value, scale_factor)
     colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
-    # colorbar_ticks = np.linspace(min_value, scaled_max, num=3)  # Adjust tick count as needed
 
-    color_normalization = plt.Normalize(vmin=min(colorbar_ticks), vmax=max(colorbar_ticks))
+    print(f"=== COLORBAR DEBUG ===")
+    print(f"min_value: {min_value}")
+    print(f"max_value: {max_value}")
+    print(f"scaled_max: {scaled_max}")
+    print(f"scale_factor: {scale_factor}")
+    print(f"colorbar_ticks: {colorbar_ticks}")
+    print(f"grid_values range: [{np.min(grid_values)}, {np.max(grid_values)}]")
+
+
+    color_normalization = plt.Normalize(vmin=min_value, vmax=max_value)  # Use max_value, not scaled_max!
     color_map = color_map_type(color_normalization(grid_values))
 
     mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
@@ -38,7 +46,17 @@ def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  posi
 
     colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
     colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_position)
+    
+    print(f"Colorbar vmin/vmax: {colorbar.vmin}, {colorbar.vmax}")
+
+
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size)
+    
+    # Check after setting ticks
+    print(f"Ticks after setting: {colorbar.get_ticks()}")
+    print(f"Labels after setting: {[label.get_text() for label in colorbar.ax.get_yticklabels()]}")
+    print("======================\n")
+    
     colorbar.set_label(label, rotation=angle, fontsize=font_size)
 
     # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
