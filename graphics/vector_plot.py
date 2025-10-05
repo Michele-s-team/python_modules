@@ -265,6 +265,7 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     
     idx = data_v[':0'].argsort()
 
+
     
     print(f'points iloc = {data_X["f:0"].iloc[idx]}')
     
