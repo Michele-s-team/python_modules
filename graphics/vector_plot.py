@@ -224,10 +224,7 @@ interpolate a vector field on the tangent bundle of a 2d manifold parameterized 
 Input values: 
 - 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored. 
 - 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored. 
-- 'n_bins_v': number of bins of the grid where to interpolate the vector field
-- 'label_x_column': label of the column of the coordinate x^1 in data_v
-- 'label_y_column': label of the column of the coordinate x^2 in data_v
-- 'label_v_column': label of the column of the vector field in data_v
+- 'n_bins': number of bins of the grid where to interpolate the vector field
 
 Return values:
 - a list [(x_1, v_1), (x_2, v_2), ..., (x_n, v_n)], where x_i are the values of the coordinate x^1 on the grid where the vector field is interpolated, and v_i are the values of the vector field on the same grid
@@ -239,7 +236,7 @@ Example of usage:
 def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
                                                    data_omega,
                                                    data_v,
-                                                   N_bins_v):
+                                                   bins_v):
     
     
     print(f'data_X = {data_X}')
@@ -261,7 +258,7 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     # the non-interpolated  (abscissa) points of the fields to interpolate
     points = data_v[':0']
     # the interpolated points of the fields to interpolate
-    points_interpolated = np.linspace(x_min, x_max, N_bins_v)
+    points_interpolated = np.linspace(x_min, x_max, bins_v)
     
     idx = data_v[':0'].argsort()
 
