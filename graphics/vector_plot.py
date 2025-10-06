@@ -122,7 +122,7 @@ Example of usage:
 '''
 def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order, threshold_arrow_length = arr.default_threshold_arrow_length):
     
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
             
@@ -146,7 +146,7 @@ plot a vector field defined on a 2d manifold
 '''
 def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
     
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
@@ -166,7 +166,7 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
             
 
 def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
@@ -245,13 +245,6 @@ def norm_vector_field(grid_v):
     return grid_norm_v, norm_v_min, norm_v_max, norm_v
 
 
-def norm_2d_vector_field(grid_v):
-    grid_norm_v = np.sqrt(grid_v[0] ** 2 + grid_v[1] ** 2)
-    norm_v_min, norm_v_max = np.nanmin(grid_norm_v), np.nanmax(grid_norm_v)
-    norm_v = mcolors.Normalize(vmin=norm_v_min, vmax=norm_v_max)  # Normalize norms to [0,1]
-
-    return grid_norm_v, norm_v_min, norm_v_max, norm_v
-
 '''
 interpolate a vector field on the tangent bundle of a 2d manifold parameterized with the arc-length gauge
 Input values: 
@@ -323,7 +316,7 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
     V_x = values_v_2d_interpolated['f:0']
     V_y = values_v_2d_interpolated['f:1']
     
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = gr.vp.norm_2d_vector_field([V_x, V_y])
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([V_x, V_y])
                                 
     return X, Y, V_x, V_y, grid_norm_v, norm_v_min, norm_v_max, norm_v
 
@@ -359,7 +352,7 @@ def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega,
     v_y = griddata(points, values_v_y, (X_v, Y_v), method='cubic')
     v_z = griddata(points, values_v_z, (X_v, Y_v), method='cubic')
 
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = gr.vp.norm_vector_field([v_x, v_y, v_z])
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([v_x, v_y, v_z])
 
     return X_v, Y_v, Z_v, v_x, v_y, v_z, grid_norm_v, norm_v_min, norm_v_max, norm_v
 
@@ -393,7 +386,7 @@ def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v, label_x_column, la
     v_x = griddata(points, values_v_x, (X, Y), method='cubic')
     v_y = griddata(points, values_v_y, (X, Y), method='cubic')
 
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = gr.vp.norm_2d_vector_field([v_x, v_y])
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([v_x, v_y])
 
     return X, Y, v_x, v_y, grid_norm_v, norm_v_min, norm_v_max, norm_v
 
@@ -428,7 +421,7 @@ def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_
     w_y = griddata(points, values_w_y, (X_w, Y_w), method='cubic')
     w_z = griddata(points, values_w_z, (X_w, Y_w), method='cubic')
 
-    grid_norm_w, norm_w_min, norm_w_max, norm_w = gr.vp.norm_vector_field([w_x, w_y, w_z])
+    grid_norm_w, norm_w_min, norm_w_max, norm_w = norm_vector_field([w_x, w_y, w_z])
 
     return X_w, Y_w, Z_w, w_x, w_y, w_z, grid_norm_w, norm_w_min, norm_w_max, norm_w
 
