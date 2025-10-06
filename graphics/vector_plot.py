@@ -3,7 +3,7 @@ import matplotlib.colors as mcolors
 import pandas as pd
 from scipy.interpolate import griddata
 
-import arrow as arr
+import graphics.arrow as arr
 import calculus.geometry as geo
 import list.column_labels as clab
 import graphics.graph as gr

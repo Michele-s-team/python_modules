@@ -111,7 +111,7 @@ def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, he
     # plot the shaft
     dr_shaft = np.subtract(shaft_end_position, shaft_start_position)
 
-    if (((np.sqrt(np.dot(dr_shaft, dr_shaft)) > threshold_arrow_length))): 
+    if ((np.linalg.norm(dr_shaft) > threshold_arrow_length)): 
 
         dr_shaft = dr_shaft * shaft_length / np.sqrt(np.dot(dr_shaft, dr_shaft))
 

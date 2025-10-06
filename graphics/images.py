@@ -4,7 +4,7 @@ import os
 from pdf2image import convert_from_path
 import re
 
-import system.paths
+import system.paths as paths
 
 print("paths.figures_path =", paths.figures_path)
 print("paths.py file loaded from =", paths.__file__)
