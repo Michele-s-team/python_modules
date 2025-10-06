@@ -221,8 +221,24 @@ def min_max_vector_field(grid_v):
     return norm_v_min, norm_v_max
 
 
+'''
+compute the norm of a vector field
+
+Input values:
+- 'grid_v': the vector field on a grid, given as a list of three tables, of the form [V_x, V_y, V_z]
+Return values:
+- 'grid_norm_v': the table of the norm of the vector field on the grid
+- 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field
+- 'norm_v': the normalization function for color maps, with respect to the norm of the vector field
+'''
 def norm_vector_field(grid_v):
-    grid_norm_v = np.sqrt(grid_v[0] ** 2 + grid_v[1] ** 2 + grid_v[2] ** 2)
+    
+    grid_norm_v = 0
+    for i in range(len(grid_v)):
+        grid_norm_v += grid_v[i]**2
+        
+    grid_norm_v = np.sqrt(grid_norm_v)    
+    
     norm_v_min, norm_v_max = np.nanmin(grid_norm_v), np.nanmax(grid_norm_v)
     norm_v = mcolors.Normalize(vmin=norm_v_min, vmax=norm_v_max)  # Normalize norms to [0,1]
 
