@@ -62,6 +62,20 @@ def plot_analytical_vector_field_on_surface_outside_disk(ax, v, f, mins, maxs, r
 
 '''
 plot a vector field
+Input values: 
+- 'ax': the axis on which the vector field will be plotted
+- 'grid_r': the grid where the vector field is defined, given as a list of three tables, one for each component of the position vector, it is of the form [X, Y, Z]
+- 'grid_v': the vector field on the grid, given as a list of three tables, one for each component of the vector field, it is of the form [V_x, V_y, V_z]
+- 'scale_factor_z': scale factor for the z axis of the shape contained in grid_r
+- 'z_min': minimum value of the z axis of the shape contained in grid_r
+- 'shaft_length': length of the shaft of the arrows
+- 'head_over_shaft_length': ratio between the length of the head and the length of
+- 'head_angle': angle of between the head and the shaft of the arrows
+- 'threshold_arrow_length': minimum length of the arrow to be plotted: arrows with length smaller than this value are not plotted
+- 'line_width': line width of the arrows
+- 'alpha': transparency of the arrows, between 0 (fully transparent) and 1
+- 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
+- 'z_order': z-order of the arrows
 '''
 def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle, threshold_arrow_length,
                       line_width, alpha, color, z_order):
