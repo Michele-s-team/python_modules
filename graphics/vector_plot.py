@@ -7,6 +7,8 @@ import list.column_labels as clab
 import graphics.graph as gr
 import calculus.geometry as geo
 
+
+
 '''
 tabulate a vector field given by an analytical expression
 - 'v': the analytical function  v(x,y) for the vector field
@@ -103,7 +105,7 @@ Example of usage:
                                parameters['shaft_length'], parameters['head_over_shaft_length'], parameters['head_angle'], 
                                parameters['line_width'], parameters['alpha'], 'red', 0)
 '''
-def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
+def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order, threshold_arrow_length = default_threshold_arrow_length):
     
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
 
@@ -120,7 +122,7 @@ def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
         gr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
                             np.add([grid_r[0][i], grid_r[1][i]],
                                 [grid_v[0][i], grid_v[1][i]]), \
-                            shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order, 'no')
+                            shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length)
             
 
 
