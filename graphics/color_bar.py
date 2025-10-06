@@ -31,7 +31,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  posi
 
 
 
-    color_normalization = plt.Normalize(vmin=min_value, vmax=max_value)  # Use max_value, not scaled_max!
+    color_normalization = plt.Normalize(vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
     color_map = color_map_type(color_normalization(grid_values))
 
     mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)

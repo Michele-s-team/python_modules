@@ -558,6 +558,7 @@ def empty_panes(ax):
 
 # set the ticks of colorbar 'colorar' equal to the vector of ticks values 'ticks'
 def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size):
+    
     latex_ticks = []
     for tick in ticks:
         latex_ticks.append(to_latex_scientific(min + (tick - min) / scale_factor))
