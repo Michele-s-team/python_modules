@@ -21,7 +21,8 @@ import graphics.vector_plot as vp
 
 epsilon = 1e-6
 epsilon_axes = 5e-2
-threshold_arrow_length = 1e-4
+# the default value of the arrow length such that arrows with lengths below this value will not be plotted 
+default_threshold_arrow_length = 1e-4
 deg_to_rad = 2 * np.pi / 360
 
 
@@ -967,7 +968,7 @@ def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, he
     # plot the shaft
     dr_shaft = np.subtract(shaft_end_position, shaft_start_position)
 
-    if ((apply_threshold == 'yes') and ((np.sqrt(np.dot(dr_shaft, dr_shaft)) > threshold_arrow_length))) or (apply_threshold == 'no'): 
+    if ((apply_threshold == 'yes') and ((np.sqrt(np.dot(dr_shaft, dr_shaft)) > default_threshold_arrow_length))) or (apply_threshold == 'no'): 
 
         dr_shaft = dr_shaft * shaft_length / np.sqrt(np.dot(dr_shaft, dr_shaft))
 
