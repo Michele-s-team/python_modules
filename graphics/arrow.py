@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import pandas as pd
 
@@ -31,7 +32,7 @@ def plot_arrow_head(ax, arrow_shaft_start, arrow_shaft_end, arrow_shaft_length, 
 
     arrow_head_start_scaled = arrow_shaft_end_scaled
     '''
-    arrow_head_end_scaled lives in a space which is not dilated accoriding to scale_factors: 
+    arrow_head_end_scaled lives in a space which is not dilated according to scale_factors: 
     it is thus simply arrow_head_start_scaled + dr_arrow_head [non-scaled and dilated to obtain the correct length of the arrow head]
     '''
     arrow_head_end_scaled = np.add(arrow_head_start_scaled,
@@ -48,11 +49,11 @@ plot an arrow
 - 'ax': the axis
 - 'shaft_start_position', 'shaft_end_position': the coordinates of the start and end of the shaft of the arrow
 - 'shaft_length': all arrows will be renormalized and plotted with a length equal to 'shaft_length'
-- 'head_over_shaft_length' : ratio between the lenght of each arrow head and the length of the shaft 
+- 'head_over_shaft_length' : ratio between the length of each arrow head and the length of the shaft 
 - 'head_angle': angle (in degrees) between each arrow head and the shaft
 - 'mins': vector of minima in 3d space with respect to which the rescaling of scale_factor will be made
 - 'scale_factor': scaling coefficients with respect to 'mins'
-- 'threshold_arrow_length": an argument which sets the minimal arrow lenght that will be plotted, only arrows |r_end - r_start| > threshold_arrow_length will be plotted 
+- 'threshold_arrow_length": an argument which sets the minimal arrow length that will be plotted, only arrows |r_end - r_start| > threshold_arrow_length will be plotted 
 - 'line_width': line width for shaft and arrow heads
 - 'color': the color
 - 'alpha': transparency
@@ -80,7 +81,7 @@ def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length,
         shaft_end_position = np.add(shaft_start_position, dr_shaft)
         # arrow_head_start = arrow_shaft_end
 
-        plot_line_scaled(ax, shaft_start_position, shaft_end_position, shaft_length, mins, scale_factors, line_width,
+        gr.plot_line_scaled(ax, shaft_start_position, shaft_end_position, shaft_length, mins, scale_factors, line_width,
                          color,
                          alpha, z_order)
 
@@ -90,8 +91,8 @@ def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length,
         # compute coordinates for arrow heads
         up_head = [-head_length * np.sin(head_angle * gr.deg_to_rad), 0, -head_length * np.cos(head_angle * gr.deg_to_rad)]
         down_head = [+head_length * np.sin(head_angle * gr.deg_to_rad), 0, - head_length * np.cos(head_angle * gr.deg_to_rad)]
-        up_head = np.matmul(R(theta_shaft, phi_shaft), up_head)
-        down_head = np.matmul(R(theta_shaft, phi_shaft), down_head)
+        up_head = np.matmul(gr.R(theta_shaft, phi_shaft), up_head)
+        down_head = np.matmul(gr.R(theta_shaft, phi_shaft), down_head)
 
         # plot the arrow heads
         plot_arrow_head(ax, shaft_start_position, shaft_end_position, shaft_length, up_head, head_length, mins,
@@ -119,12 +120,12 @@ def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, he
         theta_shaft = -np.pi / 2 + math.atan2(dr_shaft[1], dr_shaft[0])
 
         # plot the heads
-        # consider heads related to a ficititious arrow pointing up
+        # consider heads related to a fictitious arrow pointing up
         up_head = [-head_length * np.sin(head_angle * gr.deg_to_rad), -head_length * np.cos(head_angle * gr.deg_to_rad)]
         down_head = [+head_length * np.sin(head_angle * gr.deg_to_rad), - head_length * np.cos(head_angle * gr.deg_to_rad)]
         # rotate the heads above
-        up_head = np.matmul(R_2d(theta_shaft), up_head)
-        down_head = np.matmul(R_2d(theta_shaft), down_head)
+        up_head = np.matmul(gr.R_2d(theta_shaft), up_head)
+        down_head = np.matmul(gr.R_2d(theta_shaft), down_head)
 
         # plot the heads
         ax.plot([shaft_start_position[0] + dr_shaft[0], shaft_start_position[0] + dr_shaft[0] + up_head[0]], [shaft_start_position[1] + dr_shaft[1], shaft_start_position[1] + dr_shaft[1] + up_head[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order)

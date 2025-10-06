@@ -496,7 +496,7 @@ plot an analytical curve by loading the symbol of its legend from a pdf file
 - 'ax' : the axes where the plot will be made
 - 'f' : the parametric function f(t) = x(t) of the curve
 - 't_min', 't_max', the minimum and maximum values of the curve parameter t
-- 'n_bins': the nunber of bins in which the interval [  't_min', 't_max' ] will be divided
+- 'n_bins': the number of bins in which the interval [  't_min', 't_max' ] will be divided
 - 'color': the color of the curve
 - 'legend': the name of the symbol which will be loaded from the pdf file
 - 'legend_position': the position of the legend of the curve

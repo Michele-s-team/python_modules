@@ -3,9 +3,10 @@ import matplotlib.colors as mcolors
 import pandas as pd
 from scipy.interpolate import griddata
 
+import arrow as arr
+import calculus.geometry as geo
 import list.column_labels as clab
 import graphics.graph as gr
-import calculus.geometry as geo
 
 
 
@@ -105,7 +106,7 @@ Example of usage:
                                parameters['shaft_length'], parameters['head_over_shaft_length'], parameters['head_angle'], 
                                parameters['line_width'], parameters['alpha'], 'red', 0)
 '''
-def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order, threshold_arrow_length = default_threshold_arrow_length):
+def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order, threshold_arrow_length = arr.default_threshold_arrow_length):
     
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_2d_vector_field(grid_v)
 
