@@ -404,12 +404,34 @@ def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v, label_x_column, la
 
 
 '''
-interpolate a vector field normal to a manifold
+interpolate a vector field normal to a manifold in the Monge gauge
+
+Input values:
+- 'data_w': table containing the values of the vector field
+- 'data_z': table containing the values of the manifold
+- 'data_omega': table containing the values of the manifold gradient
+- 'mins', 'maxs': the bounds of the rectangular region where to interpolate the surface
+- 'z_min': minimum value of the height of the surface
+- 'N_bins_w': number of bins with which the vector field is interpolated
+- 'label_x_column': label of the x column
+- 'label_y_column': label of the y column
+- 'label_z_column': label of the z column
+- 'label_w_column': label of the column of the vector field
+- 'label_omega_column': label of the column of the manifold gradient
+
+Return values:
+- 'X_w', 'Y_w', 'Z_w': table of the interpolated manifold
+- 'w_x', 'w_y', 'w_z': table of the interpolated vector field
+- 'grid_norm_w': table of the norm of the interpolated vector field
+- 'norm_w_min': minimum of the norm of the interpolated vector field
+- 'norm_w_max': maximum of the norm of the interpolated vector field
+- 'norm_w': normalization function for color maps, with respect to the norm of the interpolated vector field
 '''
 
 
 def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_bins_w, label_x_column, label_y_column,
                                label_z_column, label_w_column, label_omega_column):
+    
     X_w, Y_w, Z_w = gr.interpolate_surface(data_z, mins, maxs, z_min, N_bins_w, 1, label_x_column,
                                            label_y_column, label_z_column)
 
