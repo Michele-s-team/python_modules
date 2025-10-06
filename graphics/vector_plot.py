@@ -143,6 +143,18 @@ def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
 
 '''
 plot a vector field defined on a 2d manifold 
+
+Input values:
+- 'ax': the axis where to plot
+- 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector, of the form [X, Y]
+- 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field, of the form [V_x, V_y]
+- 'shaft_length': length of the shaft of the arrows
+- 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
+- 'head_angle': angle of between the head and the shaft of the arrows
+-  'line_width': line width of the arrows
+- 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
+- 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
+-  'z_order': z-order of the arrows
 '''
 def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
     
