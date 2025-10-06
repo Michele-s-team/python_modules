@@ -22,9 +22,11 @@ Arguments:
 - 'label_pad': displacement of the label of the colorbar with respect to the origin of the colorbar, in units given by the size of the colorbar
 - 'label' the label of the colorbar
 - 'font_size' : the font size of all texts in the colorbar
+- 'shrink_value' [optional] : the shrink value of the colorbar
+- 'aspect_value' [optional]: the aspect value of the colorbar
 '''
 
-def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  position, size, angle, label_pad, label, font_size):
+def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  position, size, angle, label_pad, label, font_size, shrink_value=0.2, aspect_value=10):
 
     scaled_max = gr.scale(max_value, min_value, scale_factor)
     colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
@@ -38,7 +40,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  posi
     mappable.set_array(grid_values)
 
     colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
-    colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_position)
+    colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_position)
     
 
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size)
