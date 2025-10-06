@@ -77,7 +77,7 @@ def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, h
             else:
                 arrow_color = color
 
-            gr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
+            arr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
                           np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
                                  [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]), \
                           shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
@@ -120,7 +120,7 @@ def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
         else:
             arrow_color = color
 
-        gr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
+        arr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
                             np.add([grid_r[0][i], grid_r[1][i]],
                                 [grid_v[0][i], grid_v[1][i]]), \
                             shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length)
@@ -145,7 +145,7 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
             else:
                 arrow_color = color
 
-            gr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
+            arr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
                                     [grid_v[0][i, j], grid_v[1][i, j]]), \
                              shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
@@ -164,7 +164,7 @@ def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_ov
             else:
                 arrow_color = color
 
-            gr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
+            arr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
                                     [grid_v[0][i, j], grid_v[1][i, j]]), \
                              0.0 + shaft_length * (vector_norm - norm_v_min)/(norm_v_max-norm_v_min), head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
@@ -185,7 +185,7 @@ def plot_vector_field_alpha_map(ax, grid_r, grid_v, scale_factor_z, z_min, shaft
             # Get corresponding color from colormap
             color = gr.cb.color_map_type(norm_v(vector_norm))
 
-            gr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
+            arr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
                           np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
                                  [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]), \
                           shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
@@ -493,7 +493,7 @@ def plot_analytical_vector_field_on_curve(ax, v, gamma, min, max, n_bins, scale_
     X, Y, Z, V, ts = tabulate_analytical_vector_field_on_curve(v, gamma, min, max, n_bins)
 
     for i in range(len(ts)):
-        gr.plot_arrow(ax, [X[i], Y[i], Z[i]],
+        arr.plot_arrow(ax, [X[i], Y[i], Z[i]],
                       np.add([X[i], Y[i], Z[i]],
                              V[i]), \
                       shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
