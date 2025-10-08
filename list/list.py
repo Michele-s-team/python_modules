@@ -97,3 +97,20 @@ def data_omega(data_nu, data_psi):
         ':1': data_nu[':1'],
         ':2': data_nu[':2']
     })
+   
+    
+'''
+Compute the min and max of the coordinates in a data set
+Input values: 
+- 'data': an array of the for [[x_{11}, x_{12}, ...], [x_{21}, x_{22}, ...], ...] where each entry has the same length
+
+Return values: 
+- [[min_i x_{i1}, max_i x_{i1}], [min_i x_{i2}, max_i x_{i2}, ...]]
+'''
+def min_max_coordinates(data):
+    
+    result = []
+    for i in range(len(data[0])):    
+        result.append([min(data[:,i]), max(data[:,i])])
+        
+    return np.array(result)

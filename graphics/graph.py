@@ -14,6 +14,7 @@ import graphics.color_bar as cb
 import graphics.images as images
 import input_output.input_output as io
 import list.column_labels as clab
+import list.list as lis
 import graphics.ticks as ti
 import graphics.vector_plot as vp
 
@@ -990,8 +991,25 @@ set the limits of a 2d axis:
 
 
 def set_2d_axes_limits(ax, mins, maxs, margins):
+    
     ax.set_xlim(mins[0] - (maxs[0] - mins[0]) * margins[0], maxs[0] + (maxs[0] - mins[0]) * margins[0])
     ax.set_ylim(mins[1] - (maxs[1] - mins[1]) * margins[1], maxs[1] + (maxs[1] - mins[1]) * margins[1])
+
+
+'''
+set the limits of 2d axis by requiring that the axes fit to a data set
+Input values: 
+- 'ax': the axis
+- 'data': the data, of the shape [(x_0, y_0), (x_1, y_1), ... ]
+- 'margins' [optional]: a two-entry vector, containing the margin on the x and y axis
+'''
+def set_2d_axes_limits_from_data(ax, data, margins=[0, 0]):
+
+    min_max = lis.min_max_coordinates(data)
+    
+    set_2d_axes_limits(ax, [min_max[0, 0], min_max[1, 0]], [min_max[0, 1], min_max[1, 1]], margins)
+    
+    
 
 
 '''
