@@ -894,6 +894,38 @@ Input values:
 def delete_all_axes(fig):
     for ax in fig.axes[:]:
         fig.delaxes(ax)
+        
+        
+'''
+interpolate a function of one variable in an interval
+Input values: 
+- 'data': the data of the function, where the function value is written in column "f" and the x values in column ":0"
+- 'n_bins': the number of bins in which the interpoplated x interval will be divided
+- 'x_min', 'x_max' [optional]: min and max values of the x interval where interpolation will be made. If either of these is set to 'None', x_min and x_max will be set to the min and max value in data[":0"]
+- 'interpolation_method' [optional]: the method used to make the interpolation
+
+Return values: 
+- 'values_grid': a zipped array [(x_0,f_0), (x_1,f_1),...] of the interpolated values
+- 'points_grid'; the values of the x axis [x_0, x_1,..]
+'''
+def interpolate_1d_function(data, n_bins, x_min=None, x_max=None, interpolation_method='cubic'):
+
+    if x_min is None:
+        x_min = min(data[":0"])
+
+    if x_max is None:
+        x_max = max(data[":0"])
+
+    points_grid = np.linspace(x_min, x_max, n_bins)
+
+    points = data[":0"].values
+    values = data["f"].values
+
+    F = interp1d(points, values, kind=interpolation_method)
+
+    values_grid = np.array(list(zip(points_grid, F(points_grid))))
+
+    return values_grid, points_grid
 
 '''
 interpolate a set of discrete data for a surface f(x,y) into a grid points
@@ -919,6 +951,9 @@ def interpolate_surface(data, mins, maxs, f_min, n_bins, scale_factor, label_x_c
     Z = griddata(points, values, (X, Y), method='cubic')
 
     return X, Y, Z
+
+
+
 
 '''
 given a set of discrete data for a curve in a two-dimensional planer, interpolate it into a grid of  points
