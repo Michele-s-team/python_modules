@@ -1,3 +1,4 @@
+import colorama as col
 import matplotlib as mpl
 
 '''
@@ -20,3 +21,12 @@ def clear_labels_with_patterns(figure, patterns):
 def empty_texts(figure):
     for text in figure.findobj(mpl.text.Text):
         text.set_text('')
+
+'''
+print a text in a given color
+Input values: 
+- 'text': a string
+- 'color': a colorama color, such as RED
+'''
+def print_text_color(text, color):
+    print(f'{col.Fore.RED}{text}{col.Style.RESET_ALL}}')
