@@ -157,41 +157,56 @@ def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, ticks_list, ax
                               tick_label_formats[2], font_size, z_order)
 
 
-def plot_2d_axis(ax, r, l, direction, tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
+'''
+plot an axis for a 2d plot
+Input values: 
+- 'origin': a twople containing the x,y coordinates of the origin of the axis
+- 'length': a two-ple containing the x, y length of the origin of the axis
+- 'direction': 'x' or 'y': the direction of the axis to be drawn
+- 'line_width': the line width of the axis and ticks
+- 'axis_label': the label of the axis, e..g, 'x'
+- 'axis_label_offset':  offset of the axis label with respect to the axis
+- 'axis_label_angle': the rotation angle of the axis label
+- 'ticks_label_offset': offset of the ticks labels
+- 'ticks_label_format': the format of the ticks label numbers, either floating point ('f') or exponential ('e')
+- 'font_size': the font size
+- 'z_order': the z-order of the axis
+'''
+def plot_2d_axis(ax, origin, length, direction, tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
                  ticks_label_offset, tick_label_format, font_size,
                  z_order):
     
     if direction == "x":
 
         # ticks = ticks_base_10(r[0], r[0] + l, n_ticks)
-        ticks = ti.generate_ticks(r[0], r[0] + l)
+        ticks = ti.generate_ticks(origin[0], origin[0] + length)
 
-        ax.plot([r[0], r[0] + l], [r[1], r[1]], color='black', linewidth=line_width, zorder=z_order)
+        ax.plot([origin[0], origin[0] + length], [origin[1], origin[1]], color='black', linewidth=line_width, zorder=z_order)
         for tick in ticks:
-            ax.plot([tick, tick], [r[1], r[1] + tick_length], color='black', linewidth=line_width,
+            ax.plot([tick, tick], [origin[1], origin[1] + tick_length], color='black', linewidth=line_width,
                     zorder=z_order)  # x-axis line
             if tick_label_format != '':
-                ax.text(tick, r[1] - ticks_label_offset, float_to_latex(tick, tick_label_format), fontsize=font_size,
+                ax.text(tick, origin[1] - ticks_label_offset, float_to_latex(tick, tick_label_format), fontsize=font_size,
                         ha='center', va='center', zorder=10)
 
-        ax.text(l / 2, r[1] - axis_label_offset, axis_label, fontsize=font_size, ha='center', va='center',
+        ax.text(length / 2, origin[1] - axis_label_offset, axis_label, fontsize=font_size, ha='center', va='center',
                 rotation=axis_label_angle, zorder=z_order)
 
     elif direction == "y":
 
         # ticks = ticks_base_10(r[1], r[1] + l, n_ticks)
-        ticks = ti.generate_ticks(r[1], r[1] + l)
+        ticks = ti.generate_ticks(origin[1], origin[1] + length)
 
-        ax.plot([r[0], r[0]], [r[1], r[1] + l], color='black', linewidth=line_width, zorder=z_order)
+        ax.plot([origin[0], origin[0]], [origin[1], origin[1] + length], color='black', linewidth=line_width, zorder=z_order)
 
         for tick in ticks:
-            ax.plot([r[0], r[0] + tick_length], [tick, tick], color='black', linewidth=line_width,
+            ax.plot([origin[0], origin[0] + tick_length], [tick, tick], color='black', linewidth=line_width,
                     zorder=z_order)  # x-axis line
             if tick_label_format != '':
-                ax.text(r[0] - ticks_label_offset, tick, float_to_latex(tick, tick_label_format), fontsize=font_size,
+                ax.text(origin[0] - ticks_label_offset, tick, float_to_latex(tick, tick_label_format), fontsize=font_size,
                         ha='center', va='center', zorder=10)
 
-        ax.text(r[0] - axis_label_offset, r[1] + l / 2, axis_label, fontsize=font_size, ha='center', va='center',
+        ax.text(origin[0] - axis_label_offset, origin[1] + length / 2, axis_label, fontsize=font_size, ha='center', va='center',
                 rotation=axis_label_angle, zorder=z_order)
 
 
