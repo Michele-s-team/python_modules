@@ -582,16 +582,6 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size):
 
 
 
-# remove some elements in 'list' in such a way that 'list' has no more than 'n' elements and return the result
-def purge_list(list, n):
-    i = 0
-    result = []
-    for element in list:
-        if ((i % np.rint(len(list) / n)) == 0):
-            result.append(element)
-        i += 1
-
-    return result
 
 
 # create a list of ticks on a 'base 10 ' grid between 'min' and 'max'
@@ -622,7 +612,7 @@ def ticks_base_10(min, max, n):
 
         ticks.sort()
 
-    result = purge_list(ticks, n)
+    result = lis.purge_list(ticks, n)
 
     return list(dict.fromkeys(result))
 

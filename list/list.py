@@ -114,3 +114,24 @@ def min_max_coordinates(data):
         result.append([min(data[:,i]), max(data[:,i])])
         
     return np.array(result)
+
+
+
+'''
+remove some elements in 'list' in such a way that 'list' has no more than 'n' elements and return the result
+Input values: 
+- 'list': the list to purce
+- 'n': the number of elements
+
+Return values: 
+- the purged list
+'''
+def purge_list(list, n):
+    i = 0
+    result = []
+    for element in list:
+        if ((i % np.rint(len(list) / n)) == 0):
+            result.append(element)
+        i += 1
+
+    return result
