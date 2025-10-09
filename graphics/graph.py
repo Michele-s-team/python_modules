@@ -573,7 +573,7 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size):
     
     latex_ticks = []
     for tick in ticks:
-        latex_ticks.append(text.to_latex_scientific(min + (tick - min) / scale_factor))
+        latex_ticks.append(cal.to_latex_scientific(min + (tick - min) / scale_factor))
 
     colorbar.set_ticks(ticks)
     colorbar.ax.set_yticklabels(latex_ticks, fontsize=font_size)
