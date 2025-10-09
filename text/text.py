@@ -29,4 +29,17 @@ Input values:
 - 'color': a colorama color, such as RED
 '''
 def print_text_color(text, color):
-    print(f'{col.Fore.RED}{text}{col.Style.RESET_ALL}}')
+    
+    color_map = {
+        'red': col.Fore.RED,
+        'green': col.Fore.GREEN,
+        'blue': col.Fore.BLUE,
+        'yellow': col.Fore.YELLOW,
+        'magenta': col.Fore.MAGENTA,
+        'cyan': col.Fore.CYAN,
+        'white': col.Fore.WHITE
+    }
+    
+    colorama_color = color_map.get(color)
+    
+    print(f'{colorama_color}{text}{col.Style.RESET_ALL}')

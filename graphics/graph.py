@@ -39,7 +39,7 @@ def float_to_latex(x, format):
     elif (format == 'e'):
         latex_string = to_latex_scientific(x)
     else:
-        print(f'{col.Fore.RED}Error: format is not valid!{col.Style.RESET_ALL}}')
+        print(f'{col.Fore.RED}Error: format is not valid!{col.Style.RESET_ALL}')
         latex_string = ''
 
     return latex_string
