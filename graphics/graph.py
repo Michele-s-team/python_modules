@@ -23,7 +23,15 @@ epsilon_axes = 5e-2
 deg_to_rad = 2 * np.pi / 360
 
 
-# convert the floating-point number 'x' to latex in format 'format'
+'''
+convert the floating-point number 'x' to latex in format 'format'
+Input values: 
+- 'x': the floating-point number
+- 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
+
+Return values: 
+- 'latex_string': the latex string containing 'x' converted
+'''
 def float_to_latex(x, format):
     if (format == 'f'):
         latex_string = fr'${x:.3g}$'
