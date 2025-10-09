@@ -17,7 +17,7 @@ import input_output.input_output as io
 import list.column_labels as clab
 import list.list as lis
 import graphics.ticks as ti
-import text.text as text
+import text.utils as text
 
 epsilon = 1e-6
 epsilon_axes = 5e-2
