@@ -14,7 +14,7 @@ import calculus.utils as cal
 # do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
 import graphics.color_bar as cb
 import graphics.images as images
-import input_output.input_output as io
+import input_output.utils as io
 import list.column_labels as clab
 import list.utils as lis
 import graphics.ticks as ti
@@ -22,10 +22,6 @@ import text.utils as text
 
 epsilon = 1e-6
 epsilon_axes = 5e-2
-deg_to_rad = 2 * np.pi / 360
-
-
-
 
 
 def plot_3d_axis(ax, r, l, direction, scale_factor, tick_length, line_width, axis_label,

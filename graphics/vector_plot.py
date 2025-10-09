@@ -6,7 +6,7 @@ from scipy.interpolate import griddata
 import graphics.arrow as arr
 import calculus.geometry as geo
 import list.column_labels as clab
-import graphics.graph as gr
+import graphics.utils as gr
 
 
 

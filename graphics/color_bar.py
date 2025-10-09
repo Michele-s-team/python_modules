@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import graphics.graph as gr
+import graphics.utils as gr
 import graphics.ticks as ticks
 from scipy.interpolate import interp1d
 

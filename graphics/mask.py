@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib.tri import Triangulation
 
-import graphics.graph as gr
+import graphics.utils as gr
 
 '''
 return a mask for a cruve which is True outside a circle and False inside

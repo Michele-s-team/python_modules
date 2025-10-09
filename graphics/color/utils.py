@@ -1,5 +1,7 @@
 import colorama as col
 
+white = [1,1,1,1]
+
 '''
 color map to convert colors expressed as strings into colorama colors
 '''
