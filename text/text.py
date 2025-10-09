@@ -1,5 +1,6 @@
 import colorama as col
 import matplotlib as mpl
+import graphics.color.utils as color
 
 '''
 clear all labels in figure 'figure' whose text contains at least one element of 'patterns'
@@ -29,17 +30,7 @@ Input values:
 - 'color': a colorama color, such as RED
 '''
 def print_text_color(text, color):
-    
-    color_map = {
-        'red': col.Fore.RED,
-        'green': col.Fore.GREEN,
-        'blue': col.Fore.BLUE,
-        'yellow': col.Fore.YELLOW,
-        'magenta': col.Fore.MAGENTA,
-        'cyan': col.Fore.CYAN,
-        'white': col.Fore.WHITE
-    }
-    
-    colorama_color = color_map.get(color)
+        
+    colorama_color = color.color_map.get(color)
     
     print(f'{colorama_color}{text}{col.Style.RESET_ALL}')
