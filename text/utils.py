@@ -1,3 +1,4 @@
+import calculus.utils as cal
 import colorama as col
 import matplotlib as mpl
 import graphics.color.utils as color_utils
@@ -34,3 +35,24 @@ def print_text_color(text, color):
     colorama_color = color_utils.color_map.get(color)
     
     print(f'{colorama_color}{text}{col.Style.RESET_ALL}')
+
+'''
+convert the floating-point number 'x' to latex in format 'format'
+Input values: 
+- 'x': the floating-point number
+- 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
+
+Return values: 
+- 'latex_string': the latex string containing 'x' converted
+'''
+def float_to_latex(x, format):
+    
+    if (format == 'f'):
+        latex_string = fr'${x:.3g}$'
+    elif (format == 'e'):
+        latex_string = cal.to_latex_scientific(x)
+    else:
+        print_text_color('Error: format is not valid!', 'red')
+        latex_string = ''
+
+    return latex_string

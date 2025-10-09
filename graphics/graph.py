@@ -10,6 +10,7 @@ from scipy.interpolate import Rbf
 from scipy.interpolate import interp1d
 from sympy.polys.benchmarks.bench_solvers import R_165
 
+import calculus.utils as cal
 # do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
 import graphics.color_bar as cb
 import graphics.images as images
@@ -24,26 +25,7 @@ epsilon_axes = 5e-2
 deg_to_rad = 2 * np.pi / 360
 
 
-'''
-convert the floating-point number 'x' to latex in format 'format'
-Input values: 
-- 'x': the floating-point number
-- 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
 
-Return values: 
-- 'latex_string': the latex string containing 'x' converted
-'''
-def float_to_latex(x, format):
-    
-    if (format == 'f'):
-        latex_string = fr'${x:.3g}$'
-    elif (format == 'e'):
-        latex_string = to_latex_scientific(x)
-    else:
-        text.print_text_color('Error: format is not valid!', 'red')
-        latex_string = ''
-
-    return latex_string
 
 
 def plot_3d_axis(ax, r, l, direction, scale_factor, tick_length, line_width, axis_label,
@@ -61,7 +43,7 @@ def plot_3d_axis(ax, r, l, direction, scale_factor, tick_length, line_width, axi
     for tick in ticks:
         ticks_list.append([
             tick,
-            float_to_latex(r_start + (tick - r_start) / scale_factor, tick_label_format)
+            text.float_to_latex(r_start + (tick - r_start) / scale_factor, tick_label_format)
         ])
 
     plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, ticks_list, tick_length, line_width, axis_label,
@@ -199,7 +181,7 @@ def plot_2d_axis(ax, origin, length, direction, tick_length, line_width, axis_la
             ax.plot([tick, tick], [origin[1], origin[1] + tick_length], color='black', linewidth=line_width,
                     zorder=z_order)  # x-axis line
             if tick_label_format != '':
-                ax.text(tick, origin[1] - ticks_label_offset, float_to_latex(tick, tick_label_format), fontsize=font_size,
+                ax.text(tick, origin[1] - ticks_label_offset, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
                         ha='center', va='center', zorder=10)
 
         ax.text(length / 2, origin[1] - axis_label_offset, axis_label, fontsize=font_size, ha='center', va='center',
@@ -216,7 +198,7 @@ def plot_2d_axis(ax, origin, length, direction, tick_length, line_width, axis_la
             ax.plot([origin[0], origin[0] + tick_length], [tick, tick], color='black', linewidth=line_width,
                     zorder=z_order)  # x-axis line
             if tick_label_format != '':
-                ax.text(origin[0] - ticks_label_offset, tick, float_to_latex(tick, tick_label_format), fontsize=font_size,
+                ax.text(origin[0] - ticks_label_offset, tick, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
                         ha='center', va='center', zorder=10)
 
         ax.text(origin[0] - axis_label_offset, origin[1] + length / 2, axis_label, fontsize=font_size, ha='center', va='center',
@@ -597,52 +579,7 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size):
     colorbar.ax.set_yticklabels(latex_ticks, fontsize=font_size)
 
 
-# convert a floating-point number 'x' in scientific format and return the related string in latex format
-def to_latex_scientific(x):
-    formatted = "{:.1e}".format(x)  # Convert to scientific notation with 3 significant figures
-    base, exponent = formatted.split("e")  # Split into base and exponent
 
-    base = float(base)  # Convert base to float to check if it's an integer
-    exponent = int(exponent)  # Convert exponent to integer to remove leading zeros
-
-    # Convert base to int if it is a whole number
-    base_is_integer = base.is_integer()
-    if base_is_integer:
-        base = int(base)
-
-    if x != 0:
-        if exponent == 0:
-            result = r"${}$".format(base)
-        else:
-            if base_is_integer and (np.abs(base) == 1):
-                if base == 1:
-                    result = r"$10^{{{}}}$".format(exponent)
-                elif base == -1:
-                    result = r"$-10^{{{}}}$".format(exponent)
-            else:
-                result = r"${} \times 10^{{{}}}$".format(base, exponent)
-
-    else:
-        result = r"$0$"
-    return result
-
-
-def floor_base_10(x):
-    if x > 0:
-        return (10.0 ** (np.floor(np.log10(x))))
-    elif x < 0:
-        return (- 10.0 ** (np.ceil(np.log10(-x))))
-    elif x == 0:
-        return 0
-
-
-def ceil_base_10(x):
-    if x > 0:
-        return (10.0 ** (np.ceil(np.log10(x))))
-    elif x < 0:
-        return (- 10.0 ** (np.floor(np.log10(-x))))
-    elif x == 0:
-        return 0
 
 
 # remove some elements in 'list' in such a way that 'list' has no more than 'n' elements and return the result
@@ -663,7 +600,7 @@ def ticks_base_10(min, max, n):
     delta = 10 ** np.floor(np.log10(np.max([np.abs(max), np.abs(min)])))
 
     # set the list of ticks to a preliminary list containing only the lowest and highest values
-    ticks = [ceil_base_10(min), floor_base_10(max)]
+    ticks = [ceil_base_10(min), cal.floor_base_10(max)]
 
     if np.abs(max) > np.abs(min):
 
@@ -677,7 +614,7 @@ def ticks_base_10(min, max, n):
 
     else:
 
-        x = floor_base_10(min)
+        x = cal.floor_base_10(min)
         while x < max:
             if x > min:
                 ticks.append(x)
