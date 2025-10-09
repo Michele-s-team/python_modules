@@ -17,7 +17,7 @@ import input_output.input_output as io
 import list.column_labels as clab
 import list.list as lis
 import graphics.ticks as ti
-import graphics.vector_plot as vp
+import text.text as text
 
 epsilon = 1e-6
 epsilon_axes = 5e-2
@@ -34,12 +34,13 @@ Return values:
 - 'latex_string': the latex string containing 'x' converted
 '''
 def float_to_latex(x, format):
+    
     if (format == 'f'):
         latex_string = fr'${x:.3g}$'
     elif (format == 'e'):
         latex_string = to_latex_scientific(x)
     else:
-        print(f'{col.Fore.RED}Error: format is not valid!{col.Style.RESET_ALL}')
+        text.print_text_color('Error: format is not valid!', 'red')
         latex_string = ''
 
     return latex_string
