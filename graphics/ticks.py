@@ -5,7 +5,11 @@ import pandas as pd
 import proplot as pplt
 import math
 
+import calculus.utils as cal
 import list.utils as lis
+
+tick_threshold = 2e-1
+
 
 '''
 generate the ticks for a plot on an axis between a minimum and a maximum value
@@ -14,19 +18,12 @@ Input values:
 Return values:
 - a list of  ticks values
 '''
-
-tick_threshold = 2e-1
-
-
 def generate_ticks(min, max):
-
+    
     if min <= max:
-        sorted_min = min
-        sorted_max = max
+        sorted_min, sorted_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
     else:
-        sorted_min = max
-        sorted_max = min
-
+        sorted_min, sorted_max = cal.ceil_base_10(max), cal.floor_base_10(min)
 
 
     if ((sorted_min >= 0) and (sorted_max >= 0)):
