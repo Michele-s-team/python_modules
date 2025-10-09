@@ -160,6 +160,7 @@ def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, ticks_list, ax
 def plot_2d_axis(ax, r, l, direction, tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
                  ticks_label_offset, tick_label_format, font_size,
                  z_order):
+    
     if direction == "x":
 
         # ticks = ticks_base_10(r[0], r[0] + l, n_ticks)
@@ -672,9 +673,10 @@ def plot_2d_axes(ax, origin, lengths, \
                  axis_label_x, axis_label_y, axis_label_angle_x, axis_label_angle_y, \
                  axis_label_offset_x, axis_label_offset_y, ticks_label_offset_x, ticks_label_offset_y,
                  ticks_label_format_x, ticks_label_format_y, \
-                 font_size, z_order):
-    ax.set(xlim=[origin[0] - epsilon, origin[0] + lengths[0] + epsilon], \
-           ylim=[origin[1] - epsilon, origin[1] + lengths[1] + epsilon])
+                 font_size, z_order, margin=[epsilon, epsilon]):
+    
+    ax.set(xlim=[origin[0] - lengths[0] * margin[0], origin[0] + lengths[0] + lengths[0] * margin[0]], \
+           ylim=[origin[1] - lengths[1] * margin[1], origin[1] + lengths[1] + lengths[1] * margin[1]])
 
     # plot the x axis
     plot_2d_axis(ax, origin, lengths[0], "x", tick_length_x * lengths[1], line_width, \
@@ -693,14 +695,14 @@ def plot_2d_axes_label(ax, origin, lengths,
                        axis_label_x, axis_label_y, axis_label_angle_x, axis_label_angle_y, \
                        axis_label_offset_x, axis_label_offset_y, ticks_label_offset_x, ticks_label_offset_y,
                        ticks_label_format_x, ticks_label_format_y, \
-                       panel_label_font_size, font_size, z_order, plot_label, plot_label_offset):
+                       panel_label_font_size, font_size, z_order, plot_label, plot_label_offset, margin=[0, 0]):
     # plot the axes
     plot_2d_axes(ax, origin, lengths, \
                  tick_length_x, tick_length_y, line_width, \
                  axis_label_x, axis_label_y, axis_label_angle_x, axis_label_angle_y, \
                  axis_label_offset_x, axis_label_offset_y, ticks_label_offset_x, ticks_label_offset_y,
                  ticks_label_format_x, ticks_label_format_y, \
-                 font_size, z_order)
+                 font_size, z_order, margin)
 
     # draw the panel label
     ax.text(origin[0] - plot_label_offset[0] * lengths[0], origin[1] + lengths[1] + plot_label_offset[1] * lengths[1],
