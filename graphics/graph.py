@@ -1,3 +1,4 @@
+import colorama as col
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
@@ -37,6 +38,9 @@ def float_to_latex(x, format):
         latex_string = fr'${x:.3g}$'
     elif (format == 'e'):
         latex_string = to_latex_scientific(x)
+    else:
+        print(f'{col.Fore.RED}Error: format is not valid!{col.Style.RESET_ALL}}')
+        latex_string = ''
 
     return latex_string
 
