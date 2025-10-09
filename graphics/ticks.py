@@ -4,9 +4,8 @@ import os
 import pandas as pd
 import proplot as pplt
 import math
-import warnings
 
-import list.list as lis
+import list.utils as lis
 
 '''
 generate the ticks for a plot on an axis between a minimum and a maximum value
