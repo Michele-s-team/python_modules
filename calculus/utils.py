@@ -60,3 +60,19 @@ def ceil_base_10(x):
         return (- 10.0 ** (np.floor(np.log10(-x))))
     elif x == 0:
         return 0
+
+'''
+compute the round off of a number with respect to multiples of 10
+Input values: 
+- 'x': the number
+
+Output values: 
+- the rounded-off value
+'''
+def round_base_10(x):
+    if x > 0:
+        return (10.0 ** (np.round(np.log10(x))))
+    elif x < 0:
+        return (- 10.0 ** (np.round(np.log10(-x))))
+    elif x == 0:
+        return 0

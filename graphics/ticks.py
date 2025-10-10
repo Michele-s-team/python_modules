@@ -7,8 +7,9 @@ import math
 
 import calculus.utils as cal
 import list.utils as lis
+import text.utils as text
 
-tick_threshold = 2e-1
+tick_threshold = 1.0
 
 
 '''
@@ -20,16 +21,13 @@ Return values:
 '''
 def generate_ticks(min, max):
     
-    if min <= max:
-        sorted_min, sorted_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
-    else:
-        sorted_min, sorted_max = cal.ceil_base_10(max), cal.floor_base_10(min)
+    sorted_min, sorted_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
 
-
-    if ((sorted_min >= 0) and (sorted_max >= 0)):
-
-
+    if (max - min > min):
         ticks = [sorted_min, sorted_max, sorted_max/2]
+    else:
+        ticks = [min, max, cal.round_base_10((min+max)/2.0)]
+        
 
     '''
     elif ((sorted_min < 0) and (sorted_max >= 0)):
@@ -68,5 +66,7 @@ def generate_ticks(min, max):
     '''
     
     ticks = np.sort(ticks)
+    
+    return ticks
 
-    return np.sort(lis.remove_close_elements(ticks, tick_threshold * (sorted_max - sorted_min)))
+    # return np.sort(lis.remove_close_elements(ticks, tick_threshold * (sorted_max - sorted_min)))
