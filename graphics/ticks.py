@@ -21,11 +21,14 @@ Return values:
 '''
 def generate_ticks(min, max):
     
+    # compute the rounded-off values of min and max with respect to powers of 10
     rounded_min, rounded_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
 
     if (max > rounded_max/2.0):
+        # max lies in the upper half of its 'decade' -> the largest tick will be rounded_max
         ticks = [rounded_min, rounded_max, rounded_max/2]
     else:
+        # max lies in the lower half of its 'decade' -> the largest and lowest tick will be min and max themselves, and I add an intermediate ticks to display to what length an interval corresponds
         ticks = [min, max, cal.round_base_10((min+max)/2.0)]
         
 
