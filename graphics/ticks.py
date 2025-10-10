@@ -28,19 +28,10 @@ def generate_ticks(min, max):
 
     if ((sorted_min >= 0) and (sorted_max >= 0)):
 
-        n_max = math.floor(np.log10(sorted_max))
-        X_max = 10 ** (n_max - 1) * math.ceil(sorted_max / 10 ** (n_max - 1))
 
-        if sorted_min > 1:
-            n_min = math.floor(np.log10(sorted_min))
-            X_min = 10 ** n_min
+        ticks = [sorted_min, sorted_max, sorted_max/2]
 
-            ticks = [np.max([1, X_min]), X_max / 2, X_max]
-
-        else:
-            ticks = [0, X_max / 2, X_max]
-
-
+    '''
     elif ((sorted_min < 0) and (sorted_max >= 0)):
         n_min = math.floor(np.log10(abs(sorted_min)))
 
@@ -74,7 +65,8 @@ def generate_ticks(min, max):
             ticks = [0, X_min / 2, X_min]
 
 
-
+    '''
+    
     ticks = np.sort(ticks)
 
     return np.sort(lis.remove_close_elements(ticks, tick_threshold * (sorted_max - sorted_min)))
