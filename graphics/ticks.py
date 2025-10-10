@@ -21,10 +21,10 @@ Return values:
 '''
 def generate_ticks(min, max):
     
-    sorted_min, sorted_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
+    rounded_min, rounded_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
 
-    if (max - min > min):
-        ticks = [sorted_min, sorted_max, sorted_max/2]
+    if (max > rounded_max/2.0):
+        ticks = [rounded_min, rounded_max, rounded_max/2]
     else:
         ticks = [min, max, cal.round_base_10((min+max)/2.0)]
         
