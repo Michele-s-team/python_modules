@@ -135,3 +135,13 @@ def purge_list(list, n):
         i += 1
 
     return result
+
+
+'''
+remove duplicates from a list and write the result in the input variable
+Input values: 
+    - 'list', the list
+'''
+
+def remove_duplicates(a):
+    a[:] = list(set(a))

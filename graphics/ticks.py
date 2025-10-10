@@ -3,23 +3,20 @@ import numpy as np
 import os
 import pandas as pd
 import proplot as pplt
-import math
 
 import calculus.utils as cal
 import list.utils as lis
-import text.utils as text
-
-tick_threshold = 1.0
 
 
 '''
 generate the ticks for a plot on an axis between a minimum and a maximum value
 Input values: 
 - 'min', 'max': the minimal and maximal values on the axis
+- 'custom_ticks' [optional]: a set of custom ticks to add to the list of generated ticks
 Return values:
 - a list of  ticks values
 '''
-def generate_ticks(min, max):
+def generate_ticks(min, max, custom_ticks=None):
     
     # compute the rounded-off values of min and max with respect to powers of 10
     rounded_min, rounded_max = cal.floor_base_10(min), cal.ceil_base_10(max) 
@@ -29,61 +26,37 @@ def generate_ticks(min, max):
     
     ticks = []
     
+    # set the maximal value of the ticks list
     if (max > rounded_max/2.0):
+        
+        # 'max' lies in the upper half of its 'decade' -> add to ticks the upper value of the decade (because this is closer to 'max') and its mid value
         ticks.extend([rounded_max, rounded_max/2])
     else:
+        
+        # 'max' lies in the lower half of its 'decade -> add to ticks the lower value of the decade (because this is clorser to 'max')
         ticks.append(max)
         
+        
+    # set the maximal value of the ticks list, see the comments for the max
     if (min < rounded_min/2.0):
-        ticks.append(rounded_min)
+        ticks.extend([rounded_min, rounded_min/2])
     else:
         ticks.append(min)
 
     ticks.append(cal.round_base_10((min+max)/2))
-        
-
-        
-
-    '''
-    elif ((sorted_min < 0) and (sorted_max >= 0)):
-        n_min = math.floor(np.log10(abs(sorted_min)))
-
-        X_min = -10 ** (n_min - 1) * math.floor(abs(sorted_min) / 10 ** (n_min - 1))
-
-        if sorted_max > 0:
-            n_max = math.floor(np.log10(sorted_max))
-            X_max = 10 ** (n_max - 1) * math.floor(sorted_max / 10 ** (n_max - 1))
-
-            if (sorted_max > abs(sorted_min)):
-                ticks = [X_min, 0, X_max / 2, X_max]
-            else:
-                ticks = [X_max, 0, X_min / 2, X_min]
-
-        else:
-            ticks = [0, X_min / 2, X_min]
-
-
-    elif ((sorted_min < 0) and (sorted_max < 0)):
-
-        n_min = math.floor(np.log10(abs(sorted_min)))
-        X_min = -10 ** (n_min - 1) * math.ceil(abs(sorted_min) / 10 ** (n_min - 1))
-
-        if sorted_max < -1:
-            n_max = math.floor(np.log10(abs(sorted_max)))
-            X_max = -(10 ** n_max)
-
-            ticks = [np.min([-1, X_max]), X_min / 2, X_min]
-
-        else:
-            ticks = [0, X_min / 2, X_min]
-
-
-    '''
     
-    ticks = list(set(ticks))
+    # if max and min have different signs, add 0 to the ticks
+    if max * min < 0:
+        ticks.append(0)
+        
+    # if the user specified custom ticks, add them 
+    if custom_ticks is not None:
+        ticks.extend(custom_ticks)
+    
+    
+    # remove duplicates from ticks, if any, and sort ticks
+    lis.remove_duplicates(ticks)
     ticks = np.sort(ticks)
-    
     
     return ticks
 
-    # return np.sort(lis.remove_close_elements(ticks, tick_threshold * (sorted_max - sorted_min)))
