@@ -207,31 +207,38 @@ def plot_2d_axis(ax, origin, length, direction,
             
     elif scale == 'log':  
         # plot the axis in log scale 
-             
+        
+        # compute x and y ticks
+        x_ticks = ti.generate_ticks(
+            np.floor(np.emath.logn(log_base, origin[0])), 
+            np.ceil(np.emath.logn(log_base, origin[0] + length[0]))
+            )
+        y_ticks = ti.generate_ticks(
+            np.floor(np.emath.logn(log_base, origin[1])), 
+            np.ceil(np.emath.logn(log_base, origin[1] + length[1]))
+            )   
+        
+        # compute boundaries of the plot
+        x_ticks_min, x_ticks_max = min(x_ticks), max(x_ticks)
+        y_ticks_min, y_ticks_max = min(y_ticks), max(y_ticks) 
+                
         if direction == "x":
                     
-            # compute ticks
-            ticks = ti.generate_ticks(
-                np.floor(np.emath.logn(log_base, origin[0])), 
-                np.ceil(np.emath.logn(log_base, origin[0] + length[0]))
-            )   
-            
-            ticks_min, ticks_max = min(ticks), max(ticks)
-               
-            # plot the axis
-            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [axis_origin[1], axis_origin[1]], color='black', linewidth=line_width, zorder=z_order)
-            
-            # plot the ticks
-            for tick in range(round(ticks_min), round(ticks_max)):
-                ax.plot([tick, tick], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color='black', linewidth=line_width,
-                zorder=z_order) 
+            # plot the x axis
+            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
+
+            # plot the x ticks
+            for tick in range(round(x_ticks_min), round(x_ticks_max)):
+                ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length*(y_ticks_max-y_ticks_min)], color='black', linewidth=line_width,
+                        zorder=0)  # x-axis line
+                ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - (y_ticks_max-y_ticks_min)*ticks_label_offset[1], 
+                        text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                 
-                ax.text(tick, axis_origin[1] - length[1] * ticks_label_offset[1], 
-                    text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=z_order)
-            
             # plot the x axis label
-            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2, origin[1] - length[1] * axis_label_offset[1], 
-            rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=z_order)
+            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - (y_ticks_max - y_ticks_min) * axis_label_offset[1], 
+                    rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+            
+    
 
 
         
