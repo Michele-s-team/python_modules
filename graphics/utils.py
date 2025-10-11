@@ -221,11 +221,14 @@ def plot_2d_axis(ax, origin, length, direction,
         # compute boundaries of the plot
         x_ticks_min, x_ticks_max = min(x_ticks), max(x_ticks)
         y_ticks_min, y_ticks_max = min(y_ticks), max(y_ticks) 
+        
+        axis_min = min(np.emath.logn(log_base, origin[0]), round(x_ticks_min))
+        axis_max = max(np.emath.logn(log_base, origin[0] + length[0]), round(x_ticks_max))
                 
         if direction == "x":
                     
             # plot the x axis
-            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
+            ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
 
             # plot the x ticks
             for tick in range(round(x_ticks_min), round(x_ticks_max)):
