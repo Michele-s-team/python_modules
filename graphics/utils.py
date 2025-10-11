@@ -217,26 +217,25 @@ def plot_2d_axis(ax, origin, length, direction,
             np.floor(np.emath.logn(log_base, origin[1])), 
             np.ceil(np.emath.logn(log_base, origin[1] + length[1]))
             )   
-        
-        # compute boundaries of the plot
-        x_ticks_min, x_ticks_max = min(x_ticks), max(x_ticks)
-        y_ticks_min, y_ticks_max = min(y_ticks), max(y_ticks) 
-        
-                
+                        
         if direction == "x":
                     
             # plot the x axis
             ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
 
             # plot the x ticks
-            for tick in range(round(x_ticks_min), round(x_ticks_max)):
-                ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length*(y_ticks_max-y_ticks_min)], color='black', linewidth=line_width,
-                        zorder=0)  # x-axis line
-                ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - (y_ticks_max-y_ticks_min)*ticks_label_offset[1], 
-                        text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+            for tick in x_ticks:
                 
+                    if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
+                    # if the tick falls within the boundaries of the axis, plot it 
+                    
+                        ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
+                                zorder=0)  # x-axis line
+                        ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
+                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                        
             # plot the x axis label
-            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - (y_ticks_max - y_ticks_min) * axis_label_offset[1], 
+            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1], 
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
                         
         elif direction == "y":
@@ -247,13 +246,17 @@ def plot_2d_axis(ax, origin, length, direction,
                 for tick in y_ticks:
                     
                     if (tick > np.emath.logn(log_base, origin[1])) and (tick < np.emath.logn(log_base, origin[1] + length[1])):
+                        # if the tick falls within the boundaries of the axis, plot it 
                     
                         ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) +  tick_length], [tick, tick], color='black', linewidth=line_width, zorder=0) 
                         ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], tick, 
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
                 # plot the y axis label
-                ax.text(np.emath.logn(log_base, axis_origin[0]) - (x_ticks_max - x_ticks_min) * axis_label_offset[0], (y_ticks_max + y_ticks_min) / 2, rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+                ax.text(
+                    np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0], 
+                    (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1])) / 2, 
+                    rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
                         
 
 
