@@ -151,7 +151,7 @@ def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, ticks_list, ax
 '''
 plot an axis for a 2d plot
 Input values: 
-- 'origin': a twople containing the x,y coordinates of the origin of the axis
+- 'origin': a two-ple containing the x,y coordinates of the origin of the axis
 - 'length': a two-ple containing the x, y length of the origin of the axis
 - 'direction': 'x' or 'y': the direction of the axis to be drawn
 - 'line_width': the line width of the axis and ticks
@@ -163,42 +163,103 @@ Input values:
 - 'font_size': the font size
 - 'z_order': the z-order of the axis
 '''
-def plot_2d_axis(ax, origin, length, direction, tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
+def plot_2d_axis(ax, origin, length, direction, 
+                 tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
                  ticks_label_offset, tick_label_format, font_size,
-                 z_order):
+                 z_order=0, 
+                 scale='lin', log_base=10.0, axis_origin=[0, 0]):
     
-    if direction == "x":
+    if scale == 'lin':
+        # plot the axis in linear scale
+    
+        if direction == "x":
 
-        # ticks = ticks_base_10(r[0], r[0] + l, n_ticks)
-        ticks = ti.generate_ticks(origin[0], origin[0] + length)
+            # ticks = ticks_base_10(r[0], r[0] + l, n_ticks)
+            ticks = ti.generate_ticks(origin[0], origin[0] + length)
 
-        ax.plot([origin[0], origin[0] + length], [origin[1], origin[1]], color='black', linewidth=line_width, zorder=z_order)
-        for tick in ticks:
-            ax.plot([tick, tick], [origin[1], origin[1] + tick_length], color='black', linewidth=line_width,
-                    zorder=z_order)  # x-axis line
-            if tick_label_format != '':
-                ax.text(tick, origin[1] - ticks_label_offset, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
-                        ha='center', va='center', zorder=10)
+            ax.plot([origin[0], origin[0] + length], [origin[1], origin[1]], color='black', linewidth=line_width, zorder=z_order)
+            for tick in ticks:
+                ax.plot([tick, tick], [origin[1], origin[1] + tick_length], color='black', linewidth=line_width,
+                        zorder=z_order)  # x-axis line
+                if tick_label_format != '':
+                    ax.text(tick, origin[1] - ticks_label_offset, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
+                            ha='center', va='center', zorder=z_order)
 
-        ax.text(length / 2, origin[1] - axis_label_offset, axis_label, fontsize=font_size, ha='center', va='center',
-                rotation=axis_label_angle, zorder=z_order)
+            ax.text(length / 2, origin[1] - axis_label_offset, axis_label, fontsize=font_size, ha='center', va='center',
+                    rotation=axis_label_angle, zorder=z_order)
 
-    elif direction == "y":
+        elif direction == "y":
 
-        # ticks = ticks_base_10(r[1], r[1] + l, n_ticks)
-        ticks = ti.generate_ticks(origin[1], origin[1] + length)
+            # ticks = ticks_base_10(r[1], r[1] + l, n_ticks)
+            ticks = ti.generate_ticks(origin[1], origin[1] + length)
 
-        ax.plot([origin[0], origin[0]], [origin[1], origin[1] + length], color='black', linewidth=line_width, zorder=z_order)
+            ax.plot([origin[0], origin[0]], [origin[1], origin[1] + length], color='black', linewidth=line_width, zorder=z_order)
 
-        for tick in ticks:
-            ax.plot([origin[0], origin[0] + tick_length], [tick, tick], color='black', linewidth=line_width,
-                    zorder=z_order)  # x-axis line
-            if tick_label_format != '':
-                ax.text(origin[0] - ticks_label_offset, tick, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
-                        ha='center', va='center', zorder=10)
+            for tick in ticks:
+                ax.plot([origin[0], origin[0] + tick_length], [tick, tick], color='black', linewidth=line_width,
+                        zorder=z_order)  # x-axis line
+                if tick_label_format != '':
+                    ax.text(origin[0] - ticks_label_offset, tick, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
+                            ha='center', va='center', zorder=10)
 
-        ax.text(origin[0] - axis_label_offset, origin[1] + length / 2, axis_label, fontsize=font_size, ha='center', va='center',
-                rotation=axis_label_angle, zorder=z_order)
+            ax.text(origin[0] - axis_label_offset, origin[1] + length / 2, axis_label, fontsize=font_size, ha='center', va='center',
+                    rotation=axis_label_angle, zorder=z_order)
+            
+    elif scale == 'log':  
+        # plot the axis in log scale 
+        
+        # compute x and y ticks
+        x_ticks = ti.generate_ticks(
+            np.floor(np.emath.logn(log_base, origin[0])), 
+            np.ceil(np.emath.logn(log_base, origin[0] + length[0]))
+            )
+        y_ticks = ti.generate_ticks(
+            np.floor(np.emath.logn(log_base, origin[1])), 
+            np.ceil(np.emath.logn(log_base, origin[1] + length[1]))
+            )   
+        
+        # compute boundaries of the plot
+        x_ticks_min, x_ticks_max = min(x_ticks), max(x_ticks)
+        y_ticks_min, y_ticks_max = min(y_ticks), max(y_ticks) 
+        
+        axis_min = min(np.emath.logn(log_base, origin[0]), round(x_ticks_min))
+        axis_max = max(np.emath.logn(log_base, origin[0] + length[0]), round(x_ticks_max))
+                
+        if direction == "x":
+                    
+            # plot the x axis
+            ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
+
+            # plot the x ticks
+            for tick in range(round(x_ticks_min), round(x_ticks_max)):
+                ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length*(y_ticks_max-y_ticks_min)], color='black', linewidth=line_width,
+                        zorder=0)  # x-axis line
+                ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - (y_ticks_max-y_ticks_min)*ticks_label_offset[1], 
+                        text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                
+            # plot the x axis label
+            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - (y_ticks_max - y_ticks_min) * axis_label_offset[1], 
+                    rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+                        
+        elif direction == "y":
+            
+                ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], [y_ticks_min, y_ticks_max], color='black', linewidth=line_width, zorder=0)
+
+                # plot the y ticks 
+                for tick in y_ticks:
+                    ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) +  tick_length], [tick, tick], color='black', linewidth=line_width, zorder=0) 
+                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], tick, 
+                            text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                    
+                # plot the y axis label
+                ax.text(np.emath.logn(log_base, axis_origin[0]) - (x_ticks_max - x_ticks_min) * axis_label_offset[0], (y_ticks_max + y_ticks_min) / 2, rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+                        
+
+
+        
+        
+
+
 
 
 # set the values of 'grid' to 'value' in the disk centered at cr and with radius r, in such a way that they are not plotted and the disk is left blank
