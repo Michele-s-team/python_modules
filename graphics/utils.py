@@ -167,7 +167,7 @@ def plot_2d_axis(ax, origin, length, direction,
                  tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
                  ticks_label_offset, tick_label_format, font_size,
                  z_order=0, 
-                 scale='lin', log_base=10.0, axis_origin=[0, 0]):
+                 scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0):
     
     if scale == 'lin':
         # plot the axis in linear scale
@@ -224,8 +224,9 @@ def plot_2d_axis(ax, origin, length, direction,
             ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
 
             # plot the x ticks
-            for tick in x_ticks:
+            for tick in range(round(np.emath.logn(log_base, origin[0])), round(np.emath.logn(log_base, origin[0]+length[0]))):
                 
+                    # plot the major tick
                     if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
                     # if the tick falls within the boundaries of the axis, plot it 
                     
@@ -233,6 +234,19 @@ def plot_2d_axis(ax, origin, length, direction,
                                 zorder=0)  # x-axis line
                         ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                        
+                    # plot the minor ticks
+                    for i in range(log_base-1):
+                        
+                            minor_tick = np.emath.logn(log_base, log_base**(tick-1) * (i+1))
+                            
+                            if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
+
+                                ax.plot(
+                                    [minor_tick, minor_tick], 
+                                    [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
+                                    zorder=0)  # x-axis line
+                        
                         
             # plot the x axis label
             ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1], 
@@ -243,7 +257,7 @@ def plot_2d_axis(ax, origin, length, direction,
                 ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], [np.emath.logn(log_base, origin[1]), np.emath.logn(log_base, origin[1] + length[1])], color='black', linewidth=line_width, zorder=0)
 
                 # plot the y ticks 
-                for tick in y_ticks:
+                for tick in range(round(np.emath.logn(log_base, origin[1])), round(np.emath.logn(log_base, origin[1]+length[1]))):
                     
                     if (tick > np.emath.logn(log_base, origin[1])) and (tick < np.emath.logn(log_base, origin[1] + length[1])):
                         # if the tick falls within the boundaries of the axis, plot it 
