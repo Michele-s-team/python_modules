@@ -151,21 +151,27 @@ def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axi
 '''
 plot an axis for a 2d plot
 Input values: 
-- 'origin': a two-ple containing the x,y coordinates of the origin of the axis
-- 'length': a two-ple containing the x, y length of the origin of the axis
-- 'direction': 'x' or 'y': the direction of the axis to be drawn
-- 'line_width': the ligne width of the axis and ticks
-- 'axis_label': the label of the axis, e..g, 'x'
-- 'axis_label_offset':  offset of the axis label with respect to the axis
-- 'axis_label_angle': the rotation angle of the axis label
-- 'tick_label_offset': offset of the ticks labels
-- 'tick_label_format': the format of the ticks label numbers, either floating point ('f') or exponential ('e')
-- 'font_size': the font size
-- 'z_order': the z-order of the axis
+    - 'origin': a two-ple containing the x,y coordinates of the origin of the axis
+    - 'length': a two-ple containing the x, y length of the origin of the axis
+    - 'direction': 'x' or 'y': the direction of the axis to be drawn
+    - 'line_width': the ligne width of the axis and ticks
+    - 'axis_label': the label of the axis, e..g, 'x'
+    - 'axis_label_offset':  offset of the axis label with respect to the axis
+    - 'axis_label_angle': the rotation angle of the axis label
+    - 'tick_label_offset': offset of the ticks labels
+    - 'tick_label_format': the format of the ticks label numbers, either floating point ('f') or exponential ('e')
+    - 'tick_label_angle': the angle of rotation for the labels of the ticks
+    - 'font_size': the font size
+    - 'z_order': the z-order of the axis
+    - 'scale' [optional]: the scale of the axis, 'lin' or 'log'
+    - 'log_base' [optional]: the basis of the log for logarithmic axes
+    - 'axis_origin' [optional]: the origin of the axis; for an 'y' axis, by varying axis_origin[0]  one shifts the y axis in the left-right direction of the plot, and similarly for axis_origin[1]
+    - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
 '''
 def plot_2d_axis(ax, origin, length, direction, 
                  tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
-                 tick_label_offset, tick_label_format, font_size,
+                 tick_label_offset, tick_label_format, tick_label_angle, 
+                 font_size,
                  z_order=0, 
                  scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0):
     
@@ -183,9 +189,10 @@ def plot_2d_axis(ax, origin, length, direction,
                         zorder=z_order)  
                 if tick_label_format[0] != '':
                     ax.text(tick, axis_origin[1] - tick_label_offset[1], text.float_to_latex(tick, tick_label_format[0]), fontsize=font_size,
-                            ha='center', va='center', zorder=z_order)
+                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
 
-            ax.text(origin[0] + length[0] / 2, axis_origin[1] - axis_label_offset[1], rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
+            ax.text(origin[0] + length[0] / 2, axis_origin[1] - axis_label_offset[1], rf'${axis_label}$', 
+                    fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
             
 
@@ -201,9 +208,10 @@ def plot_2d_axis(ax, origin, length, direction,
                         zorder=z_order)  
                 if tick_label_format[1] != '':
                     ax.text(axis_origin[0] - tick_label_offset[0], tick, text.float_to_latex(tick, tick_label_format[1]), fontsize=font_size,
-                            ha='center', va='center', zorder=10)
+                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
 
-            ax.text(axis_origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
+            ax.text(axis_origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', 
+                    fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
             
     elif scale == 'log':  
