@@ -145,3 +145,24 @@ Input values:
 
 def remove_duplicates(a):
     a[:] = list(set(a))
+    
+'''
+Find the  element in a list which is closest to a value
+Input values: 
+    - 'list': the list
+    - 'value': the value
+    
+Return values: 
+    - the closest element 
+'''
+def closest_element(list, value):
+    
+    diff = abs(list[0]-value)
+    result = list[0]
+    
+    for i in range(1, len(list)): 
+        if abs(list[i]-value) < diff: 
+            result = list[i]            
+
+    return result
+    
