@@ -174,35 +174,33 @@ def plot_2d_axis(ax, origin, length, direction,
     
         if direction == "x":
 
-            # ticks = ticks_base_10(r[0], r[0] + l, n_ticks)
-            ticks = ti.generate_ticks(origin[0], origin[0] + length)
+            ticks = ti.generate_ticks(origin[0], origin[0] + length[0])
 
-            ax.plot([origin[0], origin[0] + length], [origin[1], origin[1]], color='black', linewidth=line_width, zorder=z_order)
+            ax.plot([origin[0], origin[0] + length[0]], [origin[1], origin[1]], color='black', linewidth=line_width, zorder=z_order)
             for tick in ticks:
-                ax.plot([tick, tick], [origin[1], origin[1] + tick_length], color='black', linewidth=line_width,
-                        zorder=z_order)  # x-axis line
-                if tick_label_format != '':
-                    ax.text(tick, origin[1] - ticks_label_offset, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
+                ax.plot([tick, tick], [origin[1], origin[1] + tick_length * length[1]], color='black', linewidth=line_width,
+                        zorder=z_order)  
+                if tick_label_format[0] != '':
+                    ax.text(tick, origin[1] - ticks_label_offset[1], text.float_to_latex(tick, tick_label_format[0]), fontsize=font_size,
                             ha='center', va='center', zorder=z_order)
 
-            ax.text(length / 2, origin[1] - axis_label_offset, axis_label, fontsize=font_size, ha='center', va='center',
+            ax.text(length[0] / 2, origin[1] - axis_label_offset[1], rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
 
         elif direction == "y":
 
-            # ticks = ticks_base_10(r[1], r[1] + l, n_ticks)
-            ticks = ti.generate_ticks(origin[1], origin[1] + length)
+            ticks = ti.generate_ticks(origin[1], origin[1] + length[1])
 
-            ax.plot([origin[0], origin[0]], [origin[1], origin[1] + length], color='black', linewidth=line_width, zorder=z_order)
+            ax.plot([origin[0], origin[0]], [origin[1], origin[1] + length[1]], color='black', linewidth=line_width, zorder=z_order)
 
             for tick in ticks:
-                ax.plot([origin[0], origin[0] + tick_length], [tick, tick], color='black', linewidth=line_width,
-                        zorder=z_order)  # x-axis line
-                if tick_label_format != '':
-                    ax.text(origin[0] - ticks_label_offset, tick, text.float_to_latex(tick, tick_label_format), fontsize=font_size,
+                ax.plot([origin[0], origin[0] + tick_length * length[0]], [tick, tick], color='black', linewidth=line_width,
+                        zorder=z_order)  
+                if tick_label_format[1] != '':
+                    ax.text(origin[0] - ticks_label_offset[0], tick, text.float_to_latex(tick, tick_label_format[1]), fontsize=font_size,
                             ha='center', va='center', zorder=10)
 
-            ax.text(origin[0] - axis_label_offset, origin[1] + length / 2, axis_label, fontsize=font_size, ha='center', va='center',
+            ax.text(origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
             
     elif scale == 'log':  
