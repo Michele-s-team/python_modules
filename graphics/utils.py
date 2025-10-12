@@ -246,26 +246,37 @@ def plot_2d_axis(ax, origin, length, direction,
                                     [minor_tick, minor_tick], 
                                     [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
                                     zorder=0)  
-                     
-                    if n_plotted_ticks == 0:
-                    # no ticks have been plotted: plot an extra tick that is the closest, among y_ticks, to the mid value of the axis values to plot at least one tick
+                
+            if n_plotted_ticks == 0:
+                # no ticks have been plotted: plot an extra tick that is the closest, among y_ticks, to the mid value of the axis values to plot at least one tick
+            
+                extra_tick = lis.closest_element(x_ticks, 
+                                            (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
+                
+                x_ticks.append(extra_tick)
+                
+                ax.plot([extra_tick, extra_tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
+                        zorder=0)  
+                ax.text(extra_tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
+                        text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                
+                if (extra_tick < (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2):
+                    # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[0] + length[0])
+
+                    axis_min = extra_tick
+                    axis_max = np.emath.logn(log_base, origin[0] + length[0])
+                else: 
+                    # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[0])
+
+                    axis_min = np.emath.logn(log_base, origin[0])
+                    axis_max = extra_tick
                     
-                        tick = lis.closest_element(x_ticks, 
-                                                   (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
-                        
-                        x_ticks.append(tick)
-                        
-                        ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
-                                zorder=0)  
-                        ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
-                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
-                        
-         
-                        
-            axis_min = min(min(x_ticks), np.emath.logn(log_base, origin[0]))
-            axis_max = max(max(x_ticks), np.emath.logn(log_base, origin[0] + length[0]))
-                     
-                        
+            else: 
+                # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])
+                axis_min = np.emath.logn(log_base, origin[0])
+                axis_max = np.emath.logn(log_base, origin[0] + length[0])
+
+  
             # plot the x axis
             ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
                         
@@ -308,20 +319,34 @@ def plot_2d_axis(ax, origin, length, direction,
                 if n_plotted_ticks == 0:
                     # no ticks have been plotted: plot an extra tick that is the closest, among x_ticks, to the mid value of the axis values to plot at least one tick
                     
-                        tick = lis.closest_element(y_ticks, 
-                                                   (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
+                    extra_tick = lis.closest_element(y_ticks, 
+                                                (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
+                    
+                    y_ticks.append(extra_tick)
+                    
+                    ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
+                            [extra_tick, extra_tick], 
+                            color='black', linewidth=line_width, zorder=0) 
+                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], extra_tick, 
+                            text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
-                        y_ticks.append(tick)
+                    if (extra_tick < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
+                        # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[1] + length[1])
+
+                        axis_min = extra_tick
+                        axis_max = np.emath.logn(log_base, origin[1] + length[1])
+                    else: 
+                        # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[1])
+
+                        axis_min = np.emath.logn(log_base, origin[1])
+                        axis_max = extra_tick
                         
-                        ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
-                                [tick, tick], 
-                                color='black', linewidth=line_width, zorder=0) 
-                        ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], tick, 
-                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
-                        
-                axis_min = min(min(y_ticks), np.emath.logn(log_base, origin[1]))
-                axis_max = max(max(y_ticks), np.emath.logn(log_base, origin[1] + length[1]))
-                
+                else: 
+                    # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[1]), np.emath.logn(log_base, origin[1] + length[1])
+                    
+                    axis_min = np.emath.logn(log_base, origin[1])
+                    axis_max = np.emath.logn(log_base, origin[1] + length[1])
+
                 # plot the y axis
                 ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], 
                         [axis_min, axis_max], color='black', linewidth=line_width, zorder=0)
