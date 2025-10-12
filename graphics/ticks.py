@@ -48,7 +48,6 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
         else:
             ticks.append(min)
 
-        ticks.append(cal.round_base_10((min+max)/2))
         
         # if max and min have different signs, add 0 to the ticks
         if max * min < 0:
@@ -58,6 +57,12 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
         if custom_ticks is not None:
             ticks.extend(custom_ticks)
         
+        
+        if len(ticks) <= 2:
+            # there are only two ticks -> add the tick in the middle for clarity 
+            
+            ticks.append((min+max)/2)
+
         
         # remove duplicates from ticks, if any, and sort ticks
         lis.remove_duplicates(ticks)

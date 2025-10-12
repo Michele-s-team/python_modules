@@ -154,7 +154,7 @@ Input values:
 - 'origin': a two-ple containing the x,y coordinates of the origin of the axis
 - 'length': a two-ple containing the x, y length of the origin of the axis
 - 'direction': 'x' or 'y': the direction of the axis to be drawn
-- 'line_width': the line width of the axis and ticks
+- 'line_width': the ligne width of the axis and ticks
 - 'axis_label': the label of the axis, e..g, 'x'
 - 'axis_label_offset':  offset of the axis label with respect to the axis
 - 'axis_label_angle': the rotation angle of the axis label
@@ -165,7 +165,7 @@ Input values:
 '''
 def plot_2d_axis(ax, origin, length, direction, 
                  tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
-                 ticks_label_offset, tick_label_format, font_size,
+                 tick_label_offset, tick_label_format, font_size,
                  z_order=0, 
                  scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0):
     
@@ -176,31 +176,34 @@ def plot_2d_axis(ax, origin, length, direction,
 
             ticks = ti.generate_ticks(origin[0], origin[0] + length[0])
 
-            ax.plot([origin[0], origin[0] + length[0]], [origin[1], origin[1]], color='black', linewidth=line_width, zorder=z_order)
+            ax.plot([origin[0], origin[0] + length[0]], [axis_origin[1], axis_origin[1]], color='black', linewidth=line_width, zorder=z_order)
+            
             for tick in ticks:
-                ax.plot([tick, tick], [origin[1], origin[1] + tick_length * length[1]], color='black', linewidth=line_width,
+                ax.plot([tick, tick], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color='black', linewidth=line_width,
                         zorder=z_order)  
                 if tick_label_format[0] != '':
-                    ax.text(tick, origin[1] - ticks_label_offset[1], text.float_to_latex(tick, tick_label_format[0]), fontsize=font_size,
+                    ax.text(tick, axis_origin[1] - tick_label_offset[1], text.float_to_latex(tick, tick_label_format[0]), fontsize=font_size,
                             ha='center', va='center', zorder=z_order)
 
-            ax.text(length[0] / 2, origin[1] - axis_label_offset[1], rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
+            ax.text(origin[0] + length[0] / 2, axis_origin[1] - axis_label_offset[1], rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
+            
+
 
         elif direction == "y":
 
             ticks = ti.generate_ticks(origin[1], origin[1] + length[1])
 
-            ax.plot([origin[0], origin[0]], [origin[1], origin[1] + length[1]], color='black', linewidth=line_width, zorder=z_order)
+            ax.plot([axis_origin[0], axis_origin[0]], [origin[1], origin[1] + length[1]], color='black', linewidth=line_width, zorder=z_order)
 
             for tick in ticks:
-                ax.plot([origin[0], origin[0] + tick_length * length[0]], [tick, tick], color='black', linewidth=line_width,
+                ax.plot([axis_origin[0], axis_origin[0] + tick_length * length[0]], [tick, tick], color='black', linewidth=line_width,
                         zorder=z_order)  
                 if tick_label_format[1] != '':
-                    ax.text(origin[0] - ticks_label_offset[0], tick, text.float_to_latex(tick, tick_label_format[1]), fontsize=font_size,
+                    ax.text(axis_origin[0] - tick_label_offset[0], tick, text.float_to_latex(tick, tick_label_format[1]), fontsize=font_size,
                             ha='center', va='center', zorder=10)
 
-            ax.text(origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
+            ax.text(axis_origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
             
     elif scale == 'log':  
@@ -226,7 +229,7 @@ def plot_2d_axis(ax, origin, length, direction,
                     
                         ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
                                 zorder=0)  
-                        ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
+                        ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
                     n_plotted_ticks += 1
@@ -255,7 +258,7 @@ def plot_2d_axis(ax, origin, length, direction,
                 
                 ax.plot([extra_tick, extra_tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
                         zorder=0)  
-                ax.text(extra_tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
+                ax.text(extra_tick, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
                         text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                 
                 if (extra_tick < (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2):
@@ -296,7 +299,7 @@ def plot_2d_axis(ax, origin, length, direction,
                         ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
                                 [tick, tick], 
                                 color='black', linewidth=line_width, zorder=0) 
-                        ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], tick, 
+                        ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], tick, 
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
                         n_plotted_ticks += 1
@@ -325,7 +328,7 @@ def plot_2d_axis(ax, origin, length, direction,
                     ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
                             [extra_tick, extra_tick], 
                             color='black', linewidth=line_width, zorder=0) 
-                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], extra_tick, 
+                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], extra_tick, 
                             text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
                     if (extra_tick < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
