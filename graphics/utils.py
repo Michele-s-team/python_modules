@@ -185,6 +185,7 @@ def plot_2d_axis(ax, origin, length, direction,
             ax.plot([origin[0], origin[0] + length[0]], [axis_origin[1], axis_origin[1]], color='black', linewidth=line_width, zorder=z_order)
             
             for tick in ticks:
+                
                 ax.plot([tick, tick], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color='black', linewidth=line_width,
                         zorder=z_order)  
                 if tick_label_format[0] != '':
@@ -235,10 +236,15 @@ def plot_2d_axis(ax, origin, length, direction,
                     if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
                     # if the tick falls within the boundaries of the axis, plot it 
                     
+                        '''
                         ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
                                 zorder=0)  
+                        
                         ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
-                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=0)
+                        '''
+                        
+                        ti.plot_tick(ax, 'x', tick, tick_length, tick_label_offset, origin, length, axis_origin, log_base, font_size, z_order, 'black', line_width, 'log')
                         
                     n_plotted_ticks += 1
 

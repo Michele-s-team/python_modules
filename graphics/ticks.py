@@ -6,6 +6,7 @@ import proplot as pplt
 
 import calculus.utils as cal
 import list.utils as lis
+import text.utils as text
 
 
 '''
@@ -74,3 +75,24 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
     
     return ticks
 
+def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, 
+              origin, length, axis_origin, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin'):
+    
+    if scale == 'lin':
+        
+        None
+        
+        
+    elif scale == 'log':
+        
+        if axis_direction == 'x':
+        
+            ax.plot([value, value], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
+                                    zorder=z_order)  
+                            
+            ax.text(value, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
+                                    text.float_to_latex(log_base**value, 'e'), fontsize=font_size, ha='center', va='center', zorder=z_order)
+            
+        elif axis_direction == 'y':
+            
+            None
