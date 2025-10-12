@@ -213,9 +213,11 @@ def plot_2d_axis(ax, origin, length, direction,
         y_ticks = ti.generate_ticks(origin[1], origin[1]+length[1], scale='log', log_base=log_base)
                         
         if direction == "x":
+            
+            # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
+            n_plotted_ticks = 0
                     
-            # plot the x axis
-            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
+         
 
             # plot the x ticks
             for tick in x_ticks:
@@ -229,6 +231,9 @@ def plot_2d_axis(ax, origin, length, direction,
                         ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
+                    n_plotted_ticks += 1
+
+                        
                     # plot the minor ticks
                     for i in range(log_base-1):
                         
@@ -241,7 +246,27 @@ def plot_2d_axis(ax, origin, length, direction,
                                     [minor_tick, minor_tick], 
                                     [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
                                     zorder=0)  
+                     
+                    if n_plotted_ticks == 0:
+                    # no ticks have been plotted: plot an extra tick that is the closest, among y_ticks, to the mid value of the axis values to plot at least one tick
+                    
+                        tick = lis.closest_element(x_ticks, 
+                                                   (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
                         
+                        x_ticks.append(tick)
+                        
+                        ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color='black', linewidth=line_width,
+                                zorder=0)  
+                        ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - ticks_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
+                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                        
+         
+                        
+ 
+                     
+                        
+            # plot the x axis
+            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
                         
             # plot the x axis label
             ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1], 
@@ -285,15 +310,20 @@ def plot_2d_axis(ax, origin, length, direction,
                         tick = lis.closest_element(y_ticks, 
                                                    (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
                         
+                        y_ticks.append(tick)
+                        
                         ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
                                 [tick, tick], 
                                 color='black', linewidth=line_width, zorder=0) 
                         ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * ticks_label_offset[0], tick, 
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         
-                   
+                axis_min = min(min(y_ticks), np.emath.logn(log_base, origin[1]))
+                axis_max = max(max(y_ticks), np.emath.logn(log_base, origin[1] + length[1]))
+                
                 # plot the y axis
-                ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], [np.emath.logn(log_base, origin[1]), np.emath.logn(log_base, origin[1] + length[1])], color='black', linewidth=line_width, zorder=0)
+                ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], 
+                        [axis_min, axis_max], color='black', linewidth=line_width, zorder=0)
 
                     
                 # plot the y axis label

@@ -65,7 +65,7 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
         
     elif scale=='log':
         
-         ticks = range(round(np.emath.logn(log_base, min)), round(np.emath.logn(log_base, max))+1)
+         ticks = [i for i in range(round(np.emath.logn(log_base, min)), round(np.emath.logn(log_base, max))+1)]
     
     return ticks
 
