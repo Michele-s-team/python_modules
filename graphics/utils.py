@@ -209,8 +209,8 @@ def plot_2d_axis(ax, origin, length, direction,
         # plot the axis in log scale 
         
         # compute x and y ticks
-        x_ticks = range(round(np.emath.logn(log_base, origin[0])), round(np.emath.logn(log_base, origin[0]+length[0]))+1)
-        y_ticks = range(round(np.emath.logn(log_base, origin[1])), round(np.emath.logn(log_base, origin[1]+length[1]))+1)
+        x_ticks = ti.generate_ticks(origin[0], origin[0]+length[0], scale='log', log_base=log_base)
+        y_ticks = ti.generate_ticks(origin[1], origin[1]+length[1], scale='log', log_base=log_base)
                         
         if direction == "x":
                     
