@@ -262,11 +262,12 @@ def plot_2d_axis(ax, origin, length, direction,
                         
          
                         
- 
+            axis_min = min(min(x_ticks), np.emath.logn(log_base, origin[0]))
+            axis_max = max(max(x_ticks), np.emath.logn(log_base, origin[0] + length[0]))
                      
                         
             # plot the x axis
-            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
+            ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color='black', linewidth=line_width, zorder=0)
                         
             # plot the x axis label
             ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1], 
