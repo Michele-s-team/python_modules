@@ -94,5 +94,9 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset,
                                     text.float_to_latex(log_base**value, 'e'), fontsize=font_size, ha='center', va='center', zorder=z_order)
             
         elif axis_direction == 'y':
+                
+            ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], [value, value], 
+            color=color, linewidth=line_width, zorder=z_order) 
             
-            None
+            ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value, 
+                text.float_to_latex(log_base**value, 'e'), fontsize=font_size, ha='center', va='center', zorder=z_order)
