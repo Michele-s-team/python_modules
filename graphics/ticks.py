@@ -84,6 +84,7 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_la
             
             ax.plot([value, value], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color=color, linewidth=line_width,
                         zorder=z_order)  
+            
             if tick_label_format[0] != '':
                     ax.text(value, axis_origin[1] - tick_label_offset[1], 
                             text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
@@ -91,7 +92,12 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_la
             
         elif axis_direction == 'y':
             
-            None
+            ax.plot([axis_origin[0], axis_origin[0] + tick_length * length[0]], [value, value], color=color, linewidth=line_width,
+                        zorder=z_order)  
+            
+            if tick_label_format[1] != '':
+                    ax.text(axis_origin[0] - tick_label_offset[0], value, text.float_to_latex(value, tick_label_format[1]), fontsize=font_size,
+                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
         
         
     elif scale == 'log':
@@ -102,7 +108,7 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_la
                                     zorder=z_order)  
                             
             ax.text(value, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
-                                    text.float_to_latex(log_base**value, 'e'), fontsize=font_size, ha='center', va='center', zorder=z_order)
+                                    text.float_to_latex(log_base**value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order)
             
         elif axis_direction == 'y':
                 
@@ -110,4 +116,4 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_la
             color=color, linewidth=line_width, zorder=z_order) 
             
             ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value, 
-                text.float_to_latex(log_base**value, 'e'), fontsize=font_size, ha='center', va='center', zorder=z_order)
+                text.float_to_latex(log_base**value, tick_label_format[1]), fontsize=font_size, ha='center', va='center', zorder=z_order)

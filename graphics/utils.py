@@ -210,11 +210,15 @@ def plot_2d_axis(ax, origin, length, direction,
 
             for tick in ticks:
                 
+                '''
                 ax.plot([axis_origin[0], axis_origin[0] + tick_length * length[0]], [tick, tick], color=color, linewidth=line_width,
                         zorder=z_order)  
                 if tick_label_format[1] != '':
                     ax.text(axis_origin[0] - tick_label_offset[0], tick, text.float_to_latex(tick, tick_label_format[1]), fontsize=font_size,
-                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
+                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)         
+                '''
+                
+                ti.plot_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
 
             ax.text(axis_origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', 
                     fontsize=font_size, ha='center', va='center',
