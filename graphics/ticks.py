@@ -75,6 +75,28 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
     
     return ticks
 
+
+'''
+plot a tick on an axis
+Input values: 
+    - 'ax': the matplotlib axis
+    - 'axis_direction': 'x' or 'y', the direction of the axis
+    - 'value': the numerical value of the tick
+    - 'tick_length': a list with two entries, one for 'x' and one for 'y'. The length of the tick relative to the max-min span of the relative axis. 
+    - 'tick_label_offset':  a list with two entries, one for 'x' and one for 'y'. The offset of the tick with respect to the axis, relative to the max-min span of the relative axis. 
+    - 'tick_label_format': 'f' or 'e', the numerical format of the tick
+    - 'origin': a list with two entries, one for 'x' and one for 'y', the starting position of the axis
+    - 'length': a list with two entries, one for 'x' and one for 'y', the length of the axis
+    - 'axis_origin': the origin of the axis; for an 'y' axis, by varying axis_origin[0]  one shifts the y axis in the left-right direction of the plot, and similarly for axis_origin[1]
+    - 'log_base' [optional]: the base of the logarithm for log-scale axes
+    - 'font_size' [optional]: the font size
+    - 'z_order' [optional] : the z order
+    - 'color' [optional]: the tick color
+    - 'line_width' [optional]: the line width of ticks
+    - 'scale' [optional]: the scale of the axis, either 'lin' or 'log'
+    - 'tick_label_angle' [optional]: the rotation angle with which the tick labels will be drawn
+'''
+
 def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
               origin, length, axis_origin, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin', tick_label_angle=0):
     
