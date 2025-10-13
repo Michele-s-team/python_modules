@@ -75,12 +75,23 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
     
     return ticks
 
-def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, 
-              origin, length, axis_origin, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin'):
+def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
+              origin, length, axis_origin, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin', tick_label_angle=0):
     
     if scale == 'lin':
         
-        None
+        if axis_direction == 'x':
+            
+            ax.plot([value, value], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color=color, linewidth=line_width,
+                        zorder=z_order)  
+            if tick_label_format[0] != '':
+                    ax.text(value, axis_origin[1] - tick_label_offset[1], 
+                            text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
+            
+            
+        elif axis_direction == 'y':
+            
+            None
         
         
     elif scale == 'log':
