@@ -167,6 +167,7 @@ Input values:
     - 'log_base' [optional]: the basis of the log for logarithmic axes
     - 'axis_origin' [optional]: the origin of the axis; for an 'y' axis, by varying axis_origin[0]  one shifts the y axis in the left-right direction of the plot, and similarly for axis_origin[1]
     - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
+    - 'custom_ticks' [optional]: a list of custom ticks to be plotted on top of the automated ones, in the form [[custom_tick_x_0, custom_tick_x_1, ...], [custom_tick_y_0, custom_tick_y_1, ...]]
 '''
 def plot_2d_axis(ax, origin, length, direction, 
                  tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
