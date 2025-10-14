@@ -173,7 +173,7 @@ def plot_2d_axis(ax, origin, length, direction,
                  tick_label_offset, tick_label_format, tick_label_angle, 
                  font_size,
                  z_order=0, 
-                 scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0, color='black'):
+                 scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0, color='black', custom_ticks=[None, None]):
     
     if scale == 'lin':
         # plot the axis in linear scale
@@ -304,6 +304,26 @@ def plot_2d_axis(ax, origin, length, direction,
                 axis_min = np.emath.logn(log_base, origin[0])
                 axis_max = np.emath.logn(log_base, origin[0] + length[0])
 
+
+            # plot the x custom ticks
+            if len(custom_ticks[0]) > 0: 
+                # custom ticks have been specified when plot_2d_axis has been called -> draw them
+                
+                for tick in custom_ticks[0]:
+                    # cycle through the custom ticks on the x axis
+                    
+                    x_ticks.append(tick)
+                    
+                    # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
+                    if axis_min > np.emath.logn(log_base, tick):
+                        axis_min = np.emath.logn(log_base, tick)
+                        
+                    if axis_max < np.emath.logn(log_base, tick):
+                        axis_max = np.emath.logn(log_base, tick)
+                                     
+                    #plot the custom tick    
+                    ti.plot_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+  
   
             # plot the x axis
             ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color=color, linewidth=line_width, zorder=0)
@@ -383,6 +403,25 @@ def plot_2d_axis(ax, origin, length, direction,
                     
                     axis_min = np.emath.logn(log_base, origin[1])
                     axis_max = np.emath.logn(log_base, origin[1] + length[1])
+                    
+                # plot the x custom ticks
+                if len(custom_ticks[1]): 
+                    # custom ticks have been specified when plot_2d_axis has been called -> draw them
+                    
+                    for tick in custom_ticks[1]:
+                        # cycle through the custom ticks on the x axis
+                        
+                        y_ticks.append(tick)
+                        
+                        # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
+                        if axis_min > np.emath.logn(log_base, tick):
+                            axis_min = np.emath.logn(log_base, tick)
+                            
+                        if axis_max < np.emath.logn(log_base, tick):
+                            axis_max = np.emath.logn(log_base, tick)
+                                        
+                        #plot the custom tick    
+                        ti.plot_tick(ax, 'y', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
 
                 # plot the y axis
                 ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], 
