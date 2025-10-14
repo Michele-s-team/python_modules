@@ -173,7 +173,7 @@ def plot_2d_axis(ax, origin, length, direction,
                  tick_label_offset, tick_label_format, tick_label_angle, 
                  font_size,
                  z_order=0, 
-                 scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0, color='black', custom_ticks=[None, None]):
+                 scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0, color='black', custom_ticks=[[], []]):
     
     if scale == 'lin':
         # plot the axis in linear scale
