@@ -863,7 +863,7 @@ the offset on axes are relative to the axes' lengths
 
 def plot_2d_axes(ax, origin, lengths, \
                  tick_length, line_width, \
-                 axis_label, axis_label_angle_x, axis_label_angle_y, \
+                 axis_label, axis_label_angle, \
                  axis_label_offset_x, axis_label_offset_y, tick_label_offset_x, tick_label_offset_y,
                  tick_label_format,
                  font_size, z_order, margin=[epsilon, epsilon], axis_origin=[0, 0], tick_label_angle=[0, 0]):
@@ -873,26 +873,26 @@ def plot_2d_axes(ax, origin, lengths, \
 
     # plot the x axis
     plot_2d_axis(ax, origin, lengths, "x", tick_length, line_width, \
-                 axis_label[0], lis.multiply(axis_label_offset_x, lengths), axis_label_angle_x, lis.multiply(tick_label_offset_x, lengths),
+                 axis_label[0], lis.multiply(axis_label_offset_x, lengths), axis_label_angle[0], lis.multiply(tick_label_offset_x, lengths),
                  tick_label_format, tick_label_angle[0], font_size, z_order, axis_origin=axis_origin)
 
     # plot the y axis
     plot_2d_axis(ax, origin, lengths, "y", tick_length, line_width, \
-                 axis_label[1], lis.multiply(axis_label_offset_y, lengths), axis_label_angle_y, lis.multiply(tick_label_offset_y, lengths),
+                 axis_label[1], lis.multiply(axis_label_offset_y, lengths), axis_label_angle[1], lis.multiply(tick_label_offset_y, lengths),
                  tick_label_format, tick_label_angle[1], font_size, z_order, axis_origin=axis_origin)
 
 
 # call plot_2d_axes and draw on top of the axes a plot label 'plot_label' on the top-left corner of the plot,  whose relative displacement with respect to the plot dimensions is plot_label_offset
 def plot_2d_axes_label(ax, origin, lengths,
                        tick_length, line_width, \
-                       axis_label, axis_label_angle_x, axis_label_angle_y, \
+                       axis_label, axis_label_angle, \
                        axis_label_offset_x, axis_label_offset_y, tick_label_offset_x, tick_label_offset_y,
                        tick_label_format, \
                        panel_label_font_size, font_size, z_order, plot_label, plot_label_offset, margin=[0, 0], axis_origin=[0, 0], tick_label_angle=[0, 0]):
     # plot the axes
     plot_2d_axes(ax, origin, lengths, \
                  tick_length, line_width, \
-                 axis_label, axis_label_angle_x, axis_label_angle_y, \
+                 axis_label, axis_label_angle, \
                  axis_label_offset_x, axis_label_offset_y, tick_label_offset_x, tick_label_offset_y,
                  tick_label_format, \
                  font_size, z_order, margin, axis_origin, tick_label_angle)
