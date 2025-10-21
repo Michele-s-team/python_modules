@@ -104,7 +104,7 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_la
         
         if axis_direction == 'x':
             
-            ax.plot([value, value], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color=color, linewidth=line_width,
+            ax.plot([value, value], [axis_origin[1], axis_origin[1] + tick_length[1] * length[1]], color=color, linewidth=line_width,
                         zorder=z_order)  
             
             if tick_label_format[0] != '':
@@ -114,7 +114,7 @@ def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_la
             
         elif axis_direction == 'y':
             
-            ax.plot([axis_origin[0], axis_origin[0] + tick_length * length[0]], [value, value], color=color, linewidth=line_width,
+            ax.plot([axis_origin[0], axis_origin[0] + tick_length[0] * length[0]], [value, value], color=color, linewidth=line_width,
                         zorder=z_order)  
             
             if tick_label_format[1] != '':

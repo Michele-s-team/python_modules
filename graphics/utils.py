@@ -865,21 +865,21 @@ def plot_2d_axes(ax, origin, lengths, \
                  tick_length_x, tick_length_y, line_width, \
                  axis_label_x, axis_label_y, axis_label_angle_x, axis_label_angle_y, \
                  axis_label_offset_x, axis_label_offset_y, tick_label_offset_x, tick_label_offset_y,
-                 tick_label_format_x, tick_label_format_y, \
+                 tick_label_format, \
                  font_size, z_order, margin=[epsilon, epsilon]):
     
     ax.set(xlim=[origin[0] - lengths[0] * margin[0], origin[0] + lengths[0] + lengths[0] * margin[0]], \
            ylim=[origin[1] - lengths[1] * margin[1], origin[1] + lengths[1] + lengths[1] * margin[1]])
 
     # plot the x axis
-    plot_2d_axis(ax, origin, lengths[0], "x", tick_length_x * lengths[1], line_width, \
-                 axis_label_x, axis_label_offset_x * lengths[1], axis_label_angle_x, tick_label_offset_x * lengths[1],
-                 tick_label_format_x, font_size, z_order)
+    plot_2d_axis(ax, origin, lengths, "x", np.multiply(tick_length_x, lengths).tolist(), line_width, \
+                 axis_label_x, np.multiply(axis_label_offset_x, lengths).tolist(), axis_label_angle_x, np.multiply(tick_label_offset_x, lengths).tolist(),
+                 tick_label_format, font_size, z_order)
 
     # plot the y axis
-    plot_2d_axis(ax, origin, lengths[1], "y", tick_length_y * lengths[0], line_width, \
-                 axis_label_y, axis_label_offset_y * lengths[0], axis_label_angle_y, tick_label_offset_y * lengths[0],
-                 tick_label_format_y, font_size, z_order)
+    plot_2d_axis(ax, origin, lengths, "y", np.multiply(tick_length_y, lengths).tolist(), line_width, \
+                 axis_label_y, np.multiply(axis_label_offset_y, lengths).tolist(), axis_label_angle_y, np.multiply(tick_label_offset_y, lengths).tolist(),
+                 tick_label_format, font_size, z_order)
 
 
 # call plot_2d_axes and draw on top of the axes a plot label 'plot_label' on the top-left corner of the plot,  whose relative displacement with respect to the plot dimensions is plot_label_offset
@@ -887,14 +887,14 @@ def plot_2d_axes_label(ax, origin, lengths,
                        tick_length_x, tick_length_y, line_width, \
                        axis_label_x, axis_label_y, axis_label_angle_x, axis_label_angle_y, \
                        axis_label_offset_x, axis_label_offset_y, tick_label_offset_x, tick_label_offset_y,
-                       tick_label_format_x, tick_label_format_y, \
+                       tick_label_format, \
                        panel_label_font_size, font_size, z_order, plot_label, plot_label_offset, margin=[0, 0]):
     # plot the axes
     plot_2d_axes(ax, origin, lengths, \
                  tick_length_x, tick_length_y, line_width, \
                  axis_label_x, axis_label_y, axis_label_angle_x, axis_label_angle_y, \
                  axis_label_offset_x, axis_label_offset_y, tick_label_offset_x, tick_label_offset_y,
-                 tick_label_format_x, tick_label_format_y, \
+                 tick_label_format, \
                  font_size, z_order, margin)
 
     # draw the panel label

@@ -165,4 +165,15 @@ def closest_element(list, value):
             result = list[i]            
 
     return result
+
+'''
+multiply each element of a list by a value, and return the resulting list
+Input values: 
+    - 'list': the list
+    - 'value': the value
+Return values:
+    - the resulting list, whose ith element is list[i] * value
+'''
+def multiply(value, list):
+    return np.multiply(value, list).tolist()
     
