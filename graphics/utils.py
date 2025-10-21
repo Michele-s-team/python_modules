@@ -872,13 +872,13 @@ def plot_2d_axes(ax, origin, lengths, \
            ylim=[origin[1] - lengths[1] * margin[1], origin[1] + lengths[1] + lengths[1] * margin[1]])
 
     # plot the x axis
-    plot_2d_axis(ax, origin, lengths, "x", np.multiply(tick_length_x, lengths).tolist(), line_width, \
-                 axis_label_x, np.multiply(axis_label_offset_x, lengths).tolist(), axis_label_angle_x, np.multiply(tick_label_offset_x, lengths).tolist(),
+    plot_2d_axis(ax, origin, lengths, "x", lis.multiply(tick_length_x, lengths), line_width, \
+                 axis_label_x, lis.multiply(axis_label_offset_x, lengths), axis_label_angle_x, lis.multiply(tick_label_offset_x, lengths),
                  tick_label_format, font_size, z_order)
 
     # plot the y axis
-    plot_2d_axis(ax, origin, lengths, "y", np.multiply(tick_length_y, lengths).tolist(), line_width, \
-                 axis_label_y, np.multiply(axis_label_offset_y, lengths).tolist(), axis_label_angle_y, np.multiply(tick_label_offset_y, lengths).tolist(),
+    plot_2d_axis(ax, origin, lengths, "y", lis.multiply(tick_length_y, lengths), line_width, \
+                 axis_label_y, lis.multiply(axis_label_offset_y, lengths), axis_label_angle_y, lis.multiply(tick_label_offset_y, lengths),
                  tick_label_format, font_size, z_order)
 
 
