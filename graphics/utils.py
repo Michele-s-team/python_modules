@@ -1,4 +1,3 @@
-import colorama as col
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
@@ -807,14 +806,14 @@ def empty_panes(ax):
 
 
 # set the ticks of colorbar 'colorar' equal to the vector of ticks values 'ticks'
-def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size):
+def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size, tick_label_angle=0):
     
     latex_ticks = []
     for tick in ticks:
         latex_ticks.append(cal.to_latex_scientific(min + (tick - min) / scale_factor))
 
     colorbar.set_ticks(ticks)
-    colorbar.ax.set_yticklabels(latex_ticks, fontsize=font_size)
+    colorbar.ax.set_yticklabels(latex_ticks, fontsize=font_size, rotation=tick_label_angle)
 
 
 
@@ -861,45 +860,68 @@ the offset on axes are relative to the axes' lengths
 '''
 
 
-def plot_2d_axes(ax, origin, lengths, \
+def plot_2d_axes(ax, origin, length, \
                  tick_length, line_width, \
                  axis_label, axis_label_angle, \
-                 axis_label_offset, tick_label_offset_x, tick_label_offset_y,
+                 axis_label_offset, tick_label_offset,
                  tick_label_format,
-                 font_size, z_order, margin=[epsilon, epsilon], axis_origin=[0, 0], tick_label_angle=[0, 0]):
+                 font_size, z_order, 
+                 axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, margin=[0,0]):
     
-    ax.set(xlim=[origin[0] - lengths[0] * margin[0], origin[0] + lengths[0] + lengths[0] * margin[0]], \
-           ylim=[origin[1] - lengths[1] * margin[1], origin[1] + lengths[1] + lengths[1] * margin[1]])
-
+    if axis_bounds is None: 
+        # axis_bounds has not been specified -> set the axis bounds accoding to origin and length
+        ax.set(xlim=[origin[0] - length[0] * margin[0], origin[0] + length[0] * (1 + margin[0])], \
+            ylim=[origin[1] - length[1] * margin[1], origin[1] + length[1]*(1+margin[1])])
+    else: 
+        # axis_bounds have been specified -> set the axis bounds according to them
+            ax.set(
+                xlim=[axis_bounds[0][0] - length[0] * margin[0], axis_bounds[0][1] + length[0] * margin[0]], 
+                ylim=[axis_bounds[1][0] - length[1] * margin[1], axis_bounds[1][1] + length[1] * margin[1]]
+                )
+            
+            
     # plot the x axis
-    plot_2d_axis(ax, origin, lengths, "x", tick_length, line_width, \
-                 axis_label[0], lis.multiply(axis_label_offset[0], lengths), axis_label_angle[0], lis.multiply(tick_label_offset_x, lengths),
-                 tick_label_format, tick_label_angle[0], font_size, z_order, axis_origin=axis_origin)
+    plot_2d_axis(ax, origin, length, "x", tick_length, line_width, \
+                 axis_label[0], lis.multiply(axis_label_offset[0], length), axis_label_angle[0], lis.multiply(tick_label_offset[0], length),
+                 tick_label_format, tick_label_angle[0], font_size[0], z_order, axis_origin=axis_origin)
 
     # plot the y axis
-    plot_2d_axis(ax, origin, lengths, "y", tick_length, line_width, \
-                 axis_label[1], lis.multiply(axis_label_offset[1], lengths), axis_label_angle[1], lis.multiply(tick_label_offset_y, lengths),
-                 tick_label_format, tick_label_angle[1], font_size, z_order, axis_origin=axis_origin)
+    plot_2d_axis(ax, origin, length, "y", tick_length, line_width, \
+                 axis_label[1], lis.multiply(axis_label_offset[1], length), axis_label_angle[1], lis.multiply(tick_label_offset[1], length),
+                 tick_label_format, tick_label_angle[1], font_size[1], z_order, axis_origin=axis_origin)
 
 
-# call plot_2d_axes and draw on top of the axes a plot label 'plot_label' on the top-left corner of the plot,  whose relative displacement with respect to the plot dimensions is plot_label_offset
-def plot_2d_axes_label(ax, origin, lengths,
+'''
+plot axes for a 2d plot
+Input values: 
+    - 'ax': the axis where the axes will be plotted
+    - 'origin': the origin of the numerical values of the axes (a vector with two components, [origin_x, origin_y])
+    - 'length': the length of the numerical values of the lengths (spans) of the axes (a vector wit two components [length_x, length_y])
+    - 'axis_label': the labels of each axis, [label_x, label_y]
+    - 'axis_label_angle': the rotation angle of the labels of the axes, [axis_label_angle_x, axis_label_angle_y]
+    - 'axis_label_offset': the offsets of the axis labels [axis_label_offset_x, axis_label_offset_y]
+    - 'tick_label_offset': the offsets of the tick labels [tick_label_offset_x, tick_label_offset_y]
+    - 'tick_label_format': the numerical format of tick labels, either 'e' or 'f' for each entry. It is a list of the form [tick_label_format_x, tick_label_format_y]
+    - [to be completed here ...]
+'''
+def plot_2d_axes_label(ax, origin, length,
                        tick_length, line_width, \
                        axis_label, axis_label_angle, \
-                       axis_label_offset, tick_label_offset_x, tick_label_offset_y,
+                       axis_label_offset, tick_label_offset,
                        tick_label_format, \
-                       panel_label_font_size, font_size, z_order, plot_label, plot_label_offset, margin=[0, 0], axis_origin=[0, 0], tick_label_angle=[0, 0]):
+                       axis_font_size, plot_label_font_size, z_order, plot_label, plot_label_offset,
+                       axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, margin=[0,0]):
     # plot the axes
-    plot_2d_axes(ax, origin, lengths, \
+    plot_2d_axes(ax, origin, length, \
                  tick_length, line_width, \
                  axis_label, axis_label_angle, \
-                 axis_label_offset, tick_label_offset_x, tick_label_offset_y,
+                 axis_label_offset, tick_label_offset,
                  tick_label_format, \
-                 font_size, z_order, margin, axis_origin, tick_label_angle)
+                 axis_font_size, z_order, axis_origin, tick_label_angle, axis_bounds, margin)
 
     # draw the panel label
-    ax.text(origin[0] - plot_label_offset[0] * lengths[0], origin[1] + lengths[1] + plot_label_offset[1] * lengths[1],
-            plot_label, fontsize=panel_label_font_size, ha='center', va='center',
+    ax.text(origin[0] - plot_label_offset[0] * length[0], origin[1] + length[1] + plot_label_offset[1] * length[1],
+            plot_label, fontsize=plot_label_font_size, ha='center', va='center',
             zorder=z_order)
 
 
@@ -1185,7 +1207,7 @@ set the limits of a 2d axis:
 '''
 
 
-def set_2d_axes_limits(ax, mins, maxs, margins):
+def set_2d_axes_limits(ax, mins, maxs, margins=[0,0]):
     
     ax.set_xlim(mins[0] - (maxs[0] - mins[0]) * margins[0], maxs[0] + (maxs[0] - mins[0]) * margins[0])
     ax.set_ylim(mins[1] - (maxs[1] - mins[1]) * margins[1], maxs[1] + (maxs[1] - mins[1]) * margins[1])

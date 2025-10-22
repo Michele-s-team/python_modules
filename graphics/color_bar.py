@@ -20,18 +20,18 @@ Arguments:
 - 'size': size of the colorbar
 - 'angle' : rotation angle of the colorbar
 - 'label_pad': displacement of the label of the colorbar with respect to the origin of the colorbar, in units given by the size of the colorbar
-- 'label' the label of the colorbar
+- 'label_angle' the label of the colorbar
 - 'font_size' : the font size of all texts in the colorbar
 - 'shrink_value' [optional] : the shrink value of the colorbar
 - 'aspect_value' [optional]: the aspect value of the colorbar
+- 'tick_label_angle' [optional]: the rotation angle of the tick labels
 '''
 
-def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  position, size, angle, label_pad, label, font_size, shrink_value=0.2, aspect_value=10):
+def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  position, size, 
+                  label_angle, label_pad, label, font_size, shrink_value=0.2, aspect_value=10, tick_label_angle=0):
 
     scaled_max = gr.scale(max_value, min_value, scale_factor)
     colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
-
-
 
     color_normalization = plt.Normalize(vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
     color_map = color_map_type(color_normalization(grid_values))
@@ -43,10 +43,10 @@ def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  posi
     colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_position)
     
 
-    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size)
+    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size, tick_label_angle)
     
     
-    colorbar.set_label(label, rotation=angle, fontsize=font_size)
+    colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
 
     # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
     colorbar.ax.yaxis.set_label_coords(label_pad[0], label_pad[1])  # Adjust -1.2 for spacing

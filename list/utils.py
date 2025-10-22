@@ -64,6 +64,7 @@ def remove_close_elements(input_list, epsilon):
             result.append(x)
     return result
 
+
 '''
 add element by element two lists of lists
 Input values: 
@@ -76,6 +77,20 @@ Example of usage:
 '''
 
 def add_lists_of_lists(list_a, list_b):
+    return [[A + B for A, B in zip(row_A, row_B)] for row_A, row_B in zip(list_a, list_b)]
+
+'''
+substract element by element two lists of lists
+Input values: 
+- 'list_a', 'list_b': the two lists of lists
+Return values: 
+- the difference, element by element, of 'list_a' and 'list_b'
+
+Example of usage: 
+    substract_lists_of_lists([[1,2],[2,4]], [[3,2],[2,3]])
+'''
+
+def substract_lists_of_lists(list_a, list_b):
     return [[A - B for A, B in zip(row_A, row_B)] for row_A, row_B in zip(list_a, list_b)]
 
 
