@@ -202,6 +202,7 @@ def plot_2d_axis(ax, origin, length, direction,
                 
                 ti.plot_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
 
+            # plot the axis label
             ax.text(origin[0] + length[0] / 2, axis_origin[1] - axis_label_offset[1], rf'${axis_label}$', 
                     fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
@@ -225,7 +226,8 @@ def plot_2d_axis(ax, origin, length, direction,
                 '''
                 
                 ti.plot_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
-
+                
+            # plot the axis label
             ax.text(axis_origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', 
                     fontsize=font_size, ha='center', va='center',
                     rotation=axis_label_angle, zorder=z_order)
@@ -242,8 +244,6 @@ def plot_2d_axis(ax, origin, length, direction,
             # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
             n_plotted_ticks = 0
                     
-         
-
             # plot the x ticks
             for tick in x_ticks:
                 
@@ -890,12 +890,13 @@ Input values:
 
 def plot_2d_axes(ax, origin, length, \
                  tick_length=[0.1,0.1], line_width=0.1, \
-                 axis_label_angle=0, \
+                 axis_label_angle=[0,0], \
                  axis_label_offset=[0,0], tick_label_offset=[0,0],
                  tick_label_format=[const.default_label_format,const.default_label_format],
-                 font_size=const.default_font_size, z_order=0, 
+                 font_size=[const.default_font_size, const.default_font_size], 
+                 z_order=0, 
                  axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, 
-                 margin=[0,0], axis_label=None, plot_label_offset=[0,0], plot_label_font_size=const.default_font_size, plot_label=None):
+                 margin=[0,0], axis_label=[None,None], plot_label_offset=[0,0], plot_label_font_size=const.default_font_size, plot_label=[None,None]):
     
     if axis_bounds is None: 
         # axis_bounds has not been specified -> set the axis bounds accoding to origin and length
@@ -920,7 +921,7 @@ def plot_2d_axes(ax, origin, length, \
                  tick_label_format, tick_label_angle[1], font_size[1], z_order, axis_origin=axis_origin)
     
     
-    if plot_label is not None:
+    if plot_label is not [None,None]:
         # draw the panel label
         ax.text(origin[0] - plot_label_offset[0] * length[0], origin[1] + length[1] + plot_label_offset[1] * length[1],
                 plot_label, fontsize=plot_label_font_size, ha='center', va='center',
