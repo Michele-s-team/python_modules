@@ -859,19 +859,42 @@ def ticks_base_10(min, max, n):
     return list(dict.fromkeys(result))
 
 
-'''
-plot a pair of 2d axes in 'ax' with origin at [origin[0], origin[1]], lengths 'lengths[0]' and 'lengths[1]' and scale factor 'scale_factor_x' and 'scale_factors[1]'.
-the offset on axes are relative to the axes' lengths
-'''
 
+'''
+plot axes for a two-dimensional plot
+Input values: 
+    * Mandatory
+        - 'ax': the axis where the axes will be plotted
+        - 'origin': the origin of the numerical values of the axes (a vector with two components, [origin_x, origin_y])
+        - 'length': the length of the numerical values of the lengths (spans) of the axes (a vector wit two components [length_x, length_y])
+        
+    * Optional: 
+        - 'tick_length': the length of the ticks on each axis, [tick_length_x, tick_length_y]
+        - 'line_width': the line width of the axes
+        - 'axis_label_angle': the rotation angle of the labels of the axes, [axis_label_angle_x, axis_label_angle_y]
+        - 'axis_label_offset': the offsets of the axis labels [axis_label_offset_x, axis_label_offset_y]
+        - 'tick_label_offset': the offsets of the tick labels [tick_label_offset_x, tick_label_offset_y]
+        - 'tick_label_format': the numerical format of tick labels, either 'e' or 'f' for each entry. It is a list of the form [tick_label_format_x, tick_label_format_y]
+        - 'font_size': font size of the labels of the axes, [font_size_x, font_size_y]
+        - 'z_order': the z order of the plot
+        - 'axis_origin': the origin where the axes will be placed [axis_origin_x, axis_origin_y]
+        - 'tick_label_angle': the rotation angle of the tick labels of each axis, [tick_label_angle_x, tick_label_angle_y]
+        - 'axis_bounds': the bounds of the axes, [[x_min, x_max], [y_min, y_max]]
+        - 'margin': margin (as a fraction of length) to be included in 'axis_bounds', [maring_x, margin_y]
+        - 'axis_label': the labels of each axis, [label_x, label_y]
+        - 'plot_label_offset': offset of the plot label [plot_label_offset_x, plot_label_offset_y]
+        - 'plot_label_font_size' = font size of the plot label
+        - 'plot_label': the label of the plot
+'''
 
 def plot_2d_axes(ax, origin, length, \
-                 tick_length, line_width, \
-                 axis_label, axis_label_angle, \
-                 axis_label_offset, tick_label_offset,
-                 tick_label_format,
-                 font_size, z_order, 
-                 axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, margin=[0,0]):
+                 tick_length=[0.1,0.1], line_width=0.1, \
+                 axis_label_angle=0, \
+                 axis_label_offset=[0,0], tick_label_offset=[0,0],
+                 tick_label_format=['f','f'],
+                 font_size=8, z_order=0, 
+                 axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, 
+                 margin=[0,0], axis_label=None, plot_label_offset=[0,0], plot_label_font_size=8, plot_label=None):
     
     if axis_bounds is None: 
         # axis_bounds has not been specified -> set the axis bounds accoding to origin and length
@@ -894,48 +917,17 @@ def plot_2d_axes(ax, origin, length, \
     plot_2d_axis(ax, origin, length, "y", tick_length, line_width, \
                  axis_label[1], lis.multiply(axis_label_offset[1], length), axis_label_angle[1], lis.multiply(tick_label_offset[1], length),
                  tick_label_format, tick_label_angle[1], font_size[1], z_order, axis_origin=axis_origin)
+    
+    
+    if plot_label is not None:
+        # draw the panel label
+        ax.text(origin[0] - plot_label_offset[0] * length[0], origin[1] + length[1] + plot_label_offset[1] * length[1],
+                plot_label, fontsize=plot_label_font_size, ha='center', va='center',
+                zorder=z_order)
 
 
-'''
-plot axes for a 2d plot with their label
-Input values: 
-    - 'ax': the axis where the axes will be plotted
-    - 'origin': the origin of the numerical values of the axes (a vector with two components, [origin_x, origin_y])
-    - 'length': the length of the numerical values of the lengths (spans) of the axes (a vector wit two components [length_x, length_y])
-    - 'axis_label': the labels of each axis, [label_x, label_y]
-    - 'axis_label_angle': the rotation angle of the labels of the axes, [axis_label_angle_x, axis_label_angle_y]
-    - 'axis_label_offset': the offsets of the axis labels [axis_label_offset_x, axis_label_offset_y]
-    - 'tick_label_offset': the offsets of the tick labels [tick_label_offset_x, tick_label_offset_y]
-    - 'tick_label_format': the numerical format of tick labels, either 'e' or 'f' for each entry. It is a list of the form [tick_label_format_x, tick_label_format_y]
-    - 'axis_font_size': font size of the labels of the axes, [font_size_x, font_size_y]
-    - 'plot_label_font_size' = font size of the plot label
-    - 'z_order': the z order of the plot
-    - 'plot_label': the label of the plot
-    - 'plot_label_offset': offset of the plot label [plot_label_offset_x, plot_label_offset_y]
-    - 'axis_origin' [optional]: the origin where the axes will be placed [axis_origin_x, axis_origin_y]
-    - 'tick_label_angle' [optional]: the rotation angle of the tick labels of each axis, [tick_label_angle_x, tick_label_angle_y]
-    - 'axis_bounds': the bounds of the axes, [[x_min, x_max], [y_min, y_max]]
-    - 'margin': margin (as a fraction of length) to be included in 'axis_bounds', [maring_x, margin_y]
-'''
-def plot_2d_axes_label(ax, origin, length,
-                       tick_length, line_width, \
-                       axis_label, axis_label_angle, \
-                       axis_label_offset, tick_label_offset,
-                       tick_label_format, \
-                       axis_font_size, plot_label_font_size, z_order, plot_label, plot_label_offset,
-                       axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, margin=[0,0]):
-    # plot the axes
-    plot_2d_axes(ax, origin, length, \
-                 tick_length, line_width, \
-                 axis_label, axis_label_angle, \
-                 axis_label_offset, tick_label_offset,
-                 tick_label_format, \
-                 axis_font_size, z_order, axis_origin, tick_label_angle, axis_bounds, margin)
 
-    # draw the panel label
-    ax.text(origin[0] - plot_label_offset[0] * length[0], origin[1] + length[1] + plot_label_offset[1] * length[1],
-            plot_label, fontsize=plot_label_font_size, ha='center', va='center',
-            zorder=z_order)
+
 
 
 # scale up by 'scale_factor' the scalar 'x' with respect to the reference value 'min'
