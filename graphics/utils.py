@@ -902,7 +902,8 @@ Input values:
     - 'axis_label_offset': the offsets of the axis labels [axis_label_offset_x, axis_label_offset_y]
     - 'tick_label_offset': the offsets of the tick labels [tick_label_offset_x, tick_label_offset_y]
     - 'tick_label_format': the numerical format of tick labels, either 'e' or 'f' for each entry. It is a list of the form [tick_label_format_x, tick_label_format_y]
-    - [to be completed here ...]
+    - 'axis_font_size': font size of the labels of the axes, [font_size_x, font_size_y]
+    
 '''
 def plot_2d_axes_label(ax, origin, length,
                        tick_length, line_width, \
