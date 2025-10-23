@@ -22,7 +22,12 @@ import text.utils as text
 epsilon = 1e-6
 epsilon_axes = 5e-2
 
-
+'''
+plot a three-dimensional axis
+Input values: 
+    - 'ax': the axis where the plot will be made
+    [to be conmpleted...]
+'''
 def plot_3d_axis(ax, r, l, direction, scale_factor, tick_length, line_width, axis_label,
                  axis_label_offset, tick_label_offset, tick_label_format, font_size, z_order):
     if direction == 'x':
@@ -892,7 +897,7 @@ def plot_2d_axes(ax, origin, length, \
 
 
 '''
-plot axes for a 2d plot
+plot axes for a 2d plot with their label
 Input values: 
     - 'ax': the axis where the axes will be plotted
     - 'origin': the origin of the numerical values of the axes (a vector with two components, [origin_x, origin_y])
@@ -907,7 +912,10 @@ Input values:
     - 'z_order': the z order of the plot
     - 'plot_label': the label of the plot
     - 'plot_label_offset': offset of the plot label [plot_label_offset_x, plot_label_offset_y]
-    
+    - 'axis_origin' [optional]: the origin where the axes will be placed [axis_origin_x, axis_origin_y]
+    - 'tick_label_angle' [optional]: the rotation angle of the tick labels of each axis, [tick_label_angle_x, tick_label_angle_y]
+    - 'axis_bounds': the bounds of the axes, [[x_min, x_max], [y_min, y_max]]
+    - 'margin': margin (as a fraction of length) to be included in 'axis_bounds', [maring_x, margin_y]
 '''
 def plot_2d_axes_label(ax, origin, length,
                        tick_length, line_width, \
@@ -940,6 +948,16 @@ def scale_list(v, mins, scale_factors):
     return [scale(v[i], mins[i], scale_factors[i]) for i in range(len(mins))]
 
 
+'''
+plot a curve with a color map on it
+Input values
+    - 'ax': the axis where the plot will be made
+    - 'X': the curve points
+    - 'color_map' [optional]: the color map containing the colors
+    - 'color' [optional]' : the color with which the curve will be plotted if 'color_map' is None
+    - 'line_width' [optional]: the line with with which the color map will be plotted
+    - 'plot_label': the plot label of the curve
+'''
 def plot_curve_grid(ax, X, color_map=None, line_color='black', line_width=1,  plot_label=''):
     
     if color_map is None:
