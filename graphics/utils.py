@@ -902,8 +902,8 @@ def plot_2d_axes(ax, origin, length, \
     
     if axis_bounds is None: 
         # axis_bounds has not been specified -> set the axis bounds accoding to origin and length
-        ax.set(xlim=[origin[0] - length[0] * margin[0], origin[0] + length[0] * (1 + margin[0])], \
-            ylim=[origin[1] - length[1] * margin[1], origin[1] + length[1]*(1+margin[1])])
+        ax.set(xlim=[axis_origin[0], origin[0] + length[0] * (1 + margin[0])], \
+            ylim=[axis_origin[1], origin[1] + length[1]*(1+margin[1])])
     else: 
         # axis_bounds have been specified -> set the axis bounds according to them
             ax.set(
