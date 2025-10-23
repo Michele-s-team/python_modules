@@ -5,3 +5,6 @@ conversion from degree to radians:
 [deg] = deg_to_rad [rad]
 '''
 deg_to_rad = 2 * np.pi / 360
+
+default_font_size=8
+default_label_format='f'

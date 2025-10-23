@@ -10,6 +10,7 @@ from scipy.interpolate import interp1d
 from sympy.polys.benchmarks.bench_solvers import R_165
 
 import calculus.utils as cal
+import constants.utils as const
 # do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
 import graphics.color_bar as cb
 import graphics.images as images
@@ -891,10 +892,10 @@ def plot_2d_axes(ax, origin, length, \
                  tick_length=[0.1,0.1], line_width=0.1, \
                  axis_label_angle=0, \
                  axis_label_offset=[0,0], tick_label_offset=[0,0],
-                 tick_label_format=['f','f'],
-                 font_size=8, z_order=0, 
+                 tick_label_format=[const.default_label_format,const.default_label_format],
+                 font_size=const.default_font_size, z_order=0, 
                  axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, 
-                 margin=[0,0], axis_label=None, plot_label_offset=[0,0], plot_label_font_size=8, plot_label=None):
+                 margin=[0,0], axis_label=None, plot_label_offset=[0,0], plot_label_font_size=const.default_font_size, plot_label=None):
     
     if axis_bounds is None: 
         # axis_bounds has not been specified -> set the axis bounds accoding to origin and length
