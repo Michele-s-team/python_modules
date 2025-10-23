@@ -179,17 +179,22 @@ def plot_2d_axis(ax, origin, length, direction,
                  tick_label_offset, tick_label_format, tick_label_angle, 
                  font_size,
                  z_order=0, 
-                 scale='lin', log_base=10.0, axis_origin=[0, 0], minor_tick_length=0, color='black', custom_ticks=[[], []]):
+                 scale='lin', log_base=10.0, axis_origin=None, minor_tick_length=0, color='black', custom_ticks=[[], []]):
+    
     
     if scale == 'lin':
         # plot the axis in linear scale
+        
+        # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
+        if axis_origin is None: 
+            axis_origin = origin
     
         if direction == "x":
 
             ticks = ti.generate_ticks(origin[0], origin[0] + length[0])
-
-            ax.plot([origin[0], origin[0] + length[0]], [axis_origin[1], axis_origin[1]], color=color, linewidth=line_width, zorder=z_order)
             
+            ax.plot([origin[0], origin[0] + length[0]], [axis_origin[1], axis_origin[1]], color=color, linewidth=line_width, zorder=z_order)
+
             for tick in ticks:
                 
                 '''
@@ -891,19 +896,27 @@ Input values:
 '''
 
 def plot_2d_axes(ax, origin, length, \
-                 tick_length=[0.1,0.1], line_width=0.1, \
+                 tick_length=[const.default_tick_length, const.default_tick_length], line_width=0.1, \
                  axis_label_angle=[0,0], \
                  axis_label_offset=[0,0], tick_label_offset=[0,0],
                  tick_label_format=[const.default_label_format,const.default_label_format],
                  font_size=[const.default_font_size, const.default_font_size], 
                  z_order=0, 
-                 axis_origin=[0, 0], tick_label_angle=[0, 0], axis_bounds=None, 
+                 axis_origin=None, tick_label_angle=[0, 0], axis_bounds=None, 
                  margin=[0,0], axis_label=[None,None], plot_label_offset=[0,0], plot_label_font_size=const.default_font_size, plot_label=[None,None]):
     
+    # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
+    if axis_origin is None:
+        axis_origin = origin
+    
     if axis_bounds is None: 
-        # axis_bounds has not been specified -> set the axis bounds accoding to origin and length
-        ax.set(xlim=[axis_origin[0], origin[0] + length[0] * (1 + margin[0])], \
-            ylim=[axis_origin[1], origin[1] + length[1]*(1+margin[1])])
+        # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
+        
+        ax.set(
+            xlim=[min(origin[0], axis_origin[0]), max(origin[0] + length[0] * (1 + margin[0]), axis_origin[0])], \
+            ylim=[min(origin[1], axis_origin[1]), max(origin[1] + length[1]*(1+margin[1]), axis_origin[1])]
+            )    
+
     else: 
         # axis_bounds have been specified -> set the axis bounds according to them
             ax.set(
@@ -1210,8 +1223,8 @@ def interpolate_curve(data, x_min, x_max, n_bins):
     values_X1 = data["f:0"].values
     values_X2 = data["f:1"].values
 
-    X1 = interp1d(points, values_X1, kind='cubic')
-    X2 = interp1d(points, values_X2, kind='cubic')
+    X1 = interp1d(points, values_X1, kind='cubic', fill_value='extrapolate')
+    X2 = interp1d(points, values_X2, kind='cubic', fill_value='extrapolate')
 
     values_grid = np.array(list(zip(X1(points_grid), X2(points_grid))))
 

@@ -98,7 +98,10 @@ Input values:
 '''
 
 def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
-              origin, length, axis_origin, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin', tick_label_angle=0):
+              origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin', tick_label_angle=0):
+    
+    if axis_origin is None:
+        axis_origin = origin
     
     if scale == 'lin':
         

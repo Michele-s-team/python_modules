@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import constants.utils as const
 import graphics.utils as gr
 import graphics.ticks as ticks
 from scipy.interpolate import interp1d
@@ -11,24 +12,31 @@ color_map_type = plt.cm.get_cmap(
 '''
 make a color bar and return the relative color map. 
 Arguments:
-- 'figure' : the figure where the colorbar is made
-- 'grid_values' the grid values of the field over which the color bar is made
-- 'min_value', 'max_value' the minimal , maximal value of the field above
-- 'scale_factor': the scale_factor of the field above with respect to 'min'
-- 'n_ticks' the number of ticks of the colorbar
-- 'position': position of the colorbar
-- 'size': size of the colorbar
-- 'angle' : rotation angle of the colorbar
-- 'label_pad': displacement of the label of the colorbar with respect to the origin of the colorbar, in units given by the size of the colorbar
-- 'label_angle' the label of the colorbar
-- 'font_size' : the font size of all texts in the colorbar
-- 'shrink_value' [optional] : the shrink value of the colorbar
-- 'aspect_value' [optional]: the aspect value of the colorbar
-- 'tick_label_angle' [optional]: the rotation angle of the tick labels
+    * Mandatory
+        - 'figure' : the figure where the colorbar is made
+        - 'grid_values' the grid values of the field over which the color bar is made
+        - 'min_value', 'max_value' the minimal , maximal value of the field above
+        - 'position': position of the colorbar
+    * Optional:
+        - 'scale_factor': the scale_factor of the field above with respect to 'min'
+        - 'label': the label of the color bar
+        - 'font_size' : the font size of all texts in the colorbar
+        - 'label_angle' the label of the colorbar
+        - 'label_pad': displacement of the label of the colorbar with respect to the origin of the colorbar, in units given by the size of the colorbar
+        - 'shrink_value' [optional] : the shrink value of the colorbar
+        - 'aspect_value' [optional]: the aspect value of the colorbar
+        - 'tick_label_angle' [optional]: the rotation angle of the tick labels
 '''
 
-def make_colorbar(figure, grid_values, min_value, max_value, scale_factor,  position, size, 
-                  label_angle, label_pad, label, font_size, shrink_value=0.2, aspect_value=10, tick_label_angle=0):
+def make_colorbar(figure, grid_values, min_value, max_value, position, size, 
+                  scale_factor=1,
+                  label = None, 
+                  font_size = const.default_font_size, 
+                  label_angle=90, 
+                  label_pad=[0, 0], 
+                  shrink_value=const.colorbar_shrink_value, 
+                  aspect_value=const.colorbar_aspect_value, 
+                  tick_label_angle=0):
 
     scaled_max = gr.scale(max_value, min_value, scale_factor)
     colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
@@ -79,7 +87,7 @@ def make_curve_colorbar(figure, t_values, f_values,
     colorbar_ticks = ticks.generate_ticks(min_max[0], min_max[1])
 
     
-    f_interpolated = interp1d(f_values[":0"].values, f_values["f"].values, kind='cubic')
+    f_interpolated = interp1d(f_values[":0"].values, f_values["f"].values, kind='cubic', fill_value='extrapolate')
 
     color_normalization = plt.Normalize(vmin=min(colorbar_ticks), vmax=max(colorbar_ticks))
 
