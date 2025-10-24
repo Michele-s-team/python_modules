@@ -46,23 +46,6 @@ def plot_3d_axis(ax, origin, length, direction,
     if axis_origin is None: 
         axis_origin = [0,0,0]
     
-    
-    if direction == 'x':
-        
-        r_start = origin[0]
-        r_end = origin[0] + length[0]
-        
-    elif direction == 'y':
-        
-        r_start = origin[1]
-        r_end = origin[1] + length[1]
-        
-    elif direction == 'z':
-        
-        r_start = origin[2]
-        r_end = origin[2] + length[2]
-        
-
     if direction == "x":
 
         # compute ticks
