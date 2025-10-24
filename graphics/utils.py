@@ -29,7 +29,7 @@ Input values:
     - 'ax': the axis where the plot will be made
     [to be conmpleted...]
 '''
-def plot_3d_axis(ax, origin, length, direction, 
+def plot_3d_axis(ax, origin, length, direction_id, 
                  scale_factor=[1, 1, 1], 
                  tick_length=[const.default_tick_length, const.default_tick_length, const.default_tick_length], 
                  line_width=const.default_line_width, 
@@ -45,22 +45,37 @@ def plot_3d_axis(ax, origin, length, direction,
     # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
     if axis_origin is None: 
         axis_origin = [0,0,0]
-    
-    if direction == "x":
+ 
+    # compute ticks
+    ticks = ti.generate_ticks(origin[direction_id], origin[direction_id] + scale_factor[direction_id] * length[direction_id])
 
-        # compute ticks
-        ticks = ti.generate_ticks(origin[0], origin[0] + scale_factor[0] * length[0])
-
-        # draw ticks
-        tick_list = []
-        for tick in ticks:
+    # draw ticks
+    tick_list = []
+    for tick in ticks:
+        
+        tick_list.append([
+            tick,
+            text.float_to_latex(origin[direction_id] + (tick - origin[direction_id]) / scale_factor[direction_id], tick_label_format)
+        ])
+        
+    # plot the axis
+    # axis_vector is the vector that contain the coordinate increment \vec{dr} which define the axis: 
+    axis_vector = []
+    d=3
+    for i in range(d):
+        if i == direction_id:
+            # i is equal to the direction of the axis: the coordinate increment is given by origin and length, scaled with the scale_factor
             
-            # if (r_start + (tick - origin[0]) / scale_factor[0] > origin[0]) and (origin[0] + (tick - origin[0]) / scale_factor[0] < r_end): 
-            tick_list.append([
-                tick,
-                text.float_to_latex(origin[0] + (tick - origin[0]) / scale_factor[0], tick_label_format)
-            ])
-                
+            axis_vector.append([origin[i], scale(origin[i] + length[i], origin[i], scale_factor[i])])
+        else:
+            # i is no equal to the direction of the axis: the coordinate increment will be zero, i.e., axis_vector[i] has two identical entries, given by origin,  length, and by axis_origin, where the latter is used to place the axis as specified by axis_origin 
+            
+            axis_vector.append([scale((origin[i] + length[i] * axis_origin[i]), origin[i], scale_factor[i]), scale((origin[i] + length[i] * axis_origin[i]), origin[i], scale_factor[i])])
+            
+    ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, zorder=z_order)
+
+    
+    if direction_id == 0:
                 
         for tick in tick_list:
                 
@@ -74,18 +89,10 @@ def plot_3d_axis(ax, origin, length, direction,
                 ax.text(tick[0], (origin[1] + length[1] * axis_origin[1]) - tick_label_offset * length[1], (origin[2] + length[2] * axis_origin[2]),
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order)
 
-        # plot the axis
-        ax.plot(
-            [origin[0], scale(origin[0] + length[0], origin[0], scale_factor[0])], 
-            [scale((origin[1] + length[1] * axis_origin[1]), origin[1], scale_factor[1]), scale((origin[1] + length[1] * axis_origin[1]), origin[1], scale_factor[1])],
-            [scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2]), scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2])],  
-            color=color, linewidth=line_width, zorder=z_order)
-        
-
         # plot the axis label
         ax.text(
             scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
-            (origin[1] + length[1] * axis_origin[1]) - axis_label_offset * length[1], 
+            (origin[1] + length[1] * axis_origin[1]) - axis_label_offset[1] * length[1], 
             scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2]), 
             axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order)
 
@@ -167,23 +174,29 @@ def plot_3d_axes(ax, origin, length,
         axis_origin = [0,0,0]
         
     ax.set(
-        xlim=[min(origin[0], (origin[0] + length[0] * axis_origin[0])), max(origin[0] + length[0] * (1 + margin[0]), (origin[0] + length[0] * axis_origin[0]))], \
-        ylim=[min(origin[1], (origin[1] + length[1] * axis_origin[1])), max(origin[1] + length[1] * (1+margin[1]), (origin[1] + length[1] * axis_origin[1]))]
+            xlim=[min(origin[0], (origin[0] + length[0] * axis_origin[0])), max(origin[0] + length[0] * (1 + margin[0]), (origin[0] + length[0] * axis_origin[0]))], 
+            ylim=[min(origin[1], (origin[1] + length[1] * axis_origin[1])), max(origin[1] + length[1] * (1+margin[1]), (origin[1] + length[1] * axis_origin[1]))],
+            zlim=[min(origin[2], (origin[2] + length[2] * axis_origin[2])), max(origin[2] + length[2] * (1+margin[2]), (origin[2] + length[2] * axis_origin[2]))]
         )    
 
     
-    # plot x axis
-    plot_3d_axis(ax, origin, length, "x", 
-                 scale_factor=scale_factor,
-                 tick_length=tick_length,
-                 line_width=line_width[0], 
-                 axis_label=axis_label[0],
-                 axis_label_offset=axis_label_offset[0] * length[1] * scale_factor[1],
-                 tick_label_offset=tick_label_offset[0], 
-                 tick_label_format=tick_label_format[0], 
-                 font_size=font_size[0], 
-                 axis_origin=axis_origin,
-                 z_order=z_order)
+    d=3
+
+    for i in range(d):
+        
+        plot_3d_axis(ax, origin, length, i, 
+                    scale_factor=scale_factor,
+                    tick_length=tick_length,
+                    line_width=line_width[i], 
+                    axis_label=axis_label[i],
+                    axis_label_offset=axis_label_offset,
+                    tick_label_offset=tick_label_offset[i], 
+                    tick_label_format=tick_label_format[i], 
+                    font_size=font_size[i], 
+                    axis_origin=axis_origin,
+                    z_order=z_order)
+
+
 
     '''
     # plot y axis
