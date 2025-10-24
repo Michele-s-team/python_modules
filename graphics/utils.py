@@ -44,7 +44,7 @@ def plot_3d_axis(ax, origin, length, direction,
     
     # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
     if axis_origin is None: 
-        axis_origin = origin
+        axis_origin = [0,0,0]
     
     
     if direction == 'x':
@@ -83,27 +83,27 @@ def plot_3d_axis(ax, origin, length, direction,
                 
             ax.plot(
                 [scale(tick[0], origin[0], scale_factor[0]),scale(tick[0], origin[0], scale_factor[0])],
-                [scale(axis_origin[1], origin[1], scale_factor[1]), scale(axis_origin[1] + tick_length[1] * length[1], axis_origin[1], scale_factor[1])],
-                [scale(axis_origin[2], origin[2], scale_factor[2]),scale(axis_origin[2], origin[2], scale_factor[2])],
+                [scale((origin[1] + length[1] * axis_origin[1]), origin[1], scale_factor[1]), scale((origin[1] + length[1] * axis_origin[1]) + tick_length[1] * length[1], (origin[1] + length[1] * axis_origin[1]), scale_factor[1])],
+                [scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2]),scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2])],
                 color=color, linewidth=line_width, zorder=z_order) 
             
             if tick_label_format != '':
-                ax.text(tick[0], axis_origin[1] - tick_label_offset * length[1], axis_origin[2],
+                ax.text(tick[0], (origin[1] + length[1] * axis_origin[1]) - tick_label_offset * length[1], (origin[2] + length[2] * axis_origin[2]),
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order)
 
         # plot the axis
         ax.plot(
             [origin[0], scale(origin[0] + length[0], origin[0], scale_factor[0])], 
-            [scale(axis_origin[1], origin[1], scale_factor[1]), scale(axis_origin[1], origin[1], scale_factor[1])],
-            [scale(axis_origin[2], origin[2], scale_factor[2]), scale(axis_origin[2], origin[2], scale_factor[2])],  
+            [scale((origin[1] + length[1] * axis_origin[1]), origin[1], scale_factor[1]), scale((origin[1] + length[1] * axis_origin[1]), origin[1], scale_factor[1])],
+            [scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2]), scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2])],  
             color=color, linewidth=line_width, zorder=z_order)
         
 
         # plot the axis label
         ax.text(
             scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
-            axis_origin[1] - axis_label_offset * length[1], 
-            scale(axis_origin[2], origin[2], scale_factor[2]), 
+            (origin[1] + length[1] * axis_origin[1]) - axis_label_offset * length[1], 
+            scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2]), 
             axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order)
 
 
@@ -158,8 +158,11 @@ def plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick
 
 
 '''
-plot a triad of 3d axes on 'ax', with origin 'origin' and lengths of each axis given by 'lengths'. 
-Each axis is scaled up with respect to its origin coordinate by its respective entry of 'scale_factor'
+plot a triad of 3d axes 
+Input values:
+    * Mandatory
+    * Optional
+        - 'axis_origin': [axis_origin_x, axis_origin_y, axis_origin_z], the origin where the axes will be plotted,  expressed as fractions of the total width of the plot. For example, if axis_origin_x = 0, the x axis will be plotted at the left edge (y=y_min) and if axis_origin_x = 1, it will be plotted at the right edge (y=y_max)
 '''
 
 
@@ -178,11 +181,11 @@ def plot_3d_axes(ax, origin, length,
     
         # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
-        axis_origin = origin
+        axis_origin = [0,0,0]
         
     ax.set(
-        xlim=[min(origin[0], axis_origin[0]), max(origin[0] + length[0] * (1 + margin[0]), axis_origin[0])], \
-        ylim=[min(origin[1], axis_origin[1]), max(origin[1] + length[1]*(1+margin[1]), axis_origin[1])]
+        xlim=[min(origin[0], (origin[0] + length[0] * axis_origin[0])), max(origin[0] + length[0] * (1 + margin[0]), (origin[0] + length[0] * axis_origin[0]))], \
+        ylim=[min(origin[1], (origin[1] + length[1] * axis_origin[1])), max(origin[1] + length[1] * (1+margin[1]), (origin[1] + length[1] * axis_origin[1]))]
         )    
 
     
@@ -911,16 +914,51 @@ def empty_panes(ax):
 
 
 # set the ticks of colorbar 'colorar' equal to the vector of ticks values 'ticks'
-def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size, tick_label_angle=0):
+def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size, 
+                       tick_label_angle=0,
+                       color='black',
+                       line_width=const.default_line_width,
+                       z_order=const.default_z_order,
+                       tick_length=const.default_tick_length,
+                       tick_label_offset=[0, 0]):
+        
+        
     
+    # remove the default colorbar ticks because I will be plotting the custom ones 
+    colorbar.ax.tick_params(axis='y', length=0, width=0, which='both')
+    colorbar.ax.set_yticklabels([])
+
     latex_ticks = []
+
+    # run through all ticks
     for tick in ticks:
-        latex_ticks.append(cal.to_latex_scientific(min + (tick - min) / scale_factor))
-
-    colorbar.set_ticks(ticks)
-    colorbar.ax.set_yticklabels(latex_ticks, fontsize=font_size, rotation=tick_label_angle)
-
-
+        # for each tick
+        
+        if (tick > colorbar.ax.get_ylim()[0]) and (tick < colorbar.ax.get_ylim()[1]):
+            # the tick under consideration is within the interval of the colorbar -> plot it 
+            
+            # draw the tick line
+            colorbar.ax.plot(
+                [colorbar.ax.get_xlim()[1], colorbar.ax.get_xlim()[1] + tick_length * (colorbar.ax.get_xlim()[1]- colorbar.ax.get_xlim()[0])],           # x-coordinates
+                [tick , tick],       
+                color=color,       
+                linewidth=line_width,          
+                zorder=z_order,          
+                clip_on=False)        # Don't clip if outside bounds
+            
+            # generate the tick label
+            latex_ticks.append(cal.to_latex_scientific(min + (tick - min) / scale_factor))
+                
+            # plot the tick labels    
+            colorbar.ax.text(
+                colorbar.ax.get_xlim()[0] + tick_label_offset[0] * (colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0]), 
+                tick + tick_label_offset[1] * (colorbar.ax.get_ylim()[1] - colorbar.ax.get_ylim()[0]), 
+                cal.to_latex_scientific(min + (tick - min) / scale_factor), 
+                fontsize=font_size, 
+                ha='center', va='center', 
+                rotation=tick_label_angle, zorder=z_order)
+            
+    
 
 
 
