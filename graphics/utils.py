@@ -29,26 +29,83 @@ Input values:
     - 'ax': the axis where the plot will be made
     [to be conmpleted...]
 '''
-def plot_3d_axis(ax, r, l, direction, scale_factor, tick_length, line_width, axis_label,
-                 axis_label_offset, tick_label_offset, tick_label_format, font_size, z_order):
+def plot_3d_axis(ax, origin, length, direction, 
+                 scale_factor=[1, 1, 1], 
+                 tick_length=[const.default_tick_length, const.default_tick_length, const.default_tick_length], 
+                 line_width=const.default_line_width, 
+                 axis_label='',
+                 axis_label_offset=[0, 0, 0], 
+                 tick_label_offset=0, 
+                 tick_label_format=const.default_label_format, 
+                 font_size=const.default_font_size, 
+                 axis_origin=None,
+                 color='black',
+                 z_order=const.default_z_order):
+    
+    # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
+    if axis_origin is None: 
+        axis_origin = origin
+    
+    
     if direction == 'x':
-        r_start = r[0]
+        
+        r_start = origin[0]
+        r_end = origin[0] + length[0]
+        
     elif direction == 'y':
-        r_start = r[1]
+        
+        r_start = origin[1]
+        r_end = origin[1] + length[1]
+        
     elif direction == 'z':
-        r_start = r[2]
+        
+        r_start = origin[2]
+        r_end = origin[2] + length[2]
+        
 
-    ticks = ti.generate_ticks(r_start, r_start + scale_factor * l)
+    if direction == "x":
 
-    tick_list = []
-    for tick in ticks:
-        tick_list.append([
-            tick,
-            text.float_to_latex(r_start + (tick - r_start) / scale_factor, tick_label_format)
-        ])
+        # compute ticks
+        ticks = ti.generate_ticks(origin[0], origin[0] + scale_factor[0] * length[0])
 
-    plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick_length, line_width, axis_label,
-                              axis_label_offset, tick_label_offset, tick_label_format, font_size, z_order)
+        # draw ticks
+        tick_list = []
+        for tick in ticks:
+            
+            # if (r_start + (tick - origin[0]) / scale_factor[0] > origin[0]) and (origin[0] + (tick - origin[0]) / scale_factor[0] < r_end): 
+            tick_list.append([
+                tick,
+                text.float_to_latex(origin[0] + (tick - origin[0]) / scale_factor[0], tick_label_format)
+            ])
+                
+                
+        for tick in tick_list:
+                
+            ax.plot(
+                [scale(tick[0], origin[0], scale_factor[0]),scale(tick[0], origin[0], scale_factor[0])],
+                [scale(axis_origin[1], origin[1], scale_factor[1]), scale(axis_origin[1] + tick_length[1] * length[1], axis_origin[1], scale_factor[1])],
+                [scale(axis_origin[2], origin[2], scale_factor[2]),scale(axis_origin[2], origin[2], scale_factor[2])],
+                color=color, linewidth=line_width, zorder=z_order) 
+            
+            if tick_label_format != '':
+                ax.text(tick[0], axis_origin[1] - tick_label_offset * length[1], axis_origin[2],
+                        tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order)
+
+        # plot the axis
+        ax.plot(
+            [origin[0], scale(origin[0] + length[0], origin[0], scale_factor[0])], 
+            [scale(axis_origin[1], origin[1], scale_factor[1]), scale(axis_origin[1], origin[1], scale_factor[1])],
+            [scale(axis_origin[2], origin[2], scale_factor[2]), scale(axis_origin[2], origin[2], scale_factor[2])],  
+            color=color, linewidth=line_width, zorder=z_order)
+        
+
+        # plot the axis label
+        ax.text(
+            scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
+            axis_origin[1] - axis_label_offset * length[1], 
+            scale(axis_origin[2], origin[2], scale_factor[2]), 
+            axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order)
+
 
 
 def plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick_length, line_width, axis_label,
@@ -106,27 +163,57 @@ Each axis is scaled up with respect to its origin coordinate by its respective e
 '''
 
 
-def plot_3d_axes(ax, origin, lengths, scale_factors, axis_labels, axis_label_offsets, tick_lengths,
-                 tick_label_offsets, tick_label_formats, font_size, z_order):
-    # plot x axis
-    plot_3d_axis(ax, origin, lengths[0], "x", scale_factors[0],
-                 tick_lengths[0] * lengths[1] * scale_factors[1], 0.3, axis_labels[0],
-                 axis_label_offsets[0] * lengths[1] * scale_factors[1],
-                 tick_label_offsets[0] * lengths[1] * scale_factors[1], tick_label_formats[0], font_size, z_order)
+def plot_3d_axes(ax, origin, length, 
+                 scale_factor=[1,1,1], 
+                 axis_origin=None,
+                 axis_label=['','',''], 
+                 axis_label_offset=[0, 0, 0], 
+                 tick_length=[const.default_tick_length, const.default_tick_length],
+                 tick_label_offset=[0, 0, 0], 
+                 margin=[0, 0, 0],
+                 tick_label_format=[const.default_label_format,const.default_label_format, const.default_label_format], 
+                 font_size=const.default_font_size, 
+                 line_width=[const.default_line_width, const.default_line_width, const.default_line_width],
+                 z_order=const.default_z_order):
+    
+        # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
+    if axis_origin is None:
+        axis_origin = origin
+        
+    ax.set(
+        xlim=[min(origin[0], axis_origin[0]), max(origin[0] + length[0] * (1 + margin[0]), axis_origin[0])], \
+        ylim=[min(origin[1], axis_origin[1]), max(origin[1] + length[1]*(1+margin[1]), axis_origin[1])]
+        )    
 
+    
+    # plot x axis
+    plot_3d_axis(ax, origin, length, "x", 
+                 scale_factor=scale_factor,
+                 tick_length=tick_length,
+                 line_width=line_width[0], 
+                 axis_label=axis_label[0],
+                 axis_label_offset=axis_label_offset[0] * length[1] * scale_factor[1],
+                 tick_label_offset=tick_label_offset[0], 
+                 tick_label_format=tick_label_format[0], 
+                 font_size=font_size[0], 
+                 axis_origin=axis_origin,
+                 z_order=z_order)
+
+    '''
     # plot y axis
-    plot_3d_axis(ax, origin, lengths[1], "y", scale_factors[1],
-                 tick_lengths[1] * lengths[0] * scale_factors[0], 0.3, axis_labels[1],
-                 axis_label_offsets[1] * lengths[0] * scale_factors[0],
-                 tick_label_offsets[1] * lengths[0] * scale_factors[0], tick_label_formats[1], font_size, z_order)
+    plot_3d_axis(ax, origin, lengths[1], "y", scale_factor[1],
+                 tick_length[1] * lengths[0] * scale_factor[0], 0.3, axis_label[1],
+                 axis_label_offset[1] * lengths[0] * scale_factor[0],
+                 tick_label_offset=[0,0][1] * lengths[0] * scale_factor[0], tick_label_format[1], font_size, z_order)
 
     # plot z axis
-    plot_3d_axis(ax, origin, lengths[2], "z", scale_factors[2],
-                 tick_lengths[2] * (lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2, 0.3,
-                 axis_labels[2],
-                 axis_label_offsets[2] * (lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
-                 tick_label_offsets[2] * (lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
-                 tick_label_formats[2], font_size, z_order)
+    plot_3d_axis(ax, origin, lengths[2], "z", scale_factor[2],
+                 tick_length[2] * (lengths[0] * scale_factor[0] + lengths[1] * scale_factor[1]) / 2, 0.3,
+                 axis_label[2],
+                 axis_label_offset[2] * (lengths[0] * scale_factor[0] + lengths[1] * scale_factor[1]) / 2,
+                 tick_label_offset=[0,0][2] * (lengths[0] * scale_factor[0] + lengths[1] * scale_factor[1]) / 2,
+                 tick_label_format[2], font_size, z_order)
+    '''
 
 
 def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axis_labels, axis_label_offsets,
@@ -179,7 +266,12 @@ def plot_2d_axis(ax, origin, length, direction,
                  tick_label_offset, tick_label_format, tick_label_angle, 
                  font_size,
                  z_order=0, 
-                 scale='lin', log_base=10.0, axis_origin=None, minor_tick_length=0, color='black', custom_ticks=[[], []]):
+                 scale='lin', 
+                 log_base=10.0, 
+                 axis_origin=None, 
+                 minor_tick_length=0, 
+                 color='black', 
+                 custom_ticks=[[], []]):
     
     
     if scale == 'lin':

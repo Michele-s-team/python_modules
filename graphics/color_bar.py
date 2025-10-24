@@ -37,9 +37,11 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   shrink_value=const.colorbar_shrink_value, 
                   aspect_value=const.colorbar_aspect_value, 
                   tick_label_angle=0):
-
+    
     scaled_max = gr.scale(max_value, min_value, scale_factor)
+    
     colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
+    
 
     color_normalization = plt.Normalize(vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
     color_map = color_map_type(color_normalization(grid_values))
@@ -50,7 +52,6 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
     colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
     colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_position)
     
-
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size, tick_label_angle)
     
     
