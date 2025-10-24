@@ -913,14 +913,33 @@ def empty_panes(ax):
     ax.zaxis.pane.fill = False  # Bottom pane
 
 
-# set the ticks of colorbar 'colorar' equal to the vector of ticks values 'ticks'
-def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size, 
+'''
+draw the ticks of a colorbar
+Input values: 
+    * Mantatory: 
+        - 'colorbar': the colorbar object whose ticks will be drawn
+        - 'ticks': the list of ticks to be drawn
+        - 'min': the minimal value of the colorbar axis
+        - 'scale_factor': the scale factor of the colorbar axis
+    * Optional:
+        - 'font_size': the font size for the tick labels
+        - 'tick_label_angle': the rotation angle of the tick labels
+        - 'color': the color of the ticks
+        - 'line_width': the line width of the ticks
+        - 'z_order': the z order
+        - 'tick_lengt': the length of the ticks, expressed in units of the colorbar width
+        - tick_label_offset': offset of the tick labels, [tick_label_offset_x, tick_label_offset_y], expressed in units of the tick length and heigh, respectively
+        - 'prune': if True, ticks and tick labels which overlap will be removed 
+'''
+def set_colorbar_ticks(colorbar, ticks, min, scale_factor, 
+                       font_size=const.default_font_size, 
                        tick_label_angle=0,
                        color='black',
                        line_width=const.default_line_width,
                        z_order=const.default_z_order,
                        tick_length=const.default_tick_length,
-                       tick_label_offset=[0, 0]):
+                       tick_label_offset=[0, 0],
+                       prune=True):
         
         
     
@@ -928,35 +947,62 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor, font_size,
     colorbar.ax.tick_params(axis='y', length=0, width=0, which='both')
     colorbar.ax.set_yticklabels([])
 
-    latex_ticks = []
+    latex_tick_labels = []
+    tick_labels = []
+    tick_lines = []
 
     # run through all ticks
-    for tick in ticks:
+    for i in range(len(ticks)):
         # for each tick
         
-        if (tick > colorbar.ax.get_ylim()[0]) and (tick < colorbar.ax.get_ylim()[1]):
+        if (ticks[i] >= colorbar.ax.get_ylim()[0]) and (ticks[i] <= colorbar.ax.get_ylim()[1]):
             # the tick under consideration is within the interval of the colorbar -> plot it 
             
             # draw the tick line
-            colorbar.ax.plot(
+            tick_lines.append(
+                colorbar.ax.plot(
                 [colorbar.ax.get_xlim()[1], colorbar.ax.get_xlim()[1] + tick_length * (colorbar.ax.get_xlim()[1]- colorbar.ax.get_xlim()[0])],           # x-coordinates
-                [tick , tick],       
+                [ticks[i] , ticks[i]],       
                 color=color,       
                 linewidth=line_width,          
                 zorder=z_order,          
-                clip_on=False)        # Don't clip if outside bounds
+                clip_on=False)  # Don't clip if outside bounds
+            )
             
             # generate the tick label
-            latex_ticks.append(cal.to_latex_scientific(min + (tick - min) / scale_factor))
+            latex_tick_labels.append(cal.to_latex_scientific(min + (ticks[i] - min) / scale_factor))
                 
             # plot the tick labels    
-            colorbar.ax.text(
-                colorbar.ax.get_xlim()[0] + tick_label_offset[0] * (colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0]), 
-                tick + tick_label_offset[1] * (colorbar.ax.get_ylim()[1] - colorbar.ax.get_ylim()[0]), 
-                cal.to_latex_scientific(min + (tick - min) / scale_factor), 
-                fontsize=font_size, 
-                ha='center', va='center', 
-                rotation=tick_label_angle, zorder=z_order)
+            tick_labels.append(
+                colorbar.ax.text(
+                    colorbar.ax.get_xlim()[0] + tick_label_offset[0] * (colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0]), 
+                    ticks[i] + tick_label_offset[1] * (colorbar.ax.get_ylim()[1] - colorbar.ax.get_ylim()[0]), 
+                    cal.to_latex_scientific(min + (ticks[i] - min) / scale_factor), 
+                    fontsize=font_size, 
+                    ha='center', va='center', 
+                    rotation=tick_label_angle, zorder=z_order)
+            )
+      
+    
+    if prune:   
+        # remove ticks and tick lables for ticks that overlap 
+            
+        fig = colorbar.ax.figure
+        fig.canvas.draw()
+        renderer = fig.canvas.get_renderer()  # Get the renderer
+            
+        # run through all ticks
+        for i in range(len(tick_labels)):
+            for j in range(i + 1, len(tick_labels)):
+                
+                tick_label_1 = tick_labels[i].get_window_extent()
+                tick_label_2 = tick_labels[j].get_window_extent()
+                
+                if tick_label_1.overlaps(tick_label_2):
+                    # if two ticks overlap, remove one of them
+
+                    tick_labels[j].set_visible(False)
+                    tick_lines[j][0].remove()
             
     
 

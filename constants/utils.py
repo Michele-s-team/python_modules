@@ -17,3 +17,4 @@ default_tick_label_pad=0.1
 default_line_width=0.1
 
 default_z_order=0
+high_z_order=100
