@@ -94,19 +94,19 @@ def plot_3d_axis(ax, origin, length, direction_id,
             if tick_label_format != '':
                 ax.text(
                         scale(tick[0], origin[0], scale_factor[0]), 
-                        (origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], 
-                        (origin[2] + length[2] * axis_origin[0][1]),
+                        scale((origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], origin[1], scale_factor[1]), 
+                        scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
                     )
-        '''
+        
         # plot the axis label
         ax.text(
                 scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
-                (origin[1] + length[1] * axis_origin[1]) - axis_label_offset[1] * length[1], 
-                scale((origin[2] + length[2] * axis_origin[2]), origin[2], scale_factor[2]), 
+                (origin[1] + length[1] * axis_origin[0][0]) - axis_label_offset[1] * length[1], 
+                scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]), 
                 axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
             )
-        '''
+        
             
         
     '''
