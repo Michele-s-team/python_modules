@@ -55,7 +55,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         
         tick_list.append([
             tick,
-            text.float_to_latex(origin[direction_id] + (tick - origin[direction_id]) / scale_factor[direction_id], tick_label_format)
+            text.float_to_latex(tick, tick_label_format)
         ])
         
     # plot the axis
