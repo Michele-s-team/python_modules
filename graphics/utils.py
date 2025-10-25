@@ -102,7 +102,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         # plot the axis label
         ax.text(
                 scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
-                (origin[1] + length[1] * axis_origin[0][0]) - axis_label_offset[1] * length[1], 
+                scale((origin[1] + length[1] * axis_origin[0][0]) - axis_label_offset[0] * length[1], origin[1], scale_factor[1]), 
                 scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]), 
                 axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
             )
@@ -147,25 +147,34 @@ def plot_3d_axis(ax, origin, length, direction_id,
 
         # plot the axis label
         ax.text(
-                (origin[0] + length[0] * axis_origin[1][0]) - axis_label_offset[0] * length[0], 
+                scale((origin[0] + length[0] * axis_origin[1][0]) - axis_label_offset[1] * length[0], origin[0], scale_factor[0]), 
                 scale(origin[1] + length[1]/2, origin[1], scale_factor[1]), 
                 scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]), 
                 axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
             )
         
     
-    '''
+    
     if direction_id == 2:
         # plot a z axis
+        
+        axis_vector = []
+        axis_vector.append([scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0])] * 2)
+        axis_vector.append([scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2)
+        axis_vector.append([origin[direction_id], scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
+             
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, zorder=z_order)
+
         
         for tick in tick_list:
             
             # plot the tick line
             ax.plot(
                 [
-                    scale((origin[0] + length[0] * axis_origin[0]), origin[0], scale_factor[0]), scale((origin[0] + length[0] * axis_origin[0]) + tick_length[2] * length[0], (origin[0] + length[0] * axis_origin[0]), scale_factor[0])
+                    scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0]), 
+                    scale((origin[0] + length[0] * axis_origin[2][0]) + tick_length[2] * length[0], (origin[0] + length[0] * axis_origin[2][0]), scale_factor[0])
                 ],
-                [scale((origin[1] + length[1] * axis_origin[1]), origin[1], scale_factor[1])] * 2,
+                [scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2,
                 [scale(tick[0], origin[2], scale_factor[2])] * 2,
                 color=color, linewidth=line_width, zorder=z_order) 
             
@@ -173,13 +182,21 @@ def plot_3d_axis(ax, origin, length, direction_id,
             # plot the tick label
             if tick_label_format != '':
                 ax.text(
-                        (origin[0] + length[0] * axis_origin[0]) - tick_label_offset * length[0], 
-                        (origin[1] + length[1] * axis_origin[1]),
+                        scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
+                        scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
                         scale(tick[0], origin[2], scale_factor[2]), 
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
                     )
-        '''
+                
+        # plot the axis label
+        ax.text(
+                scale((origin[0] + length[0] * axis_origin[2][0]) - axis_label_offset[2] * length[0], origin[0], scale_factor[0]), 
+                scale((origin[1] + length[1] * axis_origin[2][1]) - axis_label_offset[2] * length[1], origin[1], scale_factor[1]), 
+                scale(origin[2] + length[2]/2, origin[2], scale_factor[2]), 
+                axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
+            )
         
+            
         
 
 
@@ -285,7 +302,7 @@ def plot_3d_axes(ax, origin, length,
     
     dim = 3
 
-    for i in range(2):    
+    for i in range(3):    
         plot_3d_axis(ax, origin, length, i, 
                     scale_factor=scale_factor,
                     tick_length=tick_length,
