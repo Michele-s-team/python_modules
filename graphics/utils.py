@@ -79,25 +79,28 @@ def plot_3d_axis(ax, origin, length, direction_id,
 
               
         for tick in tick_list:
-                
-            # plot the tick line
-            ax.plot(
-                [scale(tick[0], origin[0], scale_factor[0])] * 2,
-                [
-                    scale((origin[1] + length[1] * axis_origin[0][0]), origin[1], scale_factor[1]), 
-                    scale((origin[1] + length[1] * axis_origin[0][0]) + tick_length[0] * length[1], (origin[1] + length[1] * axis_origin[0][0]), scale_factor[1])
-                ],
-                [scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2,
-                color=color, linewidth=line_width, zorder=z_order) 
             
-            # plot the tick label
-            if tick_label_format != '':
-                ax.text(
-                        scale(tick[0], origin[0], scale_factor[0]), 
-                        scale((origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], origin[1], scale_factor[1]), 
-                        scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
-                        tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
-                    )
+            if (tick[0] >= ax.get_xlim()[0]) and (tick[0] <= ax.get_xlim()[1]):
+                # the tick under consideration is within the axis interval -> plot its tick line and its tick label
+                
+                # plot the tick line
+                ax.plot(
+                    [scale(tick[0], origin[0], scale_factor[0])] * 2,
+                    [
+                        scale((origin[1] + length[1] * axis_origin[0][0]), origin[1], scale_factor[1]), 
+                        scale((origin[1] + length[1] * axis_origin[0][0]) + tick_length[0] * length[1], (origin[1] + length[1] * axis_origin[0][0]), scale_factor[1])
+                    ],
+                    [scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2,
+                    color=color, linewidth=line_width, zorder=z_order) 
+                
+                # plot the tick label
+                if tick_label_format != '':
+                    ax.text(
+                            scale(tick[0], origin[0], scale_factor[0]), 
+                            scale((origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], origin[1], scale_factor[1]), 
+                            scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
+                            tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
+                        )
         
         # plot the axis label
         ax.text(
@@ -125,25 +128,29 @@ def plot_3d_axis(ax, origin, length, direction_id,
 
         
         for tick in tick_list:
-                
-            # plot the tick line
-            ax.plot(
-                [
-                    scale((origin[0] + length[0] * axis_origin[1][0]), origin[0], scale_factor[0]), 
-                    scale((origin[0] + length[0] * axis_origin[1][0]) + tick_length[1] * length[0], (origin[0] + length[0] * axis_origin[1][0]), scale_factor[0])
-                ],
-                [scale(tick[0], origin[1], scale_factor[1])] * 2,
-                [scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2,
-                color=color, linewidth=line_width, zorder=z_order) 
-          
-            # plot the tick label
-            if tick_label_format != '':
-                ax.text(
-                        scale((origin[0] + length[0] * axis_origin[1][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
-                        scale(tick[0], origin[1], scale_factor[1]), 
-                        scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]),
-                        tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
-                    )
+            
+            if (tick[0] >= ax.get_ylim()[0]) and (tick[0] <= ax.get_ylim()[1]):
+                # the tick under consideration is within the axis interval -> plot its tick line and its tick label
+        
+                    
+                # plot the tick line
+                ax.plot(
+                    [
+                        scale((origin[0] + length[0] * axis_origin[1][0]), origin[0], scale_factor[0]), 
+                        scale((origin[0] + length[0] * axis_origin[1][0]) + tick_length[1] * length[0], (origin[0] + length[0] * axis_origin[1][0]), scale_factor[0])
+                    ],
+                    [scale(tick[0], origin[1], scale_factor[1])] * 2,
+                    [scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2,
+                    color=color, linewidth=line_width, zorder=z_order) 
+            
+                # plot the tick label
+                if tick_label_format != '':
+                    ax.text(
+                            scale((origin[0] + length[0] * axis_origin[1][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
+                            scale(tick[0], origin[1], scale_factor[1]), 
+                            scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]),
+                            tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
+                        )
 
         # plot the axis label
         ax.text(
@@ -168,25 +175,29 @@ def plot_3d_axis(ax, origin, length, direction_id,
         
         for tick in tick_list:
             
-            # plot the tick line
-            ax.plot(
-                [
-                    scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0]), 
-                    scale((origin[0] + length[0] * axis_origin[2][0]) + tick_length[2] * length[0], (origin[0] + length[0] * axis_origin[2][0]), scale_factor[0])
-                ],
-                [scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2,
-                [scale(tick[0], origin[2], scale_factor[2])] * 2,
-                color=color, linewidth=line_width, zorder=z_order) 
-            
+            if (tick[0] >= ax.get_zlim()[0]) and (tick[0] <= ax.get_zlim()[1]):
+                # the tick under consideration is within the axis interval -> plot its tick line and its tick label
         
-            # plot the tick label
-            if tick_label_format != '':
-                ax.text(
-                        scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
-                        scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
-                        scale(tick[0], origin[2], scale_factor[2]), 
-                        tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
-                    )
+                
+                # plot the tick line
+                ax.plot(
+                    [
+                        scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0]), 
+                        scale((origin[0] + length[0] * axis_origin[2][0]) + tick_length[2] * length[0], (origin[0] + length[0] * axis_origin[2][0]), scale_factor[0])
+                    ],
+                    [scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2,
+                    [scale(tick[0], origin[2], scale_factor[2])] * 2,
+                    color=color, linewidth=line_width, zorder=z_order) 
+                
+            
+                # plot the tick label
+                if tick_label_format != '':
+                    ax.text(
+                            scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
+                            scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
+                            scale(tick[0], origin[2], scale_factor[2]), 
+                            tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
+                        )
                 
         # plot the axis label
         ax.text(
