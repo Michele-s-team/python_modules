@@ -92,7 +92,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
             # plot the tick label
             if tick_label_format != '':
                 ax.text(
-                        tick[0], 
+                        scale(tick[0], origin[0], scale_factor[0]), 
                         (origin[1] + length[1] * axis_origin[1]) - tick_label_offset * length[1], 
                         (origin[2] + length[2] * axis_origin[2]),
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
@@ -125,7 +125,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
             if tick_label_format != '':
                 ax.text(
                         (origin[0] + length[0] * axis_origin[0]) - tick_label_offset * length[0], 
-                        tick[0], 
+                        scale(tick[0], origin[1], scale_factor[1]), 
                         (origin[2] + length[2] * axis_origin[2]),
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
                     )
@@ -152,16 +152,16 @@ def plot_3d_axis(ax, origin, length, direction_id,
                 [scale(tick[0], origin[2], scale_factor[2])] * 2,
                 color=color, linewidth=line_width, zorder=z_order) 
             
-        '''
+        
             # plot the tick label
             if tick_label_format != '':
                 ax.text(
-                        tick[0], 
-                        (origin[1] + length[1] * axis_origin[1]) - tick_label_offset * length[1], 
-                        (origin[2] + length[2] * axis_origin[2]),
+                        (origin[0] + length[0] * axis_origin[0]) - tick_label_offset * length[0], 
+                        (origin[1] + length[1] * axis_origin[1]),
+                        scale(tick[0], origin[2], scale_factor[2]), 
                         tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
                     )
-
+        '''
         # plot the axis label
         ax.text(
                 scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
