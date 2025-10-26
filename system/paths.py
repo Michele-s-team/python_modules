@@ -1,5 +1,5 @@
 # fork: include for local
-root_path = '/Users/michelecastellana/Documents/paper_membrane/'
+root_path = '/Users/michelecastellana/Documents/latex_modules/finite_elements/'
 #fork: include for abacus
 # latex_files_path='/mnt/beegfs/home/mcastel1/'
 # fork: include for mesopsl

@@ -278,7 +278,7 @@ def plot_3d_axes(ax, origin, length,
                  axis_origin=None,
                  axis_label=['','',''], 
                  axis_label_offset=[0, 0, 0], 
-                 tick_length=[const.default_tick_length, const.default_tick_length],
+                 tick_length=[const.default_tick_length] * 3,
                  tick_label_offset=[0, 0, 0], 
                  margin=[0, 0, 0],
                  tick_label_format=[const.default_label_format,const.default_label_format, const.default_label_format], 
@@ -288,15 +288,28 @@ def plot_3d_axes(ax, origin, length,
     
         # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
-        axis_origin = [0,0,0]
+        axis_origin = [[0] * 2] * 3
         
     ax.set(
             xlim=[
-                min(origin[0], (origin[0] + length[0] * axis_origin[1][0])), 
-                max(origin[0] + length[0] * (1 + margin[0]), (origin[0] + length[0] * axis_origin[1][0]))], 
+                min(
+                    origin[0], 
+                    (origin[0] + length[0] * axis_origin[1][0]),
+                    (origin[0] + length[0] * axis_origin[2][0])
+                    ), 
+                max(
+                    origin[0] + length[0] * (1 + margin[0]), 
+                    (origin[0] + length[0] * axis_origin[1][0]),
+                    (origin[0] + length[0] * axis_origin[2][0])
+                    )], 
             ylim=[
-                min(origin[1], (origin[1] + length[1] * axis_origin[0][1])), 
-                max(origin[1] + length[1] * (1+margin[1]), (origin[1] + length[1] * axis_origin[0][1]))],
+                min(
+                    origin[1], 
+                    (origin[1] + length[1] * axis_origin[0][1])
+                    ), 
+                max(
+                    origin[1] + length[1] * (1+margin[1]), 
+                    (origin[1] + length[1] * axis_origin[0][1]))],
             zlim=[min(
                         origin[2], 
                         (origin[2] + length[2] * axis_origin[0][1]),
