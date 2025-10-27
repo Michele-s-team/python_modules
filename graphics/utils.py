@@ -37,6 +37,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
                  axis_label_offset=[0, 0, 0], 
                  tick_label_offset=0, 
                  tick_label_format=const.default_label_format, 
+                 tick_label_angle=const.default_tick_label_angle,
                  font_size=const.default_font_size, 
                  axis_origin=None,
                  color='black',
@@ -83,6 +84,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
             if (tick[0] >= ax.get_xlim()[0]) and (tick[0] <= ax.get_xlim()[1]):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
                 
+                '''
                 # plot the tick line
                 ax.plot(
                     [scale(tick[0], origin[0], scale_factor[0])] * 2,
@@ -101,7 +103,19 @@ def plot_3d_axis(ax, origin, length, direction_id,
                             scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
                             tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
                         )
-        
+                '''
+                
+                ti.plot_3d_tick(
+                                ax, direction_id, tick[0], tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                scale_factor=scale_factor,
+                                axis_origin=axis_origin,
+                                font_size=font_size,
+                                z_order=z_order,
+                                color=color,
+                                line_width=line_width,
+                                tick_label_angle=tick_label_angle
+                                )
+                
         # plot the axis label
         ax.text(
                 scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
