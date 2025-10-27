@@ -4,7 +4,7 @@ import pandas as pd
 import proplot as pplt
 
 import calculus.utils as cal
-import constants as const
+import constants.utils as const
 import list.utils as lis
 import text.utils as text
 
@@ -97,7 +97,7 @@ Input values:
     - 'tick_label_angle' [optional]: the rotation angle with which the tick labels will be drawn
 '''
 
-def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
+def plot_2d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
               origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=const.default_line_width, scale='lin', tick_label_angle=0):
     
     if axis_origin is None:

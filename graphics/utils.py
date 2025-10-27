@@ -439,7 +439,7 @@ def plot_2d_axis(ax, origin, length, direction,
                             ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
                 '''
                 
-                ti.plot_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
+                ti.plot_2d_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
 
             # plot the x axis label
             if axis_label is not None:
@@ -465,7 +465,7 @@ def plot_2d_axis(ax, origin, length, direction,
                             ha='center', va='center', zorder=z_order, rotation=tick_label_angle)         
                 '''
                 
-                ti.plot_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
+                ti.plot_2d_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
                 
             # plot the axis label
             if axis_label is not None: 
@@ -500,7 +500,7 @@ def plot_2d_axis(ax, origin, length, direction,
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=0)
                         '''
                         
-                        ti.plot_tick(ax, 'x', tick, tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                        ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
                         
                     n_plotted_ticks += 1
 
@@ -533,7 +533,7 @@ def plot_2d_axis(ax, origin, length, direction,
                         text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                 '''
                 
-                ti.plot_tick(ax, 'x', extra_tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                ti.plot_2d_tick(ax, 'x', extra_tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
                 
                 if (extra_tick < (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2):
                     # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[0] + length[0])
@@ -569,7 +569,7 @@ def plot_2d_axis(ax, origin, length, direction,
                         axis_max = np.emath.logn(log_base, tick)
                                      
                     #plot the custom tick    
-                    ti.plot_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                    ti.plot_2d_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
   
   
             # plot the x axis
@@ -598,7 +598,7 @@ def plot_2d_axis(ax, origin, length, direction,
                                 text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                         '''
                         
-                        ti.plot_tick(ax, 'y', tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                        ti.plot_2d_tick(ax, 'y', tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
                         
                         n_plotted_ticks += 1
                         
@@ -632,7 +632,7 @@ def plot_2d_axis(ax, origin, length, direction,
                             text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                     '''
                     
-                    ti.plot_tick(ax, 'y', extra_tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                    ti.plot_2d_tick(ax, 'y', extra_tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
                         
                     if (extra_tick < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
                         # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[1] + length[1])
@@ -668,7 +668,7 @@ def plot_2d_axis(ax, origin, length, direction,
                             axis_max = np.emath.logn(log_base, tick)
                                         
                         #plot the custom tick    
-                        ti.plot_tick(ax, 'y', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                        ti.plot_2d_tick(ax, 'y', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
 
                 # plot the y axis
                 ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], 
