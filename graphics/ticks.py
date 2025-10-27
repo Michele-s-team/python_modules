@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import pandas as pd
 import proplot as pplt
 
 import calculus.utils as cal
+import constants as const
 import list.utils as lis
 import text.utils as text
 
@@ -98,7 +98,7 @@ Input values:
 '''
 
 def plot_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
-              origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=0.1, scale='lin', tick_label_angle=0):
+              origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=const.default_line_width, scale='lin', tick_label_angle=0):
     
     if axis_origin is None:
         axis_origin = origin
