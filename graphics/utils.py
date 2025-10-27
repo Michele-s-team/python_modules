@@ -137,13 +137,14 @@ def plot_3d_axis(ax, origin, length, direction_id,
         ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
         
-        for tick in tick_list:
+        for i in range(len(tick_list)):
             
-            if (tick[0] >= ax.get_ylim()[0]) and (tick[0] <= ax.get_ylim()[1]):
+            # plot major tick
+            if (tick_list[i][0] >= ax.get_ylim()[0]) and (tick_list[i][0] <= ax.get_ylim()[1]):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
         
                 ti.plot_3d_tick(
-                    ax, direction_id, tick[0], tick[1], tick_length, tick_label_offset, tick_label_format, origin, length, 
+                    ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, 
                     scale_factor=scale_factor,
                     axis_origin=axis_origin,
                     font_size=font_size,
@@ -152,6 +153,20 @@ def plot_3d_axis(ax, origin, length, direction_id,
                     line_width=line_width,
                     tick_label_angle=tick_label_angle
                 )
+            
+            # plot minor ticks
+            if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
+                for minor_rick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                    ti.plot_3d_tick(
+                                ax, direction_id, minor_rick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                scale_factor=scale_factor,
+                                axis_origin=axis_origin,
+                                font_size=font_size,
+                                z_order=z_order,
+                                color=color,
+                                line_width=line_width,
+                                tick_label_angle=tick_label_angle
+                    )
 
         # plot the axis label
         ax.text(
@@ -174,13 +189,14 @@ def plot_3d_axis(ax, origin, length, direction_id,
         ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
         
-        for tick in tick_list:
+        for i in range(len(tick_list)):
             
-            if (tick[0] >= ax.get_zlim()[0]) and (tick[0] <= ax.get_zlim()[1]):
+            # plot major tick
+            if (tick_list[i][0] >= ax.get_zlim()[0]) and (tick_list[i][0] <= ax.get_zlim()[1]):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
                    
                 ti.plot_3d_tick(
-                    ax, direction_id, tick[0], tick[1], tick_length, tick_label_offset, tick_label_format, origin, length, 
+                    ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, 
                     scale_factor=scale_factor,
                     axis_origin=axis_origin,
                     font_size=font_size,
@@ -189,6 +205,20 @@ def plot_3d_axis(ax, origin, length, direction_id,
                     line_width=line_width,
                     tick_label_angle=tick_label_angle
                 )
+                
+            # plot minor ticks
+            if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
+                for minor_rick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                    ti.plot_3d_tick(
+                                ax, direction_id, minor_rick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                scale_factor=scale_factor,
+                                axis_origin=axis_origin,
+                                font_size=font_size,
+                                z_order=z_order,
+                                color=color,
+                                line_width=line_width,
+                                tick_label_angle=tick_label_angle
+                    )
                 
         # plot the axis label
         ax.text(
@@ -1288,13 +1318,13 @@ the surface and the surface grid are returned
 '''
 
 
-def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surface_alpha, line_width_grid):
+def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surface_alpha, grid_line_width):
     surface_grid = ax.plot_surface(X, Y, Z,
                                    edgecolor='black',
                                    rstride=grid_stride,
                                    cstride=grid_stride,
                                    alpha=0,
-                                   linewidth=line_width_grid,
+                                   linewidth=grid_line_width,
                                    shade=False
                                    )
     surface_grid.set_facecolor((0, 0, 0, 0))  # RGBA with alpha=0 (fully transparent)
