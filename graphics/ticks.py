@@ -148,7 +148,7 @@ def plot_2d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
 plot a tick on a three-dimensional axis
 
 '''
-def plot_3d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, origin, length, 
+def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offset, tick_label_format, origin, length, 
                  scale_factor = [1] * 3,
                  axis_origin=[0] * 3, font_size=const.default_font_size, z_order=const.default_z_order, color='black', line_width=const.default_line_width, tick_label_angle=const.default_tick_label_angle):
     
@@ -165,12 +165,12 @@ def plot_3d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
             color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
         
         # plot the tick label
-        if tick_label_format != '':
+        if label != None:
             ax.text(
                     gr.scale(value, origin[0], scale_factor[0]), 
                     gr.scale((origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], origin[1], scale_factor[1]), 
                     gr.scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
-                    text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order
+                    label, fontsize=font_size, ha='center', va='center', zorder=z_order
                 )
             
     elif axis_direction == 1:
@@ -185,12 +185,12 @@ def plot_3d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
             color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
     
         # plot the tick label
-        if tick_label_format != '':
+        if label != None:
             ax.text(
                     gr.scale((origin[0] + length[0] * axis_origin[1][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
                     gr.scale(value, origin[1], scale_factor[1]), 
                     gr.scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]),
-                    text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order
+                    label, fontsize=font_size, ha='center', va='center', zorder=z_order
                 )
             
     elif axis_direction == 2:
@@ -207,11 +207,11 @@ def plot_3d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
         
     
         # plot the tick label
-        if tick_label_format != '':
+        if label != None:
             ax.text(
                     gr.scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
                     gr.scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
                     gr.scale(value, origin[2], scale_factor[2]), 
-                    text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order
+                    label, fontsize=font_size, ha='center', va='center', zorder=z_order
                 )
     

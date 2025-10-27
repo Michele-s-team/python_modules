@@ -13,6 +13,7 @@ colorbar_shrink_value=0.2
 colorbar_aspect_value=10
 
 default_tick_length=0.1
+default_minor_tick_length=0.01
 default_tick_label_pad=0.1
 default_line_width=0.1
 default_tick_label_angle=0
