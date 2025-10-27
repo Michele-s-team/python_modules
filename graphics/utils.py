@@ -75,7 +75,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         axis_vector.append([scale((origin[1] + length[1] * axis_origin[0][0]), origin[1], scale_factor[1])] * 2)
         axis_vector.append([scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2)
             
-        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, zorder=z_order)
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
               
         for tick in tick_list:
@@ -91,7 +91,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
                         scale((origin[1] + length[1] * axis_origin[0][0]) + tick_length[0] * length[1], (origin[1] + length[1] * axis_origin[0][0]), scale_factor[1])
                     ],
                     [scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2,
-                    color=color, linewidth=line_width, zorder=z_order) 
+                    color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
                 
                 # plot the tick label
                 if tick_label_format != '':
@@ -124,7 +124,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
             
         axis_vector.append([scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2)
             
-        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, zorder=z_order)
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
         
         for tick in tick_list:
@@ -141,7 +141,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
                     ],
                     [scale(tick[0], origin[1], scale_factor[1])] * 2,
                     [scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2,
-                    color=color, linewidth=line_width, zorder=z_order) 
+                    color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
             
                 # plot the tick label
                 if tick_label_format != '':
@@ -170,7 +170,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         axis_vector.append([scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2)
         axis_vector.append([origin[direction_id], scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
              
-        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, zorder=z_order)
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
         
         for tick in tick_list:
@@ -187,7 +187,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
                     ],
                     [scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2,
                     [scale(tick[0], origin[2], scale_factor[2])] * 2,
-                    color=color, linewidth=line_width, zorder=z_order) 
+                    color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
                 
             
                 # plot the tick label
