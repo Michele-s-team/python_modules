@@ -172,4 +172,46 @@ def plot_3d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
                     gr.scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
                     text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order
                 )
+            
+    elif axis_direction == 1:
+        # plot the tick line
+        ax.plot(
+            [
+                gr.scale((origin[0] + length[0] * axis_origin[1][0]), origin[0], scale_factor[0]), 
+                gr.scale((origin[0] + length[0] * axis_origin[1][0]) + tick_length[1] * length[0], (origin[0] + length[0] * axis_origin[1][0]), scale_factor[0])
+            ],
+            [gr.scale(value, origin[1], scale_factor[1])] * 2,
+            [gr.scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2,
+            color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
+    
+        # plot the tick label
+        if tick_label_format != '':
+            ax.text(
+                    gr.scale((origin[0] + length[0] * axis_origin[1][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
+                    gr.scale(value, origin[1], scale_factor[1]), 
+                    gr.scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]),
+                    text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order
+                )
+            
+    elif axis_direction == 2:
+        
+        # plot the tick line
+        ax.plot(
+            [
+                gr.scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0]), 
+                gr.scale((origin[0] + length[0] * axis_origin[2][0]) + tick_length[2] * length[0], (origin[0] + length[0] * axis_origin[2][0]), scale_factor[0])
+            ],
+            [gr.scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2,
+            [gr.scale(value, origin[2], scale_factor[2])] * 2,
+            color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
+        
+    
+        # plot the tick label
+        if tick_label_format != '':
+            ax.text(
+                    gr.scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
+                    gr.scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
+                    gr.scale(value, origin[2], scale_factor[2]), 
+                    text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order
+                )
     
