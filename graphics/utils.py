@@ -341,22 +341,6 @@ def plot_3d_axes(ax, origin, length,
 
 
 
-    '''
-    # plot y axis
-    plot_3d_axis(ax, origin, lengths[1], "y", scale_factor[1],
-                 tick_length[1] * lengths[0] * scale_factor[0], 0.3, axis_label[1],
-                 axis_label_offset[1] * lengths[0] * scale_factor[0],
-                 tick_label_offset=[0,0][1] * lengths[0] * scale_factor[0], tick_label_format[1], font_size, z_order)
-
-    # plot z axis
-    plot_3d_axis(ax, origin, lengths[2], "z", scale_factor[2],
-                 tick_length[2] * (lengths[0] * scale_factor[0] + lengths[1] * scale_factor[1]) / 2, 0.3,
-                 axis_label[2],
-                 axis_label_offset[2] * (lengths[0] * scale_factor[0] + lengths[1] * scale_factor[1]) / 2,
-                 tick_label_offset=[0,0][2] * (lengths[0] * scale_factor[0] + lengths[1] * scale_factor[1]) / 2,
-                 tick_label_format[2], font_size, z_order)
-    '''
-
 
 def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axis_labels, axis_label_offsets,
                               tick_lengths,

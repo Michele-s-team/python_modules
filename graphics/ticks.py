@@ -5,6 +5,7 @@ import proplot as pplt
 
 import calculus.utils as cal
 import constants.utils as const
+import graphics.utils as gr
 import list.utils as lis
 import text.utils as text
 
@@ -77,7 +78,7 @@ def generate_ticks(min, max, custom_ticks=None, scale='lin', log_base=10):
 
 
 '''
-plot a tick on an axis
+plot a tick on a two-dimensional axis
 Input values: 
     - 'ax': the matplotlib axis
     - 'axis_direction': 'x' or 'y', the direction of the axis
@@ -142,3 +143,32 @@ def plot_2d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
             
             ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value, 
                 text.float_to_latex(log_base**value, tick_label_format[1]), fontsize=font_size, ha='center', va='center', zorder=z_order)
+
+'''
+plot a tick on a three-dimensional axis
+
+'''
+def plot_3d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, origin, length, 
+                 axis_origin=[0] * 3, font_size=const.default_font_size, z_order=const.default_z_order, color='black', line_width=const.default_line_width, tick_label_angle=const.default_tick_label_angle):
+    
+    if axis_direction == 0:
+    
+        # plot the tick line
+        ax.plot(
+            [gr.scale(value, origin[0], scale_factor[0])] * 2,
+            [
+                gr.scale((origin[1] + length[1] * axis_origin[0][0]), origin[1], scale_factor[1]), 
+                gr.scale((origin[1] + length[1] * axis_origin[0][0]) + tick_length[0] * length[1], (origin[1] + length[1] * axis_origin[0][0]), scale_factor[1])
+            ],
+            [gr.scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2,
+            color=color, linewidth=line_width, clip_on=False, zorder=z_order) 
+        
+        # plot the tick label
+        if tick_label_format != '':
+            ax.text(
+                    gr.scale(value, origin[0], scale_factor[0]), 
+                    gr.scale((origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], origin[1], scale_factor[1]), 
+                    gr.scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
+                    tick[1], fontsize=font_size, ha='center', va='center', zorder=z_order
+                )
+    

@@ -15,6 +15,7 @@ colorbar_aspect_value=10
 default_tick_length=0.1
 default_tick_label_pad=0.1
 default_line_width=0.1
+default_tick_label_angle=0
 
 default_z_order=0
 high_z_order=100
