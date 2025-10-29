@@ -39,17 +39,39 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   tick_label_angle=0,
                   tick_length=const.default_tick_length,
                   tick_label_offset=[0, 0],
-                  line_width=const.default_line_width):
+                  line_width=const.default_line_width,
+                  mappable=None):
     
-    scaled_max = gr.scale(max_value, min_value, scale_factor)
     
-    colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
-    
-    color_normalization = plt.Normalize(vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
-    color_map = color_map_type(color_normalization(grid_values))
 
-    mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
-    mappable.set_array(grid_values)
+    
+    if mappable is None:
+        # the user provided no map between the values of the field and the colors -> build this map.
+         
+        scaled_max = gr.scale(max_value, min_value, scale_factor)
+        
+        color_normalization = plt.Normalize(vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
+        color_map = color_map_type(color_normalization(grid_values))
+
+        mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
+        mappable.set_array(grid_values)
+        
+    else:
+        # the user provided the mappable argument, which defines min_value, max_value and color_map
+        
+        norm = mappable.norm
+        min_value = norm.vmin
+        max_value = norm.vmax
+        
+        color_map = mappable.cmap
+        
+        scaled_max = gr.scale(max_value, min_value, scale_factor)
+
+        
+    colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
+
+
+    
 
     colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
     colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_position)
@@ -63,7 +85,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
     colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
 
     # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
-    colorbar.ax.yaxis.set_label_coords(label_pad[0], label_pad[1])  # Adjust -1.2 for spacing
+    colorbar.ax.yaxis.set_label_coords(label_pad[0], 0.5 + label_pad[1])  # Adjust -1.2 for spacing
     colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
 
     return color_map

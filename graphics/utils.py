@@ -415,25 +415,37 @@ Input values:
     - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
     - 'custom_ticks' [optional]: a list of custom ticks to be plotted on top of the automated ones, in the form [[custom_tick_x_0, custom_tick_x_1, ...], [custom_tick_y_0, custom_tick_y_1, ...]]
 '''
-def plot_2d_axis(ax, origin, length, direction_id, 
-                 tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
-                 tick_label_offset, tick_label_format, tick_label_angle, 
-                 font_size,
-                 z_order=0, 
-                 scale='lin', 
-                 log_base=10.0, 
-                 axis_origin=None, 
-                 minor_tick_length=0, 
-                 color='black', 
-                 custom_ticks=[[], []]):
+def plot_2d_axis(
+                    ax, origin, length, direction_id, 
+                    axis_label='',
+                    z_order=0, 
+                    scale='lin', 
+                    log_base=10.0, 
+                    axis_origin=None, 
+                    color='black', 
+                    axis_label_offset=[0]*2,
+                    tick_label_offset=[0]*2,
+                    n_minor_ticks=[None] * 2,
+                    tick_label_format=['f'] *2, 
+                    minor_tick_length=[const.default_minor_tick_length] * 2,
+                    custom_ticks=[[], []],
+                    clip_on=False,
+                    axis_label_angle=0,
+                    tick_length=const.default_tick_length,
+                    line_width=const.default_line_width,
+                    tick_label_angle=0,
+                    font_size=const.default_font_size
+                ):
     
+    
+    dim = 2
     
     if scale == 'lin':
         # plot the axis in linear scale
         
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
         if axis_origin is None: 
-            axis_origin = [0] * 3
+            axis_origin = [0] * dim
     
         if direction_id == 0:
 
@@ -441,18 +453,27 @@ def plot_2d_axis(ax, origin, length, direction_id,
             
             ax.plot(
                 [origin[0], origin[0] + length[0]], 
-                [origin[1] + length[1] * axis_origin[0][0]] * 2, 
-                color=color, linewidth=line_width, zorder=z_order)
+                [origin[1] + length[1] * axis_origin[0]] * dim, 
+                color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)
 
-            for tick in ticks:
+            for i in range(len(ticks)):
       
-                ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
+                # plot major tick
+                ti.plot_2d_tick(ax, direction_id, ticks[i], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+                
+                # plot minor ticks
+                if (i < len(ticks)-1) and (n_minor_ticks[direction_id] is not None):
+                
+                    for minor_rick in np.linspace(ticks[i][0], ticks[i+1][0], n_minor_ticks[direction_id]+2):
+                        
+                        ti.plot_2d_tick(ax, direction_id, minor_tick, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+
 
             # plot the x axis label
             if axis_label is not None:
-                ax.text(origin[0] + length[0] / 2, axis_origin[1] - axis_label_offset[1], rf'${axis_label}$', 
-                        fontsize=font_size, ha='center', va='center',
-                        rotation=axis_label_angle, zorder=z_order)
+                ax.text(origin[0] + length[0] / 2, 
+                        origin[1] + length[1] * axis_origin[0] - axis_label_offset[0], 
+                        rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=z_order, clip_on=clip_on)
             
 
 
@@ -460,25 +481,22 @@ def plot_2d_axis(ax, origin, length, direction_id,
 
             ticks = ti.generate_ticks(origin[1], origin[1] + length[1])
 
-            ax.plot([axis_origin[0], axis_origin[0]], [origin[1], origin[1] + length[1]], color=color, linewidth=line_width, zorder=z_order)
+            ax.plot(
+                [origin[0] + length[0] * axis_origin[1]] * dim, 
+                [origin[1], origin[1] + length[1]], 
+                color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)
 
             for tick in ticks:
-                
-                '''
-                ax.plot([axis_origin[0], axis_origin[0] + tick_length * length[0]], [tick, tick], color=color, linewidth=line_width,
-                        zorder=z_order)  
-                if tick_label_format[1] != '':
-                    ax.text(axis_origin[0] - tick_label_offset[0], tick, text.float_to_latex(tick, tick_label_format[1]), fontsize=font_size,
-                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)         
-                '''
-                
-                ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
+    
+                ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
                 
             # plot the axis label
             if axis_label is not None: 
-                ax.text(axis_origin[0] - axis_label_offset[0], origin[1] + length[1] / 2, rf'${axis_label}$', 
+                ax.text(origin[0] + length[0] * axis_origin[1] - axis_label_offset[1], 
+                        origin[1] + length[1] / 2, 
+                        rf'${axis_label}$', 
                         fontsize=font_size, ha='center', va='center',
-                        rotation=axis_label_angle, zorder=z_order)
+                        rotation=axis_label_angle, zorder=z_order, clip_on=clip_on)
             
     elif scale == 'log':  
         # plot the axis in log scale 
@@ -498,14 +516,6 @@ def plot_2d_axis(ax, origin, length, direction_id,
                     # plot the major tick
                     if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
                     # if the tick falls within the boundaries of the axis, plot it 
-                    
-                        '''
-                        ax.plot([tick, tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
-                                zorder=0)  
-                        
-                        ax.text(tick, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
-                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=0)
-                        '''
                         
                         ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
                         
@@ -1218,14 +1228,18 @@ Input values:
 '''
 
 def plot_2d_axes(ax, origin, length, \
-                 tick_length=[const.default_tick_length, const.default_tick_length], line_width=0.1, \
+                 tick_length=[const.default_tick_length] * 2, line_width=0.1, \
                  axis_label_angle=[0,0], \
                  axis_label_offset=[0,0], tick_label_offset=[0,0],
                  tick_label_format=[const.default_label_format,const.default_label_format],
                  font_size=[const.default_font_size, const.default_font_size], 
                  z_order=0, 
                  axis_origin=None, tick_label_angle=[0, 0], axis_bounds=None, 
-                 margin=[0,0], axis_label=[None,None], plot_label_offset=[0,0], plot_label_font_size=const.default_font_size, plot_label=[None,None]):
+                 margin=[0,0], axis_label=[None,None], 
+                 plot_label_offset=[0,0], 
+                 plot_label_font_size=const.default_font_size, 
+                 plot_label=[None,None],
+                 n_minor_ticks=[None] * 2):
     
     dim = 2
     
@@ -1236,25 +1250,28 @@ def plot_2d_axes(ax, origin, length, \
     if axis_bounds is None: 
         # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
         
+        # gr.set_2d_axes_limits(ax, [0, 0], [parameters['L'], parameters['h']], [0, 0])
+
+        
         ax.set(
             xlim=[
                 min(
                     origin[0], 
-                    (origin[0] + length[0] * axis_origin[1][0])
+                    (origin[0] + length[0] * axis_origin[1])
                     ), 
                 max(
                     origin[0] + length[0] * (1 + margin[0]), 
-                    (origin[0] + length[0] * axis_origin[1][0])
+                    (origin[0] + length[0] * axis_origin[1])
                     )
                 ], 
             ylim=[
                 min(
                     origin[1], 
-                    (origin[1] + length[1] * axis_origin[0][1]),
+                    (origin[1] + length[1] * axis_origin[0]),
                     ), 
                 max(
                     origin[1] + length[1]*(1 + margin[1]), 
-                    (origin[1] + length[1] * axis_origin[0][1])
+                    (origin[1] + length[1] * axis_origin[0])
                     )
                 ]
             )    
@@ -1265,19 +1282,24 @@ def plot_2d_axes(ax, origin, length, \
                 xlim=[axis_bounds[0][0] - length[0] * margin[0], axis_bounds[0][1] + length[0] * margin[0]], 
                 ylim=[axis_bounds[1][0] - length[1] * margin[1], axis_bounds[1][1] + length[1] * margin[1]]
                 )
+    
+    #plot the axes 
+    for i in range(2):    
             
-            
-    # plot the x axis
-    plot_2d_axis(ax, origin, length, 0, tick_length, line_width, \
-                 axis_label[0], lis.multiply(axis_label_offset[0], length), axis_label_angle[0], lis.multiply(tick_label_offset[0], length),
-                 tick_label_format, tick_label_angle[0], font_size[0], z_order, axis_origin=axis_origin)
+        plot_2d_axis(
+                        ax, origin, length, i, 
+                        tick_length=tick_length, 
+                        line_width=line_width, 
+                        axis_label=axis_label[i], 
+                        axis_label_offset=lis.multiply(axis_label_offset[i], length), axis_label_angle=axis_label_angle[i], 
+                        tick_label_offset=lis.multiply(tick_label_offset[i], length),
+                        tick_label_format=tick_label_format, 
+                        tick_label_angle=tick_label_angle[i], 
+                        font_size=font_size[i], 
+                        z_order=z_order, 
+                        axis_origin=axis_origin
+                    )
 
-    '''
-    # plot the y axis
-    plot_2d_axis(ax, origin, length, 1, tick_length, line_width, \
-                 axis_label[1], lis.multiply(axis_label_offset[1], length), axis_label_angle[1], lis.multiply(tick_label_offset[1], length),
-                 tick_label_format, tick_label_angle[1], font_size[1], z_order, axis_origin=axis_origin)
-    '''
     
     if plot_label != [None, None]:
         # draw the panel label
@@ -1522,28 +1544,44 @@ def interpolate_1d_function(data, n_bins, x_min=None, x_max=None, interpolation_
 
 '''
 interpolate a set of discrete data for a surface f(x,y) into a grid points
-- 'data': the data containing the values of x, y and f(x,y)
-- 'mins', 'maxs' the bounds of the region where the interpolation should be made
-- 'n_bins' the number of bins (for x and y, in each entry) in which the intervals given by 'mins' and 'maxs' should be divided
-- 'scale_factor': the scale factor for the field f
-- 'label_x_column' ... the labels for x, y, and f in 'data'
+- Input values:
+    * Mandatory: 
+        - 'data': the data containing the values of x, y and f(x,y)
+        - 'mins', 'maxs' the bounds of the region where the interpolation should be made
+        - 'n_bins' the number of bins (for x and y, in each entry) in which the intervals given by 'mins' and 'maxs' should be divided
+    * Optional: 
+        - 'scale_factor': the scale factor for the field f
+        - 'label_x_column' ... the labels for x, y, and f in 'data'
+        - 'f_min': the minimal value of the field with recspect to which the rescaling with 'scale_factor' will be made, if f_min != None
 '''
 
 
-def interpolate_surface(data, mins, maxs, f_min, n_bins, scale_factor, label_x_column, label_y_column, label_f_column):
+def interpolate_surface(data, mins, maxs, n_bins, 
+                        scale_factor=1, 
+                        f_min=None, 
+                        label_x_column=':0', label_y_column=':1', label_f_column='f'):
+    
     X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins[0]), np.linspace(mins[1], maxs[1], n_bins[1]),
                        indexing='ij')
-    # f_min = np.min(data[label_f_column])
 
     # 1. re-arrange the x, y values into a points
     points = []
     points.extend([list(element) for element in zip(data[label_x_column], data[label_y_column])])
     # 2 re-arrange the function  values into values
-    values = data[label_f_column].apply(lambda x: scale(x, f_min, scale_factor))
+    if f_min != None:
+        values = data[label_f_column].apply(lambda x: scale(x, f_min, scale_factor))
+    else: 
+        values = data[label_f_column]
+
     # 3 interpolate values and points, and write the result of the interpolated function on the lattice (X, Y) into grid
     Z = griddata(points, values, (X, Y), method='cubic')
+    
+    norm_Z_min, norm_Z_max, norm_Z = cal.min_max_scalar_field(Z)
 
-    return X, Y, Z
+
+    return X, Y, Z, norm_Z_min, norm_Z_max, norm_Z
+
+
 
 
 

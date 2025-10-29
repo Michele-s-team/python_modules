@@ -106,7 +106,8 @@ def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length,
 plot a 2d arrow
 
 '''
-def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, line_width, color, alpha, z_order, threshold_arrow_length = default_threshold_arrow_length):
+def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, line_width, color, alpha, z_order, threshold_arrow_length = default_threshold_arrow_length,
+                  clip_on=True):
     head_length = head_over_shaft_length * shaft_length
 
     # plot the shaft
@@ -116,7 +117,7 @@ def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, he
 
         dr_shaft = dr_shaft * shaft_length / np.sqrt(np.dot(dr_shaft, dr_shaft))
 
-        ax.plot([shaft_start_position[0], shaft_start_position[0] + dr_shaft[0]], [shaft_start_position[1], shaft_start_position[1] + dr_shaft[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order)
+        ax.plot([shaft_start_position[0], shaft_start_position[0] + dr_shaft[0]], [shaft_start_position[1], shaft_start_position[1] + dr_shaft[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order, clip_on=clip_on)
 
         theta_shaft = -np.pi / 2 + math.atan2(dr_shaft[1], dr_shaft[0])
 
@@ -129,6 +130,7 @@ def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, he
         down_head = np.matmul(gr.R_2d(theta_shaft), down_head)
 
         # plot the heads
-        ax.plot([shaft_start_position[0] + dr_shaft[0], shaft_start_position[0] + dr_shaft[0] + up_head[0]], [shaft_start_position[1] + dr_shaft[1], shaft_start_position[1] + dr_shaft[1] + up_head[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order)
-        ax.plot([shaft_start_position[0] + dr_shaft[0], shaft_start_position[0] + dr_shaft[0] + down_head[0]], [shaft_start_position[1] + dr_shaft[1], shaft_start_position[1] + dr_shaft[1] + down_head[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order)
+        ax.plot([shaft_start_position[0] + dr_shaft[0], shaft_start_position[0] + dr_shaft[0] + up_head[0]], [shaft_start_position[1] + dr_shaft[1], shaft_start_position[1] + dr_shaft[1] + up_head[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order, clip_on=clip_on)
+        
+        ax.plot([shaft_start_position[0] + dr_shaft[0], shaft_start_position[0] + dr_shaft[0] + down_head[0]], [shaft_start_position[1] + dr_shaft[1], shaft_start_position[1] + dr_shaft[1] + down_head[1]], color=color, linewidth=line_width, alpha=alpha, zorder=z_order, clip_on=clip_on)
 

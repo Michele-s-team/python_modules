@@ -1,4 +1,10 @@
+import matplotlib.colors as mcolors
+
 import numpy as np
+import os
+import pandas as pd
+
+import graphics.vector_plot as vp
 
 # convert a floating-point number 'x' in scientific format and return the related string in latex format
 def to_latex_scientific(x):
@@ -76,3 +82,57 @@ def round_base_10(x):
         return (- 10.0 ** (np.round(np.log10(-x))))
     elif x == 0:
         return 0
+    
+'''
+compute min and max of the norm of an interpolated vector field across multiple snapshots of the vector field
+Input values: 
+    -  'n_min', 'n_max', 'stride': ids of the first and last snapshot, and snapshot stride to consider while running through the snapshots
+    - 'file_path': the path of the file, e.g. '/solution/'
+    - 'file_name': the pattern of the file name, e.g. 'v_n_' to look through all filed v_n_*
+    - 'n_bins' : [n_x, n_y] the bins used to make the interpolation 
+    - 'min_max': [[min_x, min_y], [max_x, max_y]] the boundaries of the rectangular region where the interpolation will be made
+
+Return values:
+    - 'norm_v_min_max': [norm_v_min, norm_v_max] the minimal and maximal value of the norm found 
+'''
+def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min_max):
+    
+    # initialize norm_v_min_max
+    norm_v_min_max = [np.inf,-np.inf]
+    
+    for n_snapshot in range(n_min, n_max+1, stride):
+    
+        data_v = pd.read_csv(os.path.join(file_path, file_name) + str(n_snapshot) + '.csv')
+
+        _, _, _, _, _, norm_v_min, norm_v_max, _ = vp.interpolate_2d_vector_field(
+                                                                                    data_v,
+                                                                                    min_max[0],
+                                                                                    min_max[1],
+                                                                                    n_bins
+                                                                                )
+        
+        if norm_v_min < norm_v_min_max[0]:
+            norm_v_min_max[0] = norm_v_min
+            
+        if norm_v_max > norm_v_min_max[1]:
+            norm_v_min_max[1] = norm_v_max
+    
+    return norm_v_min_max
+
+
+'''
+compute the norm of a scalar field
+
+Input values:
+    - 'grid': the scalar field on a grid, given as a table
+Return values:
+    - 'min', 'max': minimum and maximal absolut of the vector field
+    - 'norm': the normalization function for color maps, with respect to the norm of the vector field
+'''
+def min_max_scalar_field(grid):
+    
+    
+    min, max = np.nanmin(grid), np.nanmax(grid)
+    norm = mcolors.Normalize(vmin=min, vmax=max)  # Normalize norms to [0,1]
+
+    return min, max, norm

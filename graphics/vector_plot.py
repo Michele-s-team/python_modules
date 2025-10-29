@@ -145,18 +145,22 @@ def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
 plot a vector field defined on a 2d manifold 
 
 Input values:
-- 'ax': the axis where to plot
-- 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector, of the form [X, Y]
-- 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field, of the form [V_x, V_y]
-- 'shaft_length': length of the shaft of the arrows
-- 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
-- 'head_angle': angle of between the head and the shaft of the arrows
--  'line_width': line width of the arrows
-- 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
-- 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
--  'z_order': z-order of the arrows
+* Mandatory:
+    - 'ax': the axis where to plot
+    - 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector, of the form [X, Y]
+    - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field, of the form [V_x, V_y]
+    - 'shaft_length': length of the shaft of the arrows
+    - 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
+    - 'head_angle': angle of between the head and the shaft of the arrows
+    -  'line_width': line width of the arrows
+    - 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
+    - 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
+    -  'z_order': z-order of the arrows
+* Optional:
+    - 'clip_on': if False, the arrow will be plotted even if it lies outside the axes' limits
 '''
-def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
+def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order,
+                         clip_on=True):
     
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
 
@@ -174,7 +178,8 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
             arr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
                                     [grid_v[0][i, j], grid_v[1][i, j]]), \
-                             shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
+                             shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order,
+                             clip_on=clip_on)
             
 
 def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
@@ -255,6 +260,10 @@ def norm_vector_field(grid_v):
     norm_v = mcolors.Normalize(vmin=norm_v_min, vmax=norm_v_max)  # Normalize norms to [0,1]
 
     return grid_norm_v, norm_v_min, norm_v_max, norm_v
+
+
+
+
 
 
 '''
@@ -382,7 +391,10 @@ Input values:
 '''
 
 
-def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v, label_x_column, label_y_column, label_v_column):
+def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v, 
+                                label_x_column=':0', 
+                                label_y_column=':1',
+                                label_v_column='f'):
     # X, Y are the values of x and y coordinated over a mesh composed of tiled rectangles
     X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins_v[0]), np.linspace(mins[1], maxs[1], n_bins_v[1]),
                        indexing='ij')
