@@ -1229,16 +1229,34 @@ def plot_2d_axes(ax, origin, length, \
                  axis_origin=None, tick_label_angle=[0, 0], axis_bounds=None, 
                  margin=[0,0], axis_label=[None,None], plot_label_offset=[0,0], plot_label_font_size=const.default_font_size, plot_label=[None,None]):
     
+    dim = 2
+    
     # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
-        axis_origin = origin
+        axis_origin = [0] * dim
     
     if axis_bounds is None: 
         # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
         
         ax.set(
-            xlim=[min(origin[0], axis_origin[0]), max(origin[0] + length[0] * (1 + margin[0]), axis_origin[0])], \
-            ylim=[min(origin[1], axis_origin[1]), max(origin[1] + length[1]*(1+margin[1]), axis_origin[1])]
+            xlim=[
+                min(
+                    origin[0], 
+                    axis_origin[0]
+                    ), 
+                max(
+                    origin[0] + length[0] * (1 + margin[0]), 
+                    axis_origin[0]
+                    )], 
+            ylim=[
+                min(
+                    origin[1], axis_origin[1]
+                    ), 
+                max(
+                    origin[1] + length[1]*(1+margin[1]), 
+                    axis_origin[1]
+                    )
+                ``]
             )    
 
     else: 
