@@ -98,25 +98,33 @@ Input values:
     - 'tick_label_angle' [optional]: the rotation angle with which the tick labels will be drawn
 '''
 
-def plot_2d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick_label_format, 
+def plot_2d_tick(ax, axis_direction_id, value, tick_length, tick_label_offset, tick_label_format, 
               origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=const.default_line_width, scale='lin', tick_label_angle=0):
+    
+    dim = 2
     
     if axis_origin is None:
         axis_origin = origin
     
     if scale == 'lin':
         
-        if axis_direction == 'x':
+        if axis_direction_id == 0:
             
-            ax.plot([value, value], [axis_origin[1], axis_origin[1] + tick_length[1] * length[1]], color=color, linewidth=line_width,
-                        zorder=z_order)  
+            ax.plot(
+                [value] * dim, 
+                [
+                    origin[1] + length[1] * axis_origin[0][0], 
+                    origin[1] + length[1] * axis_origin[0][0] + tick_length[0] * length[1]
+                ], 
+                color=color, linewidth=line_width, zorder=z_order)  
             
             if tick_label_format[0] != '':
-                    ax.text(value, axis_origin[1] - tick_label_offset[1], 
+                    ax.text(value, 
+                            (origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset[1] * length[1], 
                             text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
             
             
-        elif axis_direction == 'y':
+        elif axis_direction_id == '1':
             
             ax.plot([axis_origin[0], axis_origin[0] + tick_length[0] * length[0]], [value, value], color=color, linewidth=line_width,
                         zorder=z_order)  
@@ -128,7 +136,7 @@ def plot_2d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
         
     elif scale == 'log':
         
-        if axis_direction == 'x':
+        if axis_direction_id == 'x':
         
             ax.plot([value, value], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
                                     zorder=z_order)  
@@ -136,7 +144,7 @@ def plot_2d_tick(ax, axis_direction, value, tick_length, tick_label_offset, tick
             ax.text(value, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
                                     text.float_to_latex(log_base**value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order)
             
-        elif axis_direction == 'y':
+        elif axis_direction_id == 'y':
                 
             ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], [value, value], 
             color=color, linewidth=line_width, zorder=z_order) 

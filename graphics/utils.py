@@ -439,18 +439,13 @@ def plot_2d_axis(ax, origin, length, direction_id,
 
             ticks = ti.generate_ticks(origin[0], origin[0] + length[0])
             
-            ax.plot([origin[0], origin[0] + length[0]], [axis_origin[1], axis_origin[1]], color=color, linewidth=line_width, zorder=z_order)
+            ax.plot(
+                [origin[0], origin[0] + length[0]], 
+                [origin[1] + length[1] * axis_origin[0][0]] * 2, 
+                color=color, linewidth=line_width, zorder=z_order)
 
             for tick in ticks:
-                
-                '''
-                ax.plot([tick, tick], [axis_origin[1], axis_origin[1] + tick_length * length[1]], color=color, linewidth=line_width,
-                        zorder=z_order)  
-                if tick_label_format[0] != '':
-                    ax.text(tick, axis_origin[1] - tick_label_offset[1], text.float_to_latex(tick, tick_label_format[0]), fontsize=font_size,
-                            ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
-                '''
-                
+      
                 ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
 
             # plot the x axis label
@@ -1277,11 +1272,12 @@ def plot_2d_axes(ax, origin, length, \
                  axis_label[0], lis.multiply(axis_label_offset[0], length), axis_label_angle[0], lis.multiply(tick_label_offset[0], length),
                  tick_label_format, tick_label_angle[0], font_size[0], z_order, axis_origin=axis_origin)
 
+    '''
     # plot the y axis
     plot_2d_axis(ax, origin, length, 1, tick_length, line_width, \
                  axis_label[1], lis.multiply(axis_label_offset[1], length), axis_label_angle[1], lis.multiply(tick_label_offset[1], length),
                  tick_label_format, tick_label_angle[1], font_size[1], z_order, axis_origin=axis_origin)
-    
+    '''
     
     if plot_label != [None, None]:
         # draw the panel label
