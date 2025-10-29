@@ -328,11 +328,14 @@ def plot_3d_axes(ax, origin, length,
             ylim=[
                 min(
                     origin[1], 
-                    (origin[1] + length[1] * axis_origin[0][1])
+                    (origin[1] + length[1] * axis_origin[0][1]),
+                    (origin[1] + length[1] * axis_origin[2][1])
                     ), 
                 max(
-                    origin[1] + length[1] * (1+margin[1]), 
-                    (origin[1] + length[1] * axis_origin[0][1]))],
+                    origin[1] + length[1] * ( 1 +margin[1]), 
+                    (origin[1] + length[1] * axis_origin[0][1]),
+                    (origin[1] + length[1] * axis_origin[2][1]),
+                    )],
             zlim=[min(
                         origin[2], 
                         (origin[2] + length[2] * axis_origin[0][1]),
@@ -396,7 +399,7 @@ plot an axis for a 2d plot
 Input values: 
     - 'origin': a two-ple containing the x,y coordinates of the origin of the axis
     - 'length': a two-ple containing the x, y length of the origin of the axis
-    - 'direction': 'x' or 'y': the direction of the axis to be drawn
+    - 'direction_id': 0 or 1: the direction id of the axis to be drawn, 0 for x axis, 1 for y axis
     - 'line_width': the ligne width of the axis and ticks
     - 'axis_label': the label of the axis, e..g, 'x'
     - 'axis_label_offset':  offset of the axis label with respect to the axis
@@ -412,7 +415,7 @@ Input values:
     - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
     - 'custom_ticks' [optional]: a list of custom ticks to be plotted on top of the automated ones, in the form [[custom_tick_x_0, custom_tick_x_1, ...], [custom_tick_y_0, custom_tick_y_1, ...]]
 '''
-def plot_2d_axis(ax, origin, length, direction, 
+def plot_2d_axis(ax, origin, length, direction_id, 
                  tick_length, line_width, axis_label, axis_label_offset, axis_label_angle,
                  tick_label_offset, tick_label_format, tick_label_angle, 
                  font_size,
@@ -430,9 +433,9 @@ def plot_2d_axis(ax, origin, length, direction,
         
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
         if axis_origin is None: 
-            axis_origin = origin
+            axis_origin = [0] * 3
     
-        if direction == "x":
+        if direction_id == 0:
 
             ticks = ti.generate_ticks(origin[0], origin[0] + length[0])
             
@@ -448,7 +451,7 @@ def plot_2d_axis(ax, origin, length, direction,
                             ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
                 '''
                 
-                ti.plot_2d_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
+                ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
 
             # plot the x axis label
             if axis_label is not None:
@@ -458,7 +461,7 @@ def plot_2d_axis(ax, origin, length, direction,
             
 
 
-        elif direction == "y":
+        elif direction_id == 1:
 
             ticks = ti.generate_ticks(origin[1], origin[1] + length[1])
 
@@ -474,7 +477,7 @@ def plot_2d_axis(ax, origin, length, direction,
                             ha='center', va='center', zorder=z_order, rotation=tick_label_angle)         
                 '''
                 
-                ti.plot_2d_tick(ax, direction, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
+                ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle)
                 
             # plot the axis label
             if axis_label is not None: 
@@ -489,7 +492,7 @@ def plot_2d_axis(ax, origin, length, direction,
         x_ticks = ti.generate_ticks(origin[0], origin[0]+length[0], scale='log', log_base=log_base)
         y_ticks = ti.generate_ticks(origin[1], origin[1]+length[1], scale='log', log_base=log_base)
                         
-        if direction == "x":
+        if direction_id == 0:
             
             # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
             n_plotted_ticks = 0
@@ -588,7 +591,7 @@ def plot_2d_axis(ax, origin, length, direction,
             ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1], 
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
                         
-        elif direction == "y":
+        elif direction_id == 1:
             
                 # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
                 n_plotted_ticks = 0
@@ -1242,21 +1245,23 @@ def plot_2d_axes(ax, origin, length, \
             xlim=[
                 min(
                     origin[0], 
-                    axis_origin[0]
+                    (origin[0] + length[0] * axis_origin[1][0])
                     ), 
                 max(
                     origin[0] + length[0] * (1 + margin[0]), 
-                    axis_origin[0]
-                    )], 
+                    (origin[0] + length[0] * axis_origin[1][0])
+                    )
+                ], 
             ylim=[
                 min(
-                    origin[1], axis_origin[1]
+                    origin[1], 
+                    (origin[1] + length[1] * axis_origin[0][1]),
                     ), 
                 max(
-                    origin[1] + length[1]*(1+margin[1]), 
-                    axis_origin[1]
+                    origin[1] + length[1]*(1 + margin[1]), 
+                    (origin[1] + length[1] * axis_origin[0][1])
                     )
-                ``]
+                ]
             )    
 
     else: 
@@ -1268,12 +1273,12 @@ def plot_2d_axes(ax, origin, length, \
             
             
     # plot the x axis
-    plot_2d_axis(ax, origin, length, "x", tick_length, line_width, \
+    plot_2d_axis(ax, origin, length, 0, tick_length, line_width, \
                  axis_label[0], lis.multiply(axis_label_offset[0], length), axis_label_angle[0], lis.multiply(tick_label_offset[0], length),
                  tick_label_format, tick_label_angle[0], font_size[0], z_order, axis_origin=axis_origin)
 
     # plot the y axis
-    plot_2d_axis(ax, origin, length, "y", tick_length, line_width, \
+    plot_2d_axis(ax, origin, length, 1, tick_length, line_width, \
                  axis_label[1], lis.multiply(axis_label_offset[1], length), axis_label_angle[1], lis.multiply(tick_label_offset[1], length),
                  tick_label_format, tick_label_angle[1], font_size[1], z_order, axis_origin=axis_origin)
     
