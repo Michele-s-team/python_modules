@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
+import os 
 import pandas as pd
 import proplot as pplt
 from pandas.core.methods.selectn import SelectNSeries
@@ -1659,41 +1660,6 @@ def min_max_file(file_name, column_name):
 
     return min, max
 
-
-'''
-compute the minimal and maximal value of a field across multiple snapshots, where each snapshot is stored in a file
-Input values: 
-- 'file_name': the pattern of the file name
-- 'file_path': the path where the snapshots are located
-- 'coordinates_columns_name': the labels of the x, y, z, coordinates for the field
-- 'field_column_name': the name of the column containing the values of the field
-- 'n_file_min', 'n_file_max': the integers of the first and last file to consider
-- 'n_file_stride': the stride with which the files will be read
-
-Return values: 
-- 'abs_min', 'abs_max': the minimal and maximal values of the field across the snapshots
-'''
-
-def min_max_files(file_name, file_path, field_column_name, n_file_min, n_file_max, n_file_stride):
-    
-    abs_min = None
-    abs_max = None
-
-    for i in range(n_file_min , n_file_max+1, n_file_stride):
-
-        min, max = min_max_file(file_path + file_name + str(i) + '.csv', field_column_name)
-
-        if abs_min is None:
-            abs_min = min
-        elif min < abs_min:
-            abs_min = min
-
-        if abs_max is None:
-            abs_max = max
-        elif max > abs_max:
-            abs_max = max
-
-    return abs_min, abs_max
 
 
 def min_max_file_list(file_name, file_path, columns_name, column_name, n_file_list):

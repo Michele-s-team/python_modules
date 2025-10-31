@@ -120,6 +120,45 @@ def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min
     return norm_v_min_max
 
 
+
+'''
+compute the minimal and maximal value of a field across multiple snapshots, where each snapshot is stored in a file
+Input values: 
+    * Mandatory:
+        - 'file_name': the pattern of the file name
+        - 'file_path': the path where the snapshots are located
+        - 'n_file_min', 'n_file_max': the integers of the first and last file to consider
+        - 'n_file_stride': the stride with which the files will be read
+    * Optional:
+        - 'field_column_name': the name of the column containing the values of the field
+
+Return values: 
+- 'abs_min', 'abs_max': the minimal and maximal values of the field across the snapshots
+'''
+
+def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
+                  field_column_name='f'):
+    
+    abs_min = None
+    abs_max = None
+
+    for i in range(n_file_min , n_file_max+1, n_file_stride):
+
+        min, max = min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
+
+        if abs_min is None:
+            abs_min = min
+        elif min < abs_min:
+            abs_min = min
+
+        if abs_max is None:
+            abs_max = max
+        elif max > abs_max:
+            abs_max = max
+
+    return abs_min, abs_max
+
+
 '''
 compute the norm of a scalar field
 
