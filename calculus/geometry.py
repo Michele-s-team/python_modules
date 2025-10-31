@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 #euclidean  norm of vector x
 def eucl_norm(x):
@@ -50,3 +51,40 @@ def point_in_triangle(p1, p2, p3, q):
     # the point is in the triangle if all checks evaluate to True
     return check_12 and check_23 and check_31
    
+   
+   
+'''
+check if a point lies within a mesh
+Input values: 
+    - 'mesh_file': path, name and extension of the csv file containing the coordinates of the mesh triangles, stored  in the format "p_1:0,p_1:1,p_1:2,p_2:0,p_2:1,p_2:2", where p_1, p_2 and p_3 are the vertices of the triangle, and p_1:0 is the x coordinate of p_1, p_1:1 the y coordinate of p_1, ...
+    - 'point': the point
+    
+Return values: 
+    - True if 'point' is in the triangle, False otherwise
+
+'''
+def point_in_mesh(mesh_file, point):
+       
+    # read the trinagles of the mesh
+    data_triangles = pd.read_csv(mesh_file)
+    
+    # print(data_triangles)
+    
+    # check is True / False if 'point' is in at least one triangle in the mesh
+    check = False
+    # loop through the triangles of the mesh
+    for index, triangle in data_triangles.iterrows():
+            
+        # print(triangle['p_1:0'], triangle['p_1:1'])
+        
+        if point_in_triangle(
+                                [triangle['p_1:0'], triangle['p_1:1']],
+                                [triangle['p_2:0'], triangle['p_2:1']],
+                                [triangle['p_3:0'], triangle['p_3:1']],
+                                point
+                            ):
+            
+            check = True
+            break
+        
+    return check     
