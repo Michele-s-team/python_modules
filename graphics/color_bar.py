@@ -40,10 +40,16 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   tick_length=const.default_tick_length,
                   tick_label_offset=[0, 0],
                   line_width=const.default_line_width,
-                  mappable=None):
+                  mappable=None,
+                  axis=None):
     
     
-
+    # Use existing axis or create new one
+    if axis is None:
+        colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+    else:
+        axis.clear()  # Clear the existing axis
+        colorbar_axis = axis
     
     if mappable is None:
         # the user provided no map between the values of the field and the colors -> build this map.
@@ -73,8 +79,8 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
 
     
 
-    colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
-    colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_position)
+    # colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+    colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_axis)
     
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size, tick_label_angle,
                           tick_length=tick_length,

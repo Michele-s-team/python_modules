@@ -4,6 +4,7 @@ import numpy as np
 import os
 import pandas as pd
 
+import graphics.utils as gr
 import graphics.vector_plot as vp
 
 # convert a floating-point number 'x' in scientific format and return the related string in latex format
@@ -144,7 +145,7 @@ def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
 
     for i in range(n_file_min , n_file_max+1, n_file_stride):
 
-        min, max = min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
+        min, max = gr.min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
 
         if abs_min is None:
             abs_min = min

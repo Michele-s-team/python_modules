@@ -1767,7 +1767,12 @@ def plot_mesh(data_line_vertices, line_width, color, alpha):
                  [points_start[i][2], points_end[i][2]], linewidth=line_width, color=color, alpha=alpha)
 
 
-def plot_2d_mesh(ax, data_line_vertices, line_width, color, alpha):
+def plot_2d_mesh(ax, data_line_vertices, 
+                 line_width=const.default_line_width, 
+                 color=const.default_color, 
+                 alpha=const.default_alpha,
+                 zorder=const.default_z_order):
+    
     points_start = []
     points_end = []
     points_start.extend([list(a) for a in
@@ -1778,4 +1783,4 @@ def plot_2d_mesh(ax, data_line_vertices, line_width, color, alpha):
                               data_line_vertices[clab.label_end_z_column])])
 
     for i in range(len(points_start)):
-        ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]], linewidth=line_width, color=color, alpha=alpha)
+        ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]], linewidth=line_width, color=color, alpha=alpha, zorder=zorder)

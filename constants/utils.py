@@ -20,3 +20,6 @@ default_tick_label_angle=0
 
 default_z_order=0
 high_z_order=100
+
+default_color='black'
+default_alpha=1

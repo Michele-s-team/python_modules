@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.colors as mcolors
 import pandas as pd
+from scipy.interpolate import CloughTocher2DInterpolator
 from scipy.interpolate import griddata
 
 import graphics.arrow as arr
@@ -376,6 +377,27 @@ def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega,
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([v_x, v_y, v_z])
 
     return X_v, Y_v, Z_v, v_x, v_y, v_z, grid_norm_v, norm_v_min, norm_v_max, norm_v
+
+
+def interpolating_function_2d_vector_field(data_v,
+                                            label_x_column=':0', 
+                                            label_y_column=':1',
+                                            label_v_column='f'
+                                        ):
+    
+    # points are the values of the coordinates x, y stored in data_v
+    points = []
+    points.extend([list(element) for element in zip(data_v[label_x_column], data_v[label_y_column])])
+    
+    # values_v_* are the values of the vector field stored in data_v, on the points stored in points
+    values_v_x = data_v[label_v_column + label_x_column]
+    values_v_y = data_v[label_v_column + label_y_column]
+    
+    # Create interpolating functions
+    V_x = CloughTocher2DInterpolator(points, values_v_x)
+    V_y = CloughTocher2DInterpolator(points, values_v_y)
+    
+    return V_x, V_y
 
 
 '''
