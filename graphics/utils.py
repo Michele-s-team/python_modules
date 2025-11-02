@@ -473,7 +473,7 @@ def plot_2d_axis(
       
                 # plot major tick
                 
-                if (tick_list[i][0] >= ax.get_xlim()[0]) and (tick_list[i][0] <= ax.get_xlim()[1]):
+                if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
                 
                     ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
                 
@@ -482,7 +482,7 @@ def plot_2d_axis(
                 
                     for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks+2):
                         
-                        if (minor_tick >= ax.get_xlim()[0]) and (minor_tick <= ax.get_xlim()[1]):
+                        if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
                             # the minor tick is within the axes limit -> plot it 
                             
                             ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
@@ -506,7 +506,7 @@ def plot_2d_axis(
             for i in range(len(tick_list)):
     
                 # plot major tick
-                if (tick_list[i][0] >= ax.get_ylim()[0]) and (tick_list[i][0] <= ax.get_ylim()[1]):
+                if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
 
                   ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
@@ -516,7 +516,7 @@ def plot_2d_axis(
                     
                     for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks + 2):
                         
-                        if (minor_tick >= ax.get_ylim()[0]) and (minor_tick <= ax.get_ylim()[1]):
+                        if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
                             # the minor tick is within the axes limit -> plot it 
                         
                             ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
