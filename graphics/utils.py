@@ -85,7 +85,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         for i in range(len(tick_list)):
             
             # plot major tick
-            if (tick_list[i][0] >= ax.get_xlim()[0]) and (tick_list[i][0] <= ax.get_xlim()[1]):
+            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
                 
                 ti.plot_3d_tick(
@@ -101,7 +101,9 @@ def plot_3d_axis(ax, origin, length, direction_id,
                 
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
+                
                 for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                    
                     ti.plot_3d_tick(
                                 ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
                                 scale_factor=scale_factor,
@@ -141,7 +143,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         for i in range(len(tick_list)):
             
             # plot major tick
-            if (tick_list[i][0] >= ax.get_ylim()[0]) and (tick_list[i][0] <= ax.get_ylim()[1]):
+            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
         
                 ti.plot_3d_tick(
@@ -158,6 +160,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
                 for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                    
                     ti.plot_3d_tick(
                                 ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
                                 scale_factor=scale_factor,
@@ -193,7 +196,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
         for i in range(len(tick_list)):
             
             # plot major tick
-            if (tick_list[i][0] >= ax.get_zlim()[0]) and (tick_list[i][0] <= ax.get_zlim()[1]):
+            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])):
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
                    
                 ti.plot_3d_tick(
@@ -1256,6 +1259,7 @@ Input values:
         - 'plot_label_offset': offset of the plot label [plot_label_offset_x, plot_label_offset_y]
         - 'plot_label_font_size' = font size of the plot label
         - 'plot_label': the label of the plot
+        - 'minor_tick_length': the lengths of minor ticks
 '''
 
 def plot_2d_axes(ax, origin, length, \
@@ -1270,7 +1274,8 @@ def plot_2d_axes(ax, origin, length, \
                  plot_label_offset=[0,0], 
                  plot_label_font_size=const.default_font_size, 
                  plot_label=[None,None],
-                 n_minor_ticks=[None] * 2):
+                 n_minor_ticks=[None] * 2,
+                 minor_tick_length = [const.default_minor_tick_length] * 2):
     
     dim = 2
     
@@ -1327,6 +1332,7 @@ def plot_2d_axes(ax, origin, length, \
                         tick_label_format=tick_label_format[i], 
                         tick_label_angle=tick_label_angle[i], 
                         n_minor_ticks=n_minor_ticks[i],
+                        minor_tick_length=minor_tick_length,
                         font_size=font_size[i], 
                         z_order=z_order, 
                         axis_origin=axis_origin
