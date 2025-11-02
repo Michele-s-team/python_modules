@@ -122,6 +122,27 @@ def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min
 
 
 
+
+'''
+compute the min and max values of a field in a csv file
+Input values:
+- 'file_name': the path + name + extension of the file
+- 'column_name': the name of the column where the values of the field are stored
+Return values; 
+- 'min', 'max': the minimum and maximum of the field
+'''
+
+def min_max_file(file_name, column_name):
+    data = pd.read_csv(file_name, usecols=[column_name])
+
+    min = np.min(data[column_name])
+    max = np.max(data[column_name])
+
+    return min, max
+
+
+
+
 '''
 compute the minimal and maximal value of a field across multiple snapshots, where each snapshot is stored in a file
 Input values: 
@@ -145,7 +166,7 @@ def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
 
     for i in range(n_file_min , n_file_max+1, n_file_stride):
 
-        min, max = gr.min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
+        min, max = min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
 
         if abs_min is None:
             abs_min = min
@@ -155,6 +176,22 @@ def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
         if abs_max is None:
             abs_max = max
         elif max > abs_max:
+            abs_max = max
+
+    return abs_min, abs_max
+
+
+def min_max_file_list(file_name, file_path, columns_name, column_name, n_file_list):
+    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_list[0]) + '.csv', column_name)
+
+    for n_file in n_file_list:
+
+        min, max = min_max_file(file_path + file_name + str(n_file) + '.csv', column_name)
+
+        if min < abs_min:
+            abs_min = min
+
+        if max > abs_max:
             abs_max = max
 
     return abs_min, abs_max

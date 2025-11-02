@@ -1643,39 +1643,6 @@ def set_2d_axes_limits_from_data(ax, data, margins=[0, 0]):
     
 
 
-'''
-compute the min and max values of a field in a csv file
-Input values:
-- 'file_name': the path + name + extension of the file
-- 'column_name': the name of the column where the values of the field are stored
-Return values; 
-- 'min', 'max': the minimum and maximum of the field
-'''
-
-def min_max_file(file_name, column_name):
-    data = pd.read_csv(file_name, usecols=[column_name])
-
-    min = np.min(data[column_name])
-    max = np.max(data[column_name])
-
-    return min, max
-
-
-
-def min_max_file_list(file_name, file_path, columns_name, column_name, n_file_list):
-    abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_list[0]) + '.csv', column_name)
-
-    for n_file in n_file_list:
-
-        min, max = min_max_file(file_path + file_name + str(n_file) + '.csv', column_name)
-
-        if min < abs_min:
-            abs_min = min
-
-        if max > abs_max:
-            abs_max = max
-
-    return abs_min, abs_max
 
 
 '''
