@@ -39,19 +39,31 @@ def print_text_color(text, color):
 '''
 convert the floating-point number 'x' to latex in format 'format'
 Input values: 
-- 'x': the floating-point number
-- 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
+    - 'x': the floating-point number
+    - 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
 
 Return values: 
-- 'latex_string': the latex string containing 'x' converted
+    - 'latex_string': the latex string containing 'x' converted. If 'x' is so large/small that it is in scientific format, it will be converted to string by using the scientific format even if 'format' = 'f'
 '''
 def float_to_latex(x, format):
     
     if (format == 'f'):
-        latex_string = fr'${x:.3g}$'
+        #  the chosen format is floating point
+         
+        if 'e' in str(x):
+            # when the value 'x' is converted to string, it contains an 'e' -> 'x' is so small / large that it is written in scientific format -> convert it by using scientific format
+            latex_string = cal.to_latex_scientific(x)
+        else:   
+            # convert 'x' by using floating-point format
+             
+            latex_string = fr'${x:.3g}$'
+            
     elif (format == 'e'):
+        # the chosen format is scientific 
+        
         latex_string = cal.to_latex_scientific(x)
     else:
+        
         print_text_color('Error: format is not valid!', 'red')
         latex_string = ''
 

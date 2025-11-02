@@ -83,6 +83,7 @@ Input values:
     - 'ax': the matplotlib axis
     - 'axis_direction': 'x' or 'y', the direction of the axis
     - 'value': the numerical value of the tick
+    - 'label': the tick label
     - 'tick_length': a list with two entries, one for 'x' and one for 'y'. The length of the tick relative to the max-min span of the relative axis. 
     - 'tick_label_offset':  a list with two entries, one for 'x' and one for 'y'. The offset of the tick with respect to the axis, relative to the max-min span of the relative axis. 
     - 'tick_label_format': 'f' or 'e', the numerical format of the tick
@@ -98,7 +99,7 @@ Input values:
     - 'tick_label_angle' [optional]: the rotation angle with which the tick labels will be drawn
 '''
 
-def plot_2d_tick(ax, axis_direction_id, value, tick_length, tick_label_offset, tick_label_format, 
+def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_offset, tick_label_format, 
               origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=const.default_line_width, scale='lin', tick_label_angle=0, clip_on=False):
     
     dim = 2
@@ -118,10 +119,10 @@ def plot_2d_tick(ax, axis_direction_id, value, tick_length, tick_label_offset, t
                 ], 
                 color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)  
             
-            if tick_label_format[0] != '':
+            if label != None:
                     ax.text(value, 
                             (origin[1] + length[1] * axis_origin[0]) - tick_label_offset[0] * length[1], 
-                            text.float_to_latex(value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
+                            label, fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
             
             
         elif axis_direction_id == 1:
@@ -134,11 +135,11 @@ def plot_2d_tick(ax, axis_direction_id, value, tick_length, tick_label_offset, t
                     color=color, linewidth=line_width,
                         zorder=z_order, clip_on=clip_on)  
             
-            if tick_label_format[1] != '':
+            if label != None:
                     ax.text(
                         (origin[0] + length[0] * axis_origin[1]) - tick_label_offset[1] * length[0], 
                         value, 
-                        text.float_to_latex(value, tick_label_format[1]), fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
+                        label, fontsize=font_size, ha='center', va='center', zorder=z_order, rotation=tick_label_angle)
         
         
     elif scale == 'log':

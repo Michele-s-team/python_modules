@@ -51,7 +51,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
     
     # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
     if axis_origin is None: 
-        axis_origin = [0, 0] * 3
+        axis_origin = [0, 0] * dim
  
     # compute ticks
     ticks = ti.generate_ticks(origin[direction_id], origin[direction_id] + scale_factor[direction_id] * length[direction_id])
@@ -101,9 +101,9 @@ def plot_3d_axis(ax, origin, length, direction_id,
                 
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
-                for minor_rick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
                     ti.plot_3d_tick(
-                                ax, direction_id, minor_rick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
                                 scale_factor=scale_factor,
                                 axis_origin=axis_origin,
                                 font_size=font_size,
@@ -157,9 +157,9 @@ def plot_3d_axis(ax, origin, length, direction_id,
             
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
-                for minor_rick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
                     ti.plot_3d_tick(
-                                ax, direction_id, minor_rick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
                                 scale_factor=scale_factor,
                                 axis_origin=axis_origin,
                                 font_size=font_size,
@@ -209,9 +209,9 @@ def plot_3d_axis(ax, origin, length, direction_id,
                 
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
-                for minor_rick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+                for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
                     ti.plot_3d_tick(
-                                ax, direction_id, minor_rick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
                                 scale_factor=scale_factor,
                                 axis_origin=axis_origin,
                                 font_size=font_size,
@@ -426,8 +426,8 @@ def plot_2d_axis(
                     color='black', 
                     axis_label_offset=[0]*2,
                     tick_label_offset=[0]*2,
-                    n_minor_ticks=[None] * 2,
-                    tick_label_format=['f'] *2, 
+                    n_minor_ticks=None,
+                    tick_label_format=const.default_label_format, 
                     minor_tick_length=[const.default_minor_tick_length] * 2,
                     custom_ticks=[[], []],
                     clip_on=False,
@@ -447,30 +447,48 @@ def plot_2d_axis(
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
         if axis_origin is None: 
             axis_origin = [0] * dim
+        
+        # compute ticks
+        ticks = ti.generate_ticks(origin[direction_id], origin[direction_id] + length[direction_id])
+
+        # draw ticks
+        tick_list = []
+        for tick in ticks:
+        
+            tick_list.append([
+                tick,
+                text.float_to_latex(tick, tick_label_format)
+            ])
+            
     
         if direction_id == 0:
 
-            ticks = ti.generate_ticks(origin[0], origin[0] + length[0])
             
             ax.plot(
                 [origin[0], origin[0] + length[0]], 
                 [origin[1] + length[1] * axis_origin[0]] * dim, 
                 color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)
 
-            for i in range(len(ticks)):
+            for i in range(len(tick_list)):
       
                 # plot major tick
-                ti.plot_2d_tick(ax, direction_id, ticks[i], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+                
+                if (tick_list[i][0] >= ax.get_xlim()[0]) and (tick_list[i][0] <= ax.get_xlim()[1]):
+                
+                    ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
                 
                 # plot minor ticks
-                if (i < len(ticks)-1) and (n_minor_ticks[direction_id] is not None):
+                if (i < len(tick_list)-1) and (n_minor_ticks is not None):
                 
-                    for minor_rick in np.linspace(ticks[i][0], ticks[i+1][0], n_minor_ticks[direction_id]+2):
+                    for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks+2):
                         
-                        ti.plot_2d_tick(ax, direction_id, minor_tick, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+                        if (minor_tick >= ax.get_xlim()[0]) and (minor_tick <= ax.get_xlim()[1]):
+                            # the minor tick is within the axes limit -> plot it 
+                            
+                            ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
 
 
-            # plot the x axis label
+            # plot the axis label
             if axis_label is not None:
                 ax.text(origin[0] + length[0] / 2, 
                         origin[1] + length[1] * axis_origin[0] - axis_label_offset[0], 
@@ -480,16 +498,28 @@ def plot_2d_axis(
 
         elif direction_id == 1:
 
-            ticks = ti.generate_ticks(origin[1], origin[1] + length[1])
-
             ax.plot(
                 [origin[0] + length[0] * axis_origin[1]] * dim, 
                 [origin[1], origin[1] + length[1]], 
                 color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)
 
-            for tick in ticks:
+            for i in range(len(tick_list)):
     
-                ti.plot_2d_tick(ax, direction_id, tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+                # plot major tick
+                if (tick_list[i][0] >= ax.get_ylim()[0]) and (tick_list[i][0] <= ax.get_ylim()[1]):
+                # the tick under consideration is within the axis interval -> plot its tick line and its tick label
+
+                  ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+                  
+                # plot minor ticks
+                if (i < len(tick_list)-1) and (n_minor_ticks is not None):
+                    
+                    for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks + 2):
+                        
+                        if (minor_tick >= ax.get_ylim()[0]) and (minor_tick <= ax.get_ylim()[1]):
+                            # the minor tick is within the axes limit -> plot it 
+                        
+                            ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
                 
             # plot the axis label
             if axis_label is not None: 
@@ -1294,8 +1324,9 @@ def plot_2d_axes(ax, origin, length, \
                         axis_label=axis_label[i], 
                         axis_label_offset=lis.multiply(axis_label_offset[i], length), axis_label_angle=axis_label_angle[i], 
                         tick_label_offset=lis.multiply(tick_label_offset[i], length),
-                        tick_label_format=tick_label_format, 
+                        tick_label_format=tick_label_format[i], 
                         tick_label_angle=tick_label_angle[i], 
+                        n_minor_ticks=n_minor_ticks[i],
                         font_size=font_size[i], 
                         z_order=z_order, 
                         axis_origin=axis_origin
