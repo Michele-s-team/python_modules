@@ -99,20 +99,30 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
 '''
 create a colorbar for a curve, by plotting the value of a field along the curve in terms of a color map
 Input values: 
-- 'figure' : the figure where the colorbar is made
-- 't_values': a list with the grid of the values of the parametric coordinate t which parametrizes the curve
-- 'f_values': a dataframe with the values of the field f along the curve
-- 'min_max' [optional]: a list with two entries, the min and max of the values which will bound the color bar. If none, this method will compute the min and max values of the field f along the curve and assign them to min_max
-- 'position': position of the colorbar
-- 'size': size of the colorbar
-- 'angle' : rotation angle of the colorbar
-- 'label_pad': displacement of the label of the colorbar
-- 'label' the label of the colorbar
-- 'font_size' : the font size of all texts in the colorbar
+    * Mandatory:
+        - 'figure' : the figure where the colorbar is made
+        - 't_values': a list with the grid of the values of the parametric coordinate t which parametrizes the curve
+        - 'f_values': a dataframe with the values of the field f along the curve
+        - 'position': position of the colorbar
+        - 'size': size of the colorbar
+    * Optional:
+        - 'angle' : rotation angle of the colorbar
+        - 'label_offset': displacement of the label of the colorbar
+        - 'label' the label of the colorbar
+        - 'font_size' : the font size of all texts in the colorbar
+        - 'min_max' [optional]: a list with two entries, the min and max of the values which will bound the color bar. If none, this method will compute the min and max values of the field f along the curve and assign them to min_max
+        - 'tick_label_offset': the offset of tick labels
+        - 'tick_label_angle': the rotation angle of tick labels
 '''
 
-def make_curve_colorbar(figure, t_values, f_values,  
-                        position, size, angle, label_pad, label, font_size, min_max=None):
+def make_curve_colorbar(figure, t_values, f_values, position, size, 
+                        tick_label_angle=const.default_tick_label_angle, 
+                        label_offset=[0,0], 
+                        label='', 
+                        font_size=const.default_font_size, 
+                        min_max=None,
+                        tick_label_offset=[0,0],
+                        label_angle=0):
     
 
     if min_max is None: 
@@ -136,11 +146,15 @@ def make_curve_colorbar(figure, t_values, f_values,
 
     colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
     colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_position)
-    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size)
-    colorbar.set_label(label, rotation=angle, fontsize=font_size)
+    
+    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size, 
+                          tick_label_offset=tick_label_offset,
+                          tick_label_angle=tick_label_angle)
+    
+    colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
 
     # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
-    colorbar.ax.yaxis.set_label_coords(label_pad[0], label_pad[1])  # Adjust -1.2 for spacing
+    colorbar.ax.yaxis.set_label_coords(label_offset[0], 0.5 * label_offset[1])  # Adjust -1.2 for spacing
     colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
 
     return color_map
