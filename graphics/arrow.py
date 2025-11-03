@@ -2,15 +2,13 @@ import math
 import numpy as np
 import pandas as pd
 
-import constants.utils as cst
+import constants.utils as const
 import list.column_labels as clab
 import graphics.utils as gr
 import calculus.geometry as geo
 
 
 
-# the default value of the arrow length such that arrows with lengths below this value will not be plotted 
-default_threshold_arrow_length = 1e-4
 
 
 '''
@@ -90,8 +88,8 @@ def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length,
         phi_shaft = np.arctan2(dr_shaft_scaled[1], dr_shaft_scaled[0])
 
         # compute coordinates for arrow heads
-        up_head = [-head_length * np.sin(head_angle * cst.deg_to_rad), 0, -head_length * np.cos(head_angle * cst.deg_to_rad)]
-        down_head = [+head_length * np.sin(head_angle * cst.deg_to_rad), 0, - head_length * np.cos(head_angle * cst.deg_to_rad)]
+        up_head = [-head_length * np.sin(head_angle * const.deg_to_rad), 0, -head_length * np.cos(head_angle * const.deg_to_rad)]
+        down_head = [+head_length * np.sin(head_angle * const.deg_to_rad), 0, - head_length * np.cos(head_angle * cst.deg_to_rad)]
         up_head = np.matmul(gr.R(theta_shaft, phi_shaft), up_head)
         down_head = np.matmul(gr.R(theta_shaft, phi_shaft), down_head)
 
@@ -106,7 +104,8 @@ def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length,
 plot a 2d arrow
 
 '''
-def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, line_width, color, alpha, z_order, threshold_arrow_length = default_threshold_arrow_length,
+def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, head_over_shaft_length, head_angle, line_width, color, alpha, z_order, 
+                  threshold_arrow_length = const.default_threshold_arrow_length,
                   clip_on=True):
     head_length = head_over_shaft_length * shaft_length
 
@@ -123,8 +122,8 @@ def plot_2d_arrow(ax, shaft_start_position, shaft_end_position, shaft_length, he
 
         # plot the heads
         # consider heads related to a fictitious arrow pointing up
-        up_head = [-head_length * np.sin(head_angle * cst.deg_to_rad), -head_length * np.cos(head_angle * cst.deg_to_rad)]
-        down_head = [+head_length * np.sin(head_angle * cst.deg_to_rad), - head_length * np.cos(head_angle * cst.deg_to_rad)]
+        up_head = [-head_length * np.sin(head_angle * const.deg_to_rad), -head_length * np.cos(head_angle * const.deg_to_rad)]
+        down_head = [+head_length * np.sin(head_angle * const.deg_to_rad), - head_length * np.cos(head_angle * const.deg_to_rad)]
         # rotate the heads above
         up_head = np.matmul(gr.R_2d(theta_shaft), up_head)
         down_head = np.matmul(gr.R_2d(theta_shaft), down_head)

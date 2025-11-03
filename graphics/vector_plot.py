@@ -4,8 +4,9 @@ import pandas as pd
 from scipy.interpolate import CloughTocher2DInterpolator
 from scipy.interpolate import griddata
 
-import graphics.arrow as arr
 import calculus.geometry as geo
+import constants.utils as const
+import graphics.arrow as arr
 import list.column_labels as clab
 import graphics.utils as gr
 
@@ -104,24 +105,40 @@ def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, h
 '''
 plot a vector field defined on a 1d manifold 
 Input values: 
-- 'ax': the axis where to plot
-- 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector
-- 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field
-- 'shaft_length': length of the shaft of the arrows
-- 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
-- 'head_angle': angle of between the head and the shaft of the arrows
-- 'line_width': line width of the arrows
-- 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
-- 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
-- 'z_order': z-order of the arrows
+    * Mandatory: 
+        - 'ax': the axis where to plot
+        - 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector
+        - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field
+    * Optional:
+        - 'shaft_length': length of the shaft of the arrows
+        - 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
+        - 'head_angle': angle of between the head and the shaft of the arrows
+        - 'line_width': line width of the arrows
+        - 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
+        - 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
+        - 'z_order': z-order of the arrows
+        - 'threshold_arrow_length': the threshold for the length of the arrows such that arrows with length smaller than the threshold will not be plotted
 
-Example of usage: 
+Example of usage:
 
-    gr.vp.plot_1d_vector_field(ax, [X_v, Y_v], [V_x, V_y], 
-                               parameters['shaft_length'], parameters['head_over_shaft_length'], parameters['head_angle'], 
-                               parameters['line_width'], parameters['alpha'], 'red', 0)
+    vp.plot_1d_vector_field(ax, [X_v, Y_v], [V_x, V_y], 
+                            shaft_length=parameters['shaft_length'], 
+                            head_over_shaft_length=parameters['head_over_shaft_length'], 
+                            head_angle=parameters['head_angle'], 
+                            line_width=parameters['arrow_line_width'], 
+                            alpha=parameters['alpha'], 
+                            color='color_from_map', 
+                            threshold_arrow_length=parameters['threshold_arrow_length'])
 '''
-def plot_1d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order, threshold_arrow_length = arr.default_threshold_arrow_length):
+def plot_1d_vector_field(ax, grid_r, grid_v, 
+                         shaft_length=const.default_shaft_length, 
+                         head_over_shaft_length=const.default_head_over_shaft_length,
+                         head_angle=const.default_head_angle, 
+                         line_width=const.default_line_width, 
+                         alpha=const.default_alpha, 
+                         color=const.default_color, 
+                         z_order=const.default_z_order, 
+                         threshold_arrow_length = const.default_threshold_arrow_length):
     
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
 

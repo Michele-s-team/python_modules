@@ -12,6 +12,12 @@ default_label_format='f'
 colorbar_shrink_value=0.2
 colorbar_aspect_value=10
 
+default_shaft_length=1
+default_head_over_shaft_length=0.3
+default_head_angle=30
+# the default value of the arrow length such that arrows with lengths below this value will not be plotted 
+default_threshold_arrow_length = 1e-4
+
 default_tick_length=0.1
 default_minor_tick_length=0.01
 default_tick_label_pad=0.1

@@ -146,7 +146,7 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
     
     f_interpolated = interp1d(f_values[":0"].values, f_values["f"].values, kind='cubic', fill_value='extrapolate')
 
-    color_normalization = plt.Normalize(vmin=min(colorbar_ticks), vmax=max(colorbar_ticks))
+    color_normalization = plt.Normalize(vmin=min_max[0], vmax=min_max[1])
 
     mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
     

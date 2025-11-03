@@ -1370,11 +1370,22 @@ Input values
     - 'line_width' [optional]: the line with with which the color map will be plotted
     - 'plot_label': the plot label of the curve
 '''
-def plot_curve_grid(ax, X, color_map=None, line_color='black', line_width=1,  plot_label=''):
+def plot_curve_grid(ax, X, 
+                    color_map=None, 
+                    line_color=const.default_color, 
+                    line_width=const.default_line_width,  
+                    plot_label='',
+                    alpha=const.default_alpha):
     
     if color_map is None:
-        plt.plot(X[:, 0], X[:, 1], '-', color=line_color, linewidth=line_width, label=plot_label)
+        
+        ax.plot(X[:, 0], X[:, 1], '-', 
+                color=line_color, 
+                linewidth=line_width, 
+                label=plot_label, 
+                alpha=alpha)
     else:
+        
         from matplotlib.collections import LineCollection
         
         # Create line segments
@@ -1385,7 +1396,10 @@ def plot_curve_grid(ax, X, color_map=None, line_color='black', line_width=1,  pl
         # print(f'points = {points}')
         
         # Create line collection with colors
-        lc = LineCollection(segments, colors=color_map[:-1], linewidth=line_width)
+        lc = LineCollection(segments, 
+                            colors=color_map[:-1], 
+                            linewidth=line_width,
+                            alpha=alpha)
         ax.add_collection(lc)
         ax.autoscale()
         
