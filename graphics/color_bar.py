@@ -145,8 +145,8 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
     color_map = color_map_type(color_normalization(field_values))
 
 
-    colorbar_position = figure.add_axes([position[0], position[1], size[0], size[1]])
-    colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_position)
+    colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+    colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_axis)
     
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size, 
                           tick_label_offset=tick_label_offset,
