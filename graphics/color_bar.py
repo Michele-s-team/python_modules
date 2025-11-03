@@ -125,6 +125,14 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
                         label_angle=0,
                         axis=None):
     
+    
+    # Use existing axis or create new one
+    if axis is None:
+        colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+    else:
+        axis.clear()  # Clear the existing axis
+        colorbar_axis = axis
+    
 
     if min_max is None: 
         min_max = [np.min(f_values['f']), np.max(f_values['f'])]
@@ -145,7 +153,7 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
     color_map = color_map_type(color_normalization(field_values))
 
 
-    colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+
     colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_axis)
     
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size, 
