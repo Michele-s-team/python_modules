@@ -122,7 +122,8 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
                         font_size=const.default_font_size, 
                         min_max=None,
                         tick_label_offset=[0,0],
-                        label_angle=0):
+                        label_angle=0,
+                        axis=None):
     
 
     if min_max is None: 
