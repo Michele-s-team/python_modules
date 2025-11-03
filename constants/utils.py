@@ -23,3 +23,5 @@ high_z_order=100
 
 default_color='black'
 default_alpha=1
+
+default_column_name='f'

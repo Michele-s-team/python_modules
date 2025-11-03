@@ -113,6 +113,8 @@ Input values:
         - 'min_max' [optional]: a list with two entries, the min and max of the values which will bound the color bar. If none, this method will compute the min and max values of the field f along the curve and assign them to min_max
         - 'tick_label_offset': the offset of tick labels
         - 'tick_label_angle': the rotation angle of tick labels
+        - 'tick_length': the length of the ticks
+        - 'line_width': the line width for the ticks
 '''
 
 def make_curve_colorbar(figure, t_values, f_values, position, size, 
@@ -123,6 +125,8 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
                         min_max=None,
                         tick_label_offset=[0,0],
                         label_angle=0,
+                        line_width=const.default_line_width,
+                        tick_length=const.default_tick_length,
                         axis=None):
     
     
@@ -158,7 +162,9 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
     
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size, 
                           tick_label_offset=tick_label_offset,
-                          tick_label_angle=tick_label_angle)
+                          tick_label_angle=tick_label_angle,
+                          line_width=line_width,
+                          tick_length=tick_length)
     
     colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
 

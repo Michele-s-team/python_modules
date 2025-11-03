@@ -1,5 +1,6 @@
 import matplotlib.colors as mcolors
 
+import constants.utils as const
 import numpy as np
 import os
 import pandas as pd
@@ -126,13 +127,16 @@ def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min
 '''
 compute the min and max values of a field in a csv file
 Input values:
-- 'file_name': the path + name + extension of the file
-- 'column_name': the name of the column where the values of the field are stored
+    * Mandatory: 
+        - 'file_name': the path + name + extension of the file
+    * Optional:
+        - 'column_name': the name of the column where the values of the field are stored
 Return values; 
-- 'min', 'max': the minimum and maximum of the field
+    - 'min', 'max': the minimum and maximum of the field
 '''
 
-def min_max_file(file_name, column_name):
+def min_max_file(file_name, 
+                 column_name=const.default_column_name):
     data = pd.read_csv(file_name, usecols=[column_name])
 
     min = np.min(data[column_name])
