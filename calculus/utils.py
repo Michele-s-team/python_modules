@@ -122,6 +122,52 @@ def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min
     return norm_v_min_max
 
 
+def norm_min_max_file(file_name, 
+                 column_name=const.default_column_name):
+    
+    data = pd.read_csv(file_name)
+    
+    min = np.inf
+    max = -np.inf
+    
+    for index, row in data.iterrows():
+        
+        norm=0.0
+        
+        for i in range(3): 
+            norm += (row[column_name + f':{i}'])**2
+            
+        norm = np.sqrt(norm)
+        
+        
+        if norm < min:
+            min = norm
+            
+        if norm > max: 
+            max = norm
+
+    return [min, max]
+
+
+def norm_min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
+                  field_column_name=const.default_column_name):
+    
+    min = np.inf
+    max = -np.inf
+
+    for i in range(n_file_min , n_file_max+1, n_file_stride):
+
+        [min, max] = norm_min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
+
+        if min < min:
+            min = min
+            
+        if max > max:
+            max = max
+
+    return [min, max]
+
+
 
 
 '''
@@ -182,7 +228,7 @@ def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
         elif max > abs_max:
             abs_max = max
 
-    return abs_min, abs_max
+    return [abs_min, abs_max]
 
 
 def min_max_file_list(file_name, file_path, columns_name, column_name, n_file_list):
