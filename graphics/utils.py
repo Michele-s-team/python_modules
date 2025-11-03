@@ -494,7 +494,7 @@ def plot_2d_axis(
             # plot the axis label
             if axis_label is not None:
                 ax.text(origin[0] + length[0] / 2, 
-                        origin[1] + length[1] * axis_origin[0] - axis_label_offset[0], 
+                        origin[1] + length[1] * axis_origin[0] - axis_label_offset[0] * length[1], 
                         rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=z_order, clip_on=clip_on)
             
 
@@ -526,7 +526,7 @@ def plot_2d_axis(
                 
             # plot the axis label
             if axis_label is not None: 
-                ax.text(origin[0] + length[0] * axis_origin[1] - axis_label_offset[1], 
+                ax.text(origin[0] + length[0] * axis_origin[1] - axis_label_offset[1] * length[0], 
                         origin[1] + length[1] / 2, 
                         rf'${axis_label}$', 
                         fontsize=font_size, ha='center', va='center',
@@ -620,7 +620,7 @@ def plot_2d_axis(
                         axis_max = np.emath.logn(log_base, tick)
                                      
                     #plot the custom tick    
-                    ti.plot_2d_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                    ti.plot_2d_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
   
   
             # plot the x axis
@@ -1327,8 +1327,9 @@ def plot_2d_axes(ax, origin, length, \
                         tick_length=tick_length, 
                         line_width=line_width, 
                         axis_label=axis_label[i], 
-                        axis_label_offset=lis.multiply(axis_label_offset[i], length), axis_label_angle=axis_label_angle[i], 
-                        tick_label_offset=lis.multiply(tick_label_offset[i], length),
+                        axis_label_offset=axis_label_offset,
+                        axis_label_angle=axis_label_angle[i], 
+                        tick_label_offset=tick_label_offset,
                         tick_label_format=tick_label_format[i], 
                         tick_label_angle=tick_label_angle[i], 
                         n_minor_ticks=n_minor_ticks[i],
