@@ -188,7 +188,7 @@ def min_max_file(file_name,
     min = np.min(data[column_name])
     max = np.max(data[column_name])
 
-    return min, max
+    return [min, max]
 
 
 

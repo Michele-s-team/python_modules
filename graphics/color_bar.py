@@ -74,7 +74,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
         scaled_max = gr.scale(max_value, min_value, scale_factor)
 
         
-    colorbar_ticks = ticks.generate_ticks(min_value, scaled_max)
+    colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max))
 
 
     
@@ -82,16 +82,32 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
     # colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
     colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_axis)
     
+    # --- Remove border and outline ---
+    colorbar.outline.set_visible(False)  # removes the black rectangle border
+    for spine in colorbar.ax.spines.values():
+        spine.set_visible(False)  # hides all spines around the colorbar axis
+    
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size, tick_label_angle,
                           tick_length=tick_length,
                           tick_label_offset=tick_label_offset,
                           line_width=line_width)
     
     
-    colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
+    # colorbar.set_label(rf'${label}$', rotation=label_angle, fontsize=font_size)
+    # colorbar.ax.yaxis.set_label_coords(label_pad[0], 0.5 + label_pad[1])  # Adjust -1.2 for spacing
+    
+    if label is not None: 
+        
+        colorbar_axis.text(
+                            colorbar_axis.get_xlim()[0] + (0.5 - label_pad[0]) * (colorbar_axis.get_xlim()[1] - colorbar_axis.get_xlim()[0]), 
+                            colorbar_axis.get_ylim()[1] + (-0.5 + label_pad[1]) * (colorbar_axis.get_ylim()[1] - colorbar_axis.get_ylim()[0]), 
+                            rf'${label}$', 
+                            fontsize=font_size, 
+                            ha='center', va='center',
+                            rotation=label_angle, 
+                            clip_on=False
+                            )
 
-    # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
-    colorbar.ax.yaxis.set_label_coords(label_pad[0], 0.5 + label_pad[1])  # Adjust -1.2 for spacing
     colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
 
     return color_map
@@ -159,6 +175,12 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
 
 
     colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_axis)
+    
+    # --- Remove border and outline ---
+    colorbar.outline.set_visible(False)  # removes the black rectangle border
+    for spine in colorbar.ax.spines.values():
+        spine.set_visible(False)  # hides all spines around the colorbar axis
+  
     
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size, 
                           tick_label_offset=tick_label_offset,
