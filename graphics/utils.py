@@ -6,8 +6,8 @@ import pandas as pd
 import proplot as pplt
 from pandas.core.methods.selectn import SelectNSeries
 from scipy.interpolate import griddata
-from scipy.interpolate import Rbf
 from scipy.interpolate import interp1d
+from scipy.interpolate import RBFInterpolator
 from sympy.polys.benchmarks.bench_solvers import R_165
 
 import calculus.utils as cal
@@ -1596,7 +1596,8 @@ def interpolate_1d_function(data, n_bins, x_min=None, x_max=None, interpolation_
     return values_grid, points_grid
 
 '''
-interpolate a set of discrete data for a surface f(x,y) into a grid points
+interpolate a set of discrete data for a surface f(x,y) into agrid  of points. If the original data does not cover a region of the grid of points, extrapolation is used. 
+
 - Input values:
     * Mandatory: 
         - 'data': the data containing the values of x, y and f(x,y)
@@ -1620,6 +1621,7 @@ def interpolate_surface(data, mins, maxs, n_bins,
     # 1. re-arrange the x, y values into a points
     points = []
     points.extend([list(element) for element in zip(data[label_x_column], data[label_y_column])])
+    
     # 2 re-arrange the function  values into values
     if f_min != None:
         values = data[label_f_column].apply(lambda x: scale(x, f_min, scale_factor))
@@ -1627,10 +1629,11 @@ def interpolate_surface(data, mins, maxs, n_bins,
         values = data[label_f_column]
 
     # 3 interpolate values and points, and write the result of the interpolated function on the lattice (X, Y) into grid
-    Z = griddata(points, values, (X, Y), method='cubic')
+    # Z = griddata(points, values, (X, Y), method='cubic')
+    rbf = RBFInterpolator(points, values, kernel='thin_plate_spline')
+    Z = rbf(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
     
     norm_Z_min, norm_Z_max, norm_Z = cal.min_max_scalar_field(Z)
-
 
     return X, Y, Z, norm_Z_min, norm_Z_max, norm_Z
 
