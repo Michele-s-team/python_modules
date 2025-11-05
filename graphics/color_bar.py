@@ -188,10 +188,22 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
                           line_width=line_width,
                           tick_length=tick_length)
     
-    colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
-
-    # colorbar.ax.yaxis.label.set_position((label_pad[0], label_pad[1]))  # Adjust y-value to fine-tune
-    colorbar.ax.yaxis.set_label_coords(label_offset[0], 0.5 + label_offset[1])  # Adjust -1.2 for spacing
+    # colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
+    # colorbar.ax.yaxis.set_label_coords(label_offset[0], 0.5 + label_offset[1])  # 
+    
+    if label is not None: 
+    
+        colorbar_axis.text(
+                            colorbar_axis.get_xlim()[0] + (0.5 - label_offset[0]) * (colorbar_axis.get_xlim()[1] - colorbar_axis.get_xlim()[0]), 
+                            colorbar_axis.get_ylim()[1] + (-0.5 + label_offset[1]) * (colorbar_axis.get_ylim()[1] - colorbar_axis.get_ylim()[0]), 
+                            rf'${label}$', 
+                            fontsize=font_size, 
+                            ha='center', va='center',
+                            rotation=label_angle, 
+                            clip_on=False
+                            )
+    
+    
     colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
 
     return color_map

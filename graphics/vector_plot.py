@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.colors as mcolors
 import pandas as pd
 from scipy.interpolate import CloughTocher2DInterpolator
+from scipy.interpolate import RBFInterpolator
 from scipy.interpolate import griddata
 
 import calculus.geometry as geo
@@ -445,9 +446,16 @@ def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v,
     values_v_x = data_v[label_v_column + label_x_column]
     values_v_y = data_v[label_v_column + label_y_column]
 
-    # interpolate the vector field on the grid X, Y
-    v_x = griddata(points, values_v_x, (X, Y), method='cubic')
-    v_y = griddata(points, values_v_y, (X, Y), method='cubic')
+    # # interpolate the vector field on the grid X, Y
+    # v_x = griddata(points, values_v_x, (X, Y), method='cubic')
+    # v_y = griddata(points, values_v_y, (X, Y), method='cubic')
+    
+        # interpolate the vector field on the grid X, Y with extrapolation
+    rbf_x = RBFInterpolator(points, values_v_x, kernel='thin_plate_spline')
+    rbf_y = RBFInterpolator(points, values_v_y, kernel='thin_plate_spline')
+    
+    v_x = rbf_x(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
+    v_y = rbf_y(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
 
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([v_x, v_y])
 
