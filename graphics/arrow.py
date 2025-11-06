@@ -89,7 +89,7 @@ def plot_arrow(ax, shaft_start_position, shaft_end_position, shaft_length,
 
         # compute coordinates for arrow heads
         up_head = [-head_length * np.sin(head_angle * const.deg_to_rad), 0, -head_length * np.cos(head_angle * const.deg_to_rad)]
-        down_head = [+head_length * np.sin(head_angle * const.deg_to_rad), 0, - head_length * np.cos(head_angle * cst.deg_to_rad)]
+        down_head = [+head_length * np.sin(head_angle * const.deg_to_rad), 0, - head_length * np.cos(head_angle * const.deg_to_rad)]
         up_head = np.matmul(gr.R(theta_shaft, phi_shaft), up_head)
         down_head = np.matmul(gr.R(theta_shaft, phi_shaft), down_head)
 

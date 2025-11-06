@@ -307,7 +307,7 @@ def plot_3d_axes(ax, origin, length,
                  tick_label_offset=[0, 0, 0], 
                  margin=[0, 0, 0],
                  tick_label_format=[const.default_label_format,const.default_label_format, const.default_label_format], 
-                 font_size=const.default_font_size, 
+                 font_size=[const.default_font_size] * 3, 
                  line_width=[const.default_line_width, const.default_line_width, const.default_line_width],
                  n_minor_ticks=[None] * 3,
                  minor_tick_length=[const.default_minor_tick_length] * 3,
@@ -1057,9 +1057,16 @@ plot an analytical curve by loading the symbol of its legend from a pdf file
 
 
 def plot_analytical_curve_with_legend_pdf_image(ax, f, t_min, t_max, n_bins, color, legend, legend_position,
-                                                z_order, line_width, zoom, box_alignment, dpi, style=None):
+                                                z_order, line_width, zoom, box_alignment, dpi, 
+                                                style=None,
+                                                path=''):
+    
     plot_analytical_curve_with_legend(ax, f, t_min, t_max, n_bins, color, r' ', legend_position, 0, z_order, line_width, style)
-    images.import_pdf_image(legend + '.pdf', zoom, legend_position, box_alignment, dpi, ax)
+    
+    images.import_pdf_image(os.path.join(path, legend + '.pdf'), 
+                            zoom, legend_position, box_alignment, dpi, ax)
+
+    # images.import_pdf_image(legend + '.pdf', zoom, legend_position, box_alignment, dpi, ax)
 
 
 '''
@@ -1265,7 +1272,8 @@ Input values:
 def plot_2d_axes(ax, origin, length, \
                  tick_length=[const.default_tick_length] * 2, line_width=0.1, \
                  axis_label_angle=[0,0], \
-                 axis_label_offset=[0,0], tick_label_offset=[0,0],
+                 axis_label_offset=[0,0], 
+                 tick_label_offset=[0,0],
                  tick_label_format=[const.default_label_format,const.default_label_format],
                  font_size=[const.default_font_size, const.default_font_size], 
                  z_order=0, 
@@ -1342,8 +1350,11 @@ def plot_2d_axes(ax, origin, length, \
     
     if plot_label != [None, None]:
         # draw the panel label
-        ax.text(origin[0] - plot_label_offset[0] * length[0], origin[1] + length[1] + plot_label_offset[1] * length[1],
-                plot_label, fontsize=plot_label_font_size, ha='center', va='center',
+        ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
+                rf'${plot_label}$', 
+                fontsize=plot_label_font_size, 
+                ha='center', 
+                va='center',
                 zorder=z_order)
 
 
@@ -1606,6 +1617,7 @@ interpolate a set of discrete data for a surface f(x,y) into agrid  of points. I
     * Optional: 
         - 'scale_factor': the scale factor for the field f
         - 'label_x_column' ... the labels for x, y, and f in 'data'
+        - 'method': the interpolation method. If it is equal to 'rbf', the RBFInterpolator (which extrapolates in regions where the original data is not defined) is used. If 'griddata', the griddata method is used. 
         - 'f_min': the minimal value of the field with recspect to which the rescaling with 'scale_factor' will be made, if f_min != None
 '''
 
@@ -1613,6 +1625,7 @@ interpolate a set of discrete data for a surface f(x,y) into agrid  of points. I
 def interpolate_surface(data, mins, maxs, n_bins, 
                         scale_factor=1, 
                         f_min=None, 
+                        method='rbf',
                         label_x_column=':0', label_y_column=':1', label_f_column='f'):
     
     X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins[0]), np.linspace(mins[1], maxs[1], n_bins[1]),
@@ -1629,9 +1642,15 @@ def interpolate_surface(data, mins, maxs, n_bins,
         values = data[label_f_column]
 
     # 3 interpolate values and points, and write the result of the interpolated function on the lattice (X, Y) into grid
-    # Z = griddata(points, values, (X, Y), method='cubic')
-    rbf = RBFInterpolator(points, values, kernel='thin_plate_spline')
-    Z = rbf(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
+    if method == 'rbf':
+        
+        rbf = RBFInterpolator(points, values, kernel='thin_plate_spline')
+        Z = rbf(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
+        
+    elif method == 'griddata':
+    
+        Z = griddata(points, values, (X, Y), method='cubic')
+
     
     norm_Z_min, norm_Z_max, norm_Z = cal.min_max_scalar_field(Z)
 
