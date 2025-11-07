@@ -375,10 +375,11 @@ def plot_3d_axes(ax, origin, length,
                     z_order=z_order)
         
     if plot_label is not None:
+        
         # plot_label_offset now means axes-relative coordinates (0–1)
         ax.text2D(plot_label_position[0],
                 plot_label_position[1],
-                rf'${plot_label}$',
+                f"${plot_label}$",
                 transform=ax.transAxes,
                 fontsize=plot_label_font_size,
                 ha='center',
