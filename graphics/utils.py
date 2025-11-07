@@ -370,6 +370,15 @@ def plot_3d_axes(ax, origin, length,
                     n_minor_ticks=n_minor_ticks,
                     minor_tick_length=minor_tick_length,
                     z_order=z_order)
+        
+    if plot_label != [None, None]:
+        # draw the panel label
+        ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
+                rf'${plot_label}$', 
+                fontsize=plot_label_font_size, 
+                ha='center', 
+                va='center',
+                zorder=z_order)
 
 
 
@@ -1281,7 +1290,7 @@ def plot_2d_axes(ax, origin, length, \
                  margin=[0,0], axis_label=[None,None], 
                  plot_label_offset=[0,0], 
                  plot_label_font_size=const.default_font_size, 
-                 plot_label=[None,None],
+                 plot_label=None,
                  n_minor_ticks=[None] * 2,
                  minor_tick_length = [const.default_minor_tick_length] * 2):
     
@@ -1348,7 +1357,7 @@ def plot_2d_axes(ax, origin, length, \
                     )
 
     
-    if plot_label != [None, None]:
+    if plot_label != None:
         # draw the panel label
         ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
                 rf'${plot_label}$', 
