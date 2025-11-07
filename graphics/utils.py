@@ -311,6 +311,9 @@ def plot_3d_axes(ax, origin, length,
                  line_width=[const.default_line_width, const.default_line_width, const.default_line_width],
                  n_minor_ticks=[None] * 3,
                  minor_tick_length=[const.default_minor_tick_length] * 3,
+                 plot_label=None,
+                 plot_label_position = [0] * 2,
+                 plot_label_font_size = const.default_font_size,
                  z_order=const.default_z_order):
     
         # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
@@ -371,12 +374,14 @@ def plot_3d_axes(ax, origin, length,
                     minor_tick_length=minor_tick_length,
                     z_order=z_order)
         
-    if plot_label != [None, None]:
-        # draw the panel label
-        ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
-                rf'${plot_label}$', 
-                fontsize=plot_label_font_size, 
-                ha='center', 
+    if plot_label is not None:
+        # plot_label_offset now means axes-relative coordinates (0–1)
+        ax.text2D(plot_label_position[0],
+                plot_label_position[1],
+                rf'${plot_label}$',
+                transform=ax.transAxes,
+                fontsize=plot_label_font_size,
+                ha='center',
                 va='center',
                 zorder=z_order)
 
