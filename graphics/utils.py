@@ -1078,10 +1078,8 @@ def plot_analytical_curve_with_legend_pdf_image(ax, f, t_min, t_max, n_bins, col
     
     plot_analytical_curve_with_legend(ax, f, t_min, t_max, n_bins, color, r' ', legend_position, 0, z_order, line_width, style)
     
-    images.import_pdf_image(os.path.join(path, legend + '.pdf'), 
+    images.import_image(os.path.join(path, legend + '.pdf'), 
                             zoom, legend_position, box_alignment, dpi, ax)
-
-    # images.import_pdf_image(legend + '.pdf', zoom, legend_position, box_alignment, dpi, ax)
 
 
 '''

@@ -1,4 +1,5 @@
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 from pdf2image import convert_from_path
@@ -11,28 +12,44 @@ print("paths.py file loaded from =", paths.__file__)
 
 '''
 import a pdf image 
-- 'image_path': the absolute path of the pdf image
-- 'zoom': the zoom factor, setting how big the importe image will be
-- 'position': position where the image wil be placed in 'ax'
-- 'box_alignment': the location of the image which will be located at 'position'
-- 'dpi': the resolution of the image
-- 'ax': the axis where the image will be imported
+Input values: 
+    * Mandatory:
+        - 'image_path': the absolute path of the pdf image
+        - 'zoom': the zoom factor, setting how big the importe image will be
+        - 'position': position where the image wil be placed in 'ax'
+        - 'box_alignment': the location of the image which will be located at 'position'
+        - 'dpi': the resolution of the image
+        - 'ax': the axis where the image will be imported
+    * Optional:
+        - 'format': the format of the file to be read, 'pdf' or 'png'
 '''
 
 
-def import_pdf_image(image_path, zoom, position, box_alignment, dpi, ax):
-    images = convert_from_path(image_path, dpi=dpi)
-    # Choose the first page as the image (you can change the index if needed)
-    image = images[0]
+def import_image(image_path, zoom, position, box_alignment, dpi, ax,
+                     format='pdf',
+                     zorder=0):
+    
+    if format == 'pdf':
+        images = convert_from_path(image_path, dpi=dpi)
+        # Choose the first page as the image (you can change the index if needed)
+        image = images[0]
+        
+    elif format == 'png':
+        
+        image = plt.imread(image_path)
 
     # Convert the image to a format Matplotlib can use
     image = np.array(image)
 
     # Now, insert the PDF image into the plot
     image_box = OffsetImage(image, zoom=zoom)  # Adjust zoom to resize the image
-    annotation_box = AnnotationBbox(image_box, (position[0], position[1]), frameon=False, xycoords='axes fraction',
+    annotation_box = AnnotationBbox(image_box, 
+                                    (position[0], position[1]), 
+                                    frameon=False, 
+                                    xycoords='axes fraction',
                                     boxcoords="axes fraction",
-                                    box_alignment=(box_alignment[0], box_alignment[1]))
+                                    box_alignment=(box_alignment[0], box_alignment[1]),
+                                    zorder=zorder)
     ax.add_artist(annotation_box)
 
 
