@@ -5,6 +5,7 @@ import os
 from pdf2image import convert_from_path
 import re
 
+import constants.utils as const
 import system.paths as paths
 
 print("paths.figures_path =", paths.figures_path)
@@ -22,12 +23,15 @@ Input values:
         - 'ax': the axis where the image will be imported
     * Optional:
         - 'format': the format of the file to be read, 'pdf' or 'png'
+        - 'alpha': the transparency with which the image will be rendered 
+        - 'zorder': the z order with which the image will be rendered
 '''
 
 
 def import_image(image_path, zoom, position, box_alignment, dpi, ax,
                      format='pdf',
-                     zorder=0):
+                     zorder=0,
+                     alpha=const.default_alpha):
     
     if format == 'pdf':
         images = convert_from_path(image_path, dpi=dpi)
@@ -42,7 +46,7 @@ def import_image(image_path, zoom, position, box_alignment, dpi, ax,
     image = np.array(image)
 
     # Now, insert the PDF image into the plot
-    image_box = OffsetImage(image, zoom=zoom)  # Adjust zoom to resize the image
+    image_box = OffsetImage(image, zoom=zoom, alpha=alpha)  # Adjust zoom to resize the image
     annotation_box = AnnotationBbox(image_box, 
                                     (position[0], position[1]), 
                                     frameon=False, 
