@@ -232,6 +232,7 @@ def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
 
 
 def min_max_file_list(file_name, file_path, columns_name, column_name, n_file_list):
+    
     abs_min, abs_max = min_max_file(file_path + file_name + str(n_file_list[0]) + '.csv', column_name)
 
     for n_file in n_file_list:
