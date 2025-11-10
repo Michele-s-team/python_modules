@@ -369,7 +369,7 @@ def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega,
                                               label_x_column, label_y_column, label_z_column, label_v_column, label_omega_column):
     
     X_v, Y_v, Z_v, _, _, _ = gr.interpolate_surface(data_z, mins, maxs, N_bins_v, 
-                                           f_min=z_min)
+                                           f_min=z_min, method='griddata')
 
     points = []
     points.extend([list(element) for element in zip(data_v[label_x_column], data_v[label_y_column])])

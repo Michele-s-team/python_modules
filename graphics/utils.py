@@ -1212,7 +1212,8 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                     # if two ticks overlap, remove one of them
 
                     tick_labels[j].set_visible(False)
-                    tick_lines[j][0].remove()
+                    if j < len(tick_lines[j]):
+                        tick_lines[j][0].remove()
             
     
 
