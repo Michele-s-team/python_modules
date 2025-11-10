@@ -565,11 +565,12 @@ compute the minimum and maximum norm, across multiple snapshots of the field, of
 
 def norm_v_min_max_files(name_file_v, name_file_omega, file_path, columns_v, label_v_column, columns_omega, n_file_min,
                          n_file_max, n_file_stride):
-    abs_min, abs_max = norm_v_min_max_file(file_path + name_file_v + str(n_file_min) + '.csv',
-                                           file_path + name_file_omega + str(n_file_min) + '.csv',
-                                           columns_v, label_v_column, columns_omega)
+    
+    
+    abs_min = np.inf
+    abs_max = - np.inf
 
-    for i in range(n_file_min + 1, n_file_max + 1, n_file_stride):
+    for i in range(n_file_min, n_file_max, n_file_stride):
 
         min, max = norm_v_min_max_file(file_path + name_file_v + str(i) + '.csv',
                                        file_path + name_file_omega + str(i) + '.csv',
@@ -584,7 +585,10 @@ def norm_v_min_max_files(name_file_v, name_file_omega, file_path, columns_v, lab
     return abs_min, abs_max
 
 
-def norm_v_min_max_file_list(name_file_v, name_file_omega, file_path, columns_v, label_v_column, columns_omega, n_file_list):
+def norm_v_min_max_file_list(name_file_v, name_file_omega, file_path,
+                             n_file_list, 
+                             columns_v, label_v_column, columns_omega):
+    
     abs_min, abs_max = norm_v_min_max_file(file_path + name_file_v + str(n_file_list[0]) + '.csv',
                                            file_path + name_file_omega + str(n_file_list[0]) + '.csv',
                                            columns_v, label_v_column, columns_omega)

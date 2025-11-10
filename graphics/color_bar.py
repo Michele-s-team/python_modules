@@ -41,6 +41,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   tick_label_offset=[0, 0],
                   line_width=const.default_line_width,
                   mappable=None,
+                  prune_ticks=True,
                   axis=None):
     
     
@@ -90,7 +91,8 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size, tick_label_angle,
                           tick_length=tick_length,
                           tick_label_offset=tick_label_offset,
-                          line_width=line_width)
+                          line_width=line_width,
+                          prune=prune_ticks)
     
     
     # colorbar.set_label(rf'${label}$', rotation=label_angle, fontsize=font_size)
