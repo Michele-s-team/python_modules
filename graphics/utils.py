@@ -1518,13 +1518,13 @@ def set_cylinder(r, z_top, z_bottom, z_min, scale_factor_z):
 
 # plot a line fom point 'r_start' to point 'r_end' by stretching it by the vector 'scale_factor' in each respective direction
 def plot_line_scaled(ax, r_start, r_end, length, mins, scale_factors, line_width, color, alpha, z_order):
+    
     r_start_scaled = scale_list(r_start, mins, scale_factors)
     r_end_scaled = scale_list(r_end, mins, scale_factors)
 
     dr_scaled = np.subtract(r_end_scaled, r_start_scaled)
 
-    norm_dr_scaled = np.sqrt(np.dot(dr_scaled, dr_scaled))
-    r_end_scaled = r_start_scaled + dr_scaled / norm_dr_scaled * length
+    r_end_scaled = r_start_scaled + dr_scaled / np.sqrt(np.dot(dr_scaled, dr_scaled)) * length
 
     r_start_end = list(zip(r_start_scaled, r_end_scaled))
 

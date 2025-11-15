@@ -82,7 +82,8 @@ Input values:
 '''
 def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle, threshold_arrow_length,
                       line_width, alpha, color, z_order):
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
+    
+    grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
