@@ -1800,15 +1800,17 @@ def plot_rectangle(ax, p_left_bottom, L, h, color, line_width, z_order):
 '''
 plot a mesh by drawing its edges
 Input values
-- 'data_line_vertices': the data containing the coordinates of the lines which connect the vertices, as generated, for example, from 
-'data_line_vertices = pd.read_csv(mesh_path + "line_vertices.csv", usecols=columns_line_vertices)'
-- 'line_width': the width of the mesh edges lines
-- 'color': the color of the mesh edges lines
-- 'alpha': the opacity with which the lines will be plotted
+    - 'ax': the axis where the mesh will be plotted
+    - 'data_line_vertices': the data containing the coordinates of the lines which connect the vertices, as generated, for example, from 
+    'data_line_vertices = pd.read_csv(mesh_path + "line_vertices.csv", usecols=columns_line_vertices)'
+    - 'line_width': the width of the mesh edges lines
+    - 'color': the color of the mesh edges lines
+    - 'alpha': the opacity with which the lines will be plotted
 '''
 
 
-def plot_mesh(data_line_vertices, line_width, color, alpha):
+def plot_mesh(ax, data_line_vertices, line_width, color, alpha):
+    
     points_start = []
     points_end = []
     points_start.extend([list(a) for a in
@@ -1819,7 +1821,7 @@ def plot_mesh(data_line_vertices, line_width, color, alpha):
                               data_line_vertices[clab.label_end_z_column])])
 
     for i in range(len(points_start)):
-        plt.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]],
+        ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]],
                  [points_start[i][2], points_end[i][2]], linewidth=line_width, color=color, alpha=alpha)
 
 
