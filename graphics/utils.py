@@ -85,7 +85,8 @@ def plot_3d_axis(ax, origin, length, direction_id,
         for i in range(len(tick_list)):
             
             # plot major tick
-            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])):
+            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
+                
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
                 
                 ti.plot_3d_tick(
@@ -104,16 +105,19 @@ def plot_3d_axis(ax, origin, length, direction_id,
                 
                 for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
                     
-                    ti.plot_3d_tick(
-                                ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
-                                scale_factor=scale_factor,
-                                axis_origin=axis_origin,
-                                font_size=font_size,
-                                z_order=z_order,
-                                color=color,
-                                line_width=line_width,
-                                tick_label_angle=tick_label_angle
-                    )
+                    if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
+                        # the minor tick under consideration is within the axis interval -> plot its tick line and its tick label
+                    
+                        ti.plot_3d_tick(
+                                    ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                    scale_factor=scale_factor,
+                                    axis_origin=axis_origin,
+                                    font_size=font_size,
+                                    z_order=z_order,
+                                    color=color,
+                                    line_width=line_width,
+                                    tick_label_angle=tick_label_angle
+                        )
                 
         # plot the axis label
         ax.text(
@@ -124,11 +128,8 @@ def plot_3d_axis(ax, origin, length, direction_id,
             )
         
             
-        
-    
     elif direction_id == 1:
-        # plot an y axis
-        
+        # plot an y axis    
            
         axis_vector = []
         axis_vector.append([scale((origin[0] + length[0] * axis_origin[1][0]), origin[0], scale_factor[0])] * 2)
@@ -143,8 +144,8 @@ def plot_3d_axis(ax, origin, length, direction_id,
         for i in range(len(tick_list)):
             
             # plot major tick
-            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])):
-                # the tick under consideration is within the axis interval -> plot its tick line and its tick label
+            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
+                # the major tick under consideration is within the axis interval -> plot its tick line and its tick label
         
                 ti.plot_3d_tick(
                     ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, 
@@ -159,18 +160,22 @@ def plot_3d_axis(ax, origin, length, direction_id,
             
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
+                
                 for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
                     
-                    ti.plot_3d_tick(
-                                ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
-                                scale_factor=scale_factor,
-                                axis_origin=axis_origin,
-                                font_size=font_size,
-                                z_order=z_order,
-                                color=color,
-                                line_width=line_width,
-                                tick_label_angle=tick_label_angle
-                    )
+                    if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
+                        # the minor tick under consideration is within the axis interval -> plot its tick line and its tick label
+                    
+                        ti.plot_3d_tick(
+                                    ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
+                                    scale_factor=scale_factor,
+                                    axis_origin=axis_origin,
+                                    font_size=font_size,
+                                    z_order=z_order,
+                                    color=color,
+                                    line_width=line_width,
+                                    tick_label_angle=tick_label_angle
+                        )
 
         # plot the axis label
         ax.text(
@@ -194,8 +199,7 @@ def plot_3d_axis(ax, origin, length, direction_id,
 
         
         for i in range(len(tick_list)):
-            
-            
+               
             # plot major tick
             if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
                 # the major tick under consideration is within the axis interval -> plot its tick line and its tick label
@@ -367,6 +371,7 @@ def plot_3d_axes(ax, origin, length,
     dim = 3
 
     for i in range(3):    
+        
         plot_3d_axis(ax, origin, length, i, 
                     scale_factor=scale_factor,
                     tick_length=tick_length,
