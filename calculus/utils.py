@@ -7,6 +7,7 @@ import pandas as pd
 
 import graphics.utils as gr
 import graphics.vector_plot as vp
+import list.utils as lis
 
 # convert a floating-point number 'x' in scientific format and return the related string in latex format
 def to_latex_scientific(x):
@@ -264,3 +265,48 @@ def min_max_scalar_field(grid):
     norm = mcolors.Normalize(vmin=min, vmax=max)  # Normalize norms to [0,1]
 
     return min, max, norm
+
+'''
+compute the absolute min and max of the positions of the mesh nodes, in a rectangular region, in the current configuration across multiple snapshots
+Input values:
+    - 'snapshot_min', 'snapshot_max', 'snapshot_stride': ids of the first and last snapshot, and snapshot stride to consider while running through the snapshots
+    - 'snapshot_nodal_values_path': the path where the snapshots (csv files) of the mesh deformation field 'u' is located
+    - 'X_ref_min_max': [[X_ref_min, X_ref_max], [Y_ref_min Y_ref_max]] the boundaries of the rectangular region where the interpolation will be made
+    - 'n_bins' : [n_x, n_y] the bins used to make the interpolation
+    
+Return values:
+    - 'X_curr_min_max_abs': the absolute min and max of X in the current configuration computed across all snapshots [[X_curr_min, X_curr_max], [Y_curr_min, Y_curr_max]]
+
+'''
+def X_curr_min_max_abs(snapshot_min, snapshot_max, snapshot_stride, snapshot_nodal_values_path, X_ref_min_max, n_bins):
+    
+    X_curr_min_max_abs = [[np.inf,-np.inf],[np.inf,-np.inf]]
+
+    # run through all snapshots
+    for n_snapshot in range(snapshot_min, snapshot_max, snapshot_stride):
+
+        data_u_msh = pd.read_csv(os.path.join(snapshot_nodal_values_path, 'u_n_' + str(n_snapshot) + '.csv'))
+
+        X_ref, Y_ref, u_n_X, u_n_Y, _, _, _, _ = vp.interpolate_2d_vector_field(data_u_msh,
+                                                                                [X_ref_min_max[0][0], X_ref_min_max[1][0]],
+                                                                                [X_ref_min_max[0][1] - X_ref_min_max[0][0], X_ref_min_max[1][1] - X_ref_min_max[1][0]],
+                                                                                n_bins)
+        
+        #X_curr, Y_curr are the positions of the mesh nodes in the current configuration    
+        X_curr = np.array(lis.add_lists_of_lists(X_ref, u_n_X))
+        Y_curr = np.array(lis.add_lists_of_lists(Y_ref, u_n_Y))
+
+        # compute the min-max of the snapshot in the current configuration
+        X_curr_min_max = [lis.min_max(X_curr),lis.min_max(Y_curr)]
+        
+        # update the absolute min and max according to the min-max of the snapshot 
+        for i in range(2):
+            if X_curr_min_max[i][0] < X_curr_min_max_abs[i][0]:
+                X_curr_min_max_abs[i][0] = X_curr_min_max[i][0]
+                
+            if X_curr_min_max[i][1] > X_curr_min_max_abs[i][1]:
+                X_curr_min_max_abs[i][1] = X_curr_min_max[i][1]
+                
+
+    return X_curr_min_max_abs
+# 
