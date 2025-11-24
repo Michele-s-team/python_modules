@@ -28,14 +28,15 @@ Arguments:
         - 'tick_label_angle' [optional]: the rotation angle of the tick labels
 '''
 
-def make_colorbar(figure, grid_values, min_value, max_value, position, size, 
+
+def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   scale_factor=1,
-                  label = None, 
-                  font_size = const.default_font_size, 
-                  label_angle=90, 
-                  label_pad=[0, 0], 
-                  shrink_value=const.colorbar_shrink_value, 
-                  aspect_value=const.colorbar_aspect_value, 
+                  label=None,
+                  font_size=const.default_font_size,
+                  label_angle=90,
+                  label_pad=[0, 0],
+                  shrink_value=const.colorbar_shrink_value,
+                  aspect_value=const.colorbar_aspect_value,
                   tick_label_angle=0,
                   tick_length=const.default_tick_length,
                   tick_label_offset=[0, 0],
@@ -43,76 +44,78 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   mappable=None,
                   prune_ticks=True,
                   axis=None):
-    
-    
+
     # Use existing axis or create new one
     if axis is None:
-        colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+        colorbar_axis = figure.add_axes(
+            [position[0], position[1], size[0], size[1]])
     else:
         axis.clear()  # Clear the existing axis
         colorbar_axis = axis
-    
+
     if mappable is None:
         # the user provided no map between the values of the field and the colors -> build this map.
-         
+
         scaled_max = gr.scale(max_value, min_value, scale_factor)
-        
-        color_normalization = plt.Normalize(vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
+
+        color_normalization = plt.Normalize(
+            vmin=min_value, vmax=scaled_max)  # Use max_value, not scaled_max!
         color_map = color_map_type(color_normalization(grid_values))
 
-        mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
+        mappable = plt.cm.ScalarMappable(
+            cmap=color_map_type, norm=color_normalization)
         mappable.set_array(grid_values)
-        
+
     else:
         # the user provided the mappable argument, which defines min_value, max_value and color_map
-        
+
         norm = mappable.norm
         min_value = norm.vmin
         max_value = norm.vmax
-        
+
         color_map = mappable.cmap
-        
+
         scaled_max = gr.scale(max_value, min_value, scale_factor)
 
-        
     colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max))
 
-
-    
-
     # colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
-    colorbar = figure.colorbar(mappable, shrink=shrink_value, aspect=aspect_value, location='left', cax=colorbar_axis)
-    
+    colorbar = figure.colorbar(mappable, shrink=shrink_value,
+                               aspect=aspect_value, location='left', cax=colorbar_axis)
+
     # --- Remove border and outline ---
     colorbar.outline.set_visible(False)  # removes the black rectangle border
     for spine in colorbar.ax.spines.values():
         spine.set_visible(False)  # hides all spines around the colorbar axis
-    
+
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size, tick_label_angle,
                           tick_length=tick_length,
                           tick_label_offset=tick_label_offset,
                           line_width=line_width,
                           prune=prune_ticks)
-    
-    
+
     # colorbar.set_label(rf'${label}$', rotation=label_angle, fontsize=font_size)
     # colorbar.ax.yaxis.set_label_coords(label_pad[0], 0.5 + label_pad[1])  # Adjust -1.2 for spacing
-    
-    if label is not None: 
-        
-        colorbar_axis.text(
-                            colorbar_axis.get_xlim()[0] + (0.5 - label_pad[0]) * (colorbar_axis.get_xlim()[1] - colorbar_axis.get_xlim()[0]), 
-                            colorbar_axis.get_ylim()[1] + (-0.5 + label_pad[1]) * (colorbar_axis.get_ylim()[1] - colorbar_axis.get_ylim()[0]), 
-                            rf'${label}$', 
-                            fontsize=font_size, 
-                            ha='center', va='center',
-                            rotation=label_angle, 
-                            clip_on=False
-                            )
 
-    colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
+    if label is not None:
+
+        colorbar_axis.text(
+            colorbar_axis.get_xlim()[0] + (0.5 - label_pad[0]) *
+            (colorbar_axis.get_xlim()[1] - colorbar_axis.get_xlim()[0]),
+            colorbar_axis.get_ylim()[1] + (-0.5 + label_pad[1]) *
+            (colorbar_axis.get_ylim()[1] - colorbar_axis.get_ylim()[0]),
+            rf'${label}$',
+            fontsize=font_size,
+            ha='center', va='center',
+            rotation=label_angle,
+            clip_on=False
+        )
+
+    # Tag this axis for future deletion, if needed
+    colorbar.ax.set_label("colorbar")
 
     return color_map
+
 
 '''
 create a colorbar for a curve, by plotting the value of a field along the curve in terms of a color map
@@ -135,79 +138,78 @@ Input values:
         - 'line_width': the line width for the ticks
 '''
 
-def make_curve_colorbar(figure, t_values, f_values, position, size, 
-                        tick_label_angle=const.default_tick_label_angle, 
-                        label_offset=[0,0], 
-                        label='', 
-                        font_size=const.default_font_size, 
+
+def make_curve_colorbar(figure, t_values, f_values, position, size,
+                        tick_label_angle=const.default_tick_label_angle,
+                        label_offset=[0, 0],
+                        label='',
+                        font_size=const.default_font_size,
                         min_max=None,
-                        tick_label_offset=[0,0],
+                        tick_label_offset=[0, 0],
                         label_angle=0,
                         line_width=const.default_line_width,
                         tick_length=const.default_tick_length,
                         axis=None):
-    
-    
+
     # Use existing axis or create new one
     if axis is None:
-        colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
+        colorbar_axis = figure.add_axes(
+            [position[0], position[1], size[0], size[1]])
     else:
         axis.clear()  # Clear the existing axis
         colorbar_axis = axis
-    
 
-    if min_max is None: 
+    if min_max is None:
         min_max = [np.min(f_values['f']), np.max(f_values['f'])]
 
     colorbar_ticks = ticks.generate_ticks(min_max[0], min_max[1])
 
-    
-    f_interpolated = interp1d(f_values[":0"].values, f_values["f"].values, kind='cubic', fill_value='extrapolate')
+    f_interpolated = interp1d(
+        f_values[":0"].values, f_values["f"].values, kind='cubic', fill_value='extrapolate')
 
     color_normalization = plt.Normalize(vmin=min_max[0], vmax=min_max[1])
 
-    mappable = plt.cm.ScalarMappable(cmap=color_map_type, norm=color_normalization)
-    
+    mappable = plt.cm.ScalarMappable(
+        cmap=color_map_type, norm=color_normalization)
+
     field_values = f_values['f'].values[::-1]  # Extract just the 'f' column
     field_values = f_interpolated(t_values)
-    
+
     mappable.set_array(field_values)
     color_map = color_map_type(color_normalization(field_values))
 
+    colorbar = figure.colorbar(
+        mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_axis)
 
-
-    colorbar = figure.colorbar(mappable, shrink=0.2, aspect=10, location='left', cax=colorbar_axis)
-    
     # --- Remove border and outline ---
     colorbar.outline.set_visible(False)  # removes the black rectangle border
     for spine in colorbar.ax.spines.values():
         spine.set_visible(False)  # hides all spines around the colorbar axis
-  
-    
-    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size, 
+
+    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_max[0], 1, font_size,
                           tick_label_offset=tick_label_offset,
                           tick_label_angle=tick_label_angle,
                           line_width=line_width,
                           tick_length=tick_length)
-    
+
     # colorbar.set_label(label, rotation=label_angle, fontsize=font_size)
-    # colorbar.ax.yaxis.set_label_coords(label_offset[0], 0.5 + label_offset[1])  # 
-    
-    if label is not None: 
-    
+    # colorbar.ax.yaxis.set_label_coords(label_offset[0], 0.5 + label_offset[1])  #
+
+    if label is not None:
+
         colorbar_axis.text(
-                            colorbar_axis.get_xlim()[0] + (0.5 - label_offset[0]) * (colorbar_axis.get_xlim()[1] - colorbar_axis.get_xlim()[0]), 
-                            colorbar_axis.get_ylim()[1] + (-0.5 + label_offset[1]) * (colorbar_axis.get_ylim()[1] - colorbar_axis.get_ylim()[0]), 
-                            rf'${label}$', 
-                            fontsize=font_size, 
-                            ha='center', va='center',
-                            rotation=label_angle, 
-                            clip_on=False
-                            )
-    
-    
-    colorbar.ax.set_label("colorbar")  # Tag this axis for future deletion, if needed
+            colorbar_axis.get_xlim()[0] + (0.5 - label_offset[0]) *
+            (colorbar_axis.get_xlim()[1] - colorbar_axis.get_xlim()[0]),
+            colorbar_axis.get_ylim()[1] + (-0.5 + label_offset[1]) *
+            (colorbar_axis.get_ylim()[1] - colorbar_axis.get_ylim()[0]),
+            rf'${label}$',
+            fontsize=font_size,
+            ha='center', va='center',
+            rotation=label_angle,
+            clip_on=False
+        )
+
+    # Tag this axis for future deletion, if needed
+    colorbar.ax.set_label("colorbar")
 
     return color_map
-
-

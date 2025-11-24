@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
-import os 
+import os
 import pandas as pd
 import proplot as pplt
 from scipy.interpolate import griddata
@@ -29,125 +29,72 @@ Input values:
     - 'ax': the axis where the plot will be made
     [to be conmpleted...]
 '''
-def plot_3d_axis(ax, origin, length, direction_id, 
-                 scale_factor=[1, 1, 1], 
-                 tick_length=[const.default_tick_length, const.default_tick_length, const.default_tick_length], 
-                 line_width=const.default_line_width, 
+
+
+def plot_3d_axis(ax, origin, length, direction_id,
+                 scale_factor=[1, 1, 1],
+                 tick_length=[const.default_tick_length,
+                              const.default_tick_length, const.default_tick_length],
+                 line_width=const.default_line_width,
                  axis_label='',
-                 axis_label_offset=[0, 0, 0], 
-                 tick_label_offset=0, 
-                 tick_label_format=const.default_label_format, 
+                 axis_label_offset=[0, 0, 0],
+                 tick_label_offset=0,
+                 tick_label_format=const.default_label_format,
                  tick_label_angle=const.default_tick_label_angle,
-                 font_size=const.default_font_size, 
+                 font_size=const.default_font_size,
                  axis_origin=None,
                  n_minor_ticks=[None] * 3,
                  minor_tick_length=[const.default_minor_tick_length] * 3,
                  color='black',
                  z_order=const.default_z_order):
-    
+
     dim = 3
 
-    
     # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
-    if axis_origin is None: 
+    if axis_origin is None:
         axis_origin = [0, 0] * dim
- 
+
     # compute ticks
-    ticks = ti.generate_ticks(origin[direction_id], origin[direction_id] + scale_factor[direction_id] * length[direction_id])
+    ticks = ti.generate_ticks(
+        origin[direction_id], origin[direction_id] + scale_factor[direction_id] * length[direction_id])
 
     # draw ticks
     tick_list = []
     for tick in ticks:
-        
+
         tick_list.append([
             tick,
             text.float_to_latex(tick, tick_label_format)
         ])
-        
+
     # plot the axis
-    # axis_vector is the vector that contain the coordinate increment \vec{dr} which define the axis: 
-            
-    
-    
+    # axis_vector is the vector that contain the coordinate increment \vec{dr} which define the axis:
+
     if direction_id == 0:
         # plot an x axis
-        
-        axis_vector = []
-        axis_vector.append([origin[direction_id], scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
-            
-        axis_vector.append([scale((origin[1] + length[1] * axis_origin[0][0]), origin[1], scale_factor[1])] * 2)
-        axis_vector.append([scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2)
-            
-        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
-              
+        axis_vector = []
+        axis_vector.append([origin[direction_id], scale(
+            origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
+
+        axis_vector.append(
+            [scale((origin[1] + length[1] * axis_origin[0][0]), origin[1], scale_factor[1])] * 2)
+        axis_vector.append(
+            [scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2])] * 2)
+
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2],
+                color=color, linewidth=line_width, clip_on=False, zorder=z_order)
+
         for i in range(len(tick_list)):
-            
+
             # plot major tick
             if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
-                
+
                 # the tick under consideration is within the axis interval -> plot its tick line and its tick label
-                
-                ti.plot_3d_tick(
-                                ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, 
-                                scale_factor=scale_factor,
-                                axis_origin=axis_origin,
-                                font_size=font_size,
-                                z_order=z_order,
-                                color=color,
-                                line_width=line_width,
-                                tick_label_angle=tick_label_angle
-                                )
-                
-            # plot minor ticks
-            if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
-                
-                for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
-                    
-                    if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
-                        # the minor tick under consideration is within the axis interval -> plot its tick line and its tick label
-                    
-                        ti.plot_3d_tick(
-                                    ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
-                                    scale_factor=scale_factor,
-                                    axis_origin=axis_origin,
-                                    font_size=font_size,
-                                    z_order=z_order,
-                                    color=color,
-                                    line_width=line_width,
-                                    tick_label_angle=tick_label_angle
-                        )
-                
-        # plot the axis label
-        ax.text(
-                scale(origin[0] + length[0]/2, origin[0], scale_factor[0]), 
-                scale((origin[1] + length[1] * axis_origin[0][0]) - axis_label_offset[0] * length[1], origin[1], scale_factor[1]), 
-                scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]), 
-                axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
-            )
-        
-            
-    elif direction_id == 1:
-        # plot an y axis    
-           
-        axis_vector = []
-        axis_vector.append([scale((origin[0] + length[0] * axis_origin[1][0]), origin[0], scale_factor[0])] * 2)
 
-        axis_vector.append([origin[direction_id], scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
-            
-        axis_vector.append([scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2)
-            
-        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
-
-        
-        for i in range(len(tick_list)):
-            
-            # plot major tick
-            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
-                # the major tick under consideration is within the axis interval -> plot its tick line and its tick label
-        
                 ti.plot_3d_tick(
-                    ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, 
+                    ax, direction_id, tick_list[i][0], tick_list[i][
+                        1], tick_length, tick_label_offset, tick_label_format, origin, length,
                     scale_factor=scale_factor,
                     axis_origin=axis_origin,
                     font_size=font_size,
@@ -156,55 +103,122 @@ def plot_3d_axis(ax, origin, length, direction_id,
                     line_width=line_width,
                     tick_label_angle=tick_label_angle
                 )
-            
+
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
-                
+
                 for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
-                    
+
                     if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
                         # the minor tick under consideration is within the axis interval -> plot its tick line and its tick label
-                    
+
                         ti.plot_3d_tick(
-                                    ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
-                                    scale_factor=scale_factor,
-                                    axis_origin=axis_origin,
-                                    font_size=font_size,
-                                    z_order=z_order,
-                                    color=color,
-                                    line_width=line_width,
-                                    tick_label_angle=tick_label_angle
+                            ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length,
+                            scale_factor=scale_factor,
+                            axis_origin=axis_origin,
+                            font_size=font_size,
+                            z_order=z_order,
+                            color=color,
+                            line_width=line_width,
+                            tick_label_angle=tick_label_angle
                         )
 
         # plot the axis label
         ax.text(
-                scale((origin[0] + length[0] * axis_origin[1][0]) - axis_label_offset[1] * length[0], origin[0], scale_factor[0]), 
-                scale(origin[1] + length[1]/2, origin[1], scale_factor[1]), 
-                scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]), 
-                axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
-            )
-        
-    
-    
+            scale(origin[0] + length[0]/2, origin[0], scale_factor[0]),
+            scale((origin[1] + length[1] * axis_origin[0][0]) -
+                  axis_label_offset[0] * length[1], origin[1], scale_factor[1]),
+            scale((origin[2] + length[2] * axis_origin[0][1]),
+                  origin[2], scale_factor[2]),
+            axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
+        )
+
+    elif direction_id == 1:
+        # plot an y axis
+
+        axis_vector = []
+        axis_vector.append(
+            [scale((origin[0] + length[0] * axis_origin[1][0]), origin[0], scale_factor[0])] * 2)
+
+        axis_vector.append([origin[direction_id], scale(
+            origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
+
+        axis_vector.append(
+            [scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2])] * 2)
+
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2],
+                color=color, linewidth=line_width, clip_on=False, zorder=z_order)
+
+        for i in range(len(tick_list)):
+
+            # plot major tick
+            if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
+                # the major tick under consideration is within the axis interval -> plot its tick line and its tick label
+
+                ti.plot_3d_tick(
+                    ax, direction_id, tick_list[i][0], tick_list[i][
+                        1], tick_length, tick_label_offset, tick_label_format, origin, length,
+                    scale_factor=scale_factor,
+                    axis_origin=axis_origin,
+                    font_size=font_size,
+                    z_order=z_order,
+                    color=color,
+                    line_width=line_width,
+                    tick_label_angle=tick_label_angle
+                )
+
+            # plot minor ticks
+            if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
+
+                for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
+
+                    if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
+                        # the minor tick under consideration is within the axis interval -> plot its tick line and its tick label
+
+                        ti.plot_3d_tick(
+                            ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length,
+                            scale_factor=scale_factor,
+                            axis_origin=axis_origin,
+                            font_size=font_size,
+                            z_order=z_order,
+                            color=color,
+                            line_width=line_width,
+                            tick_label_angle=tick_label_angle
+                        )
+
+        # plot the axis label
+        ax.text(
+            scale((origin[0] + length[0] * axis_origin[1][0]) -
+                  axis_label_offset[1] * length[0], origin[0], scale_factor[0]),
+            scale(origin[1] + length[1]/2, origin[1], scale_factor[1]),
+            scale((origin[2] + length[2] * axis_origin[1][1]),
+                  origin[2], scale_factor[2]),
+            axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
+        )
+
     if direction_id == 2:
         # plot a z axis
-        
-        axis_vector = []
-        axis_vector.append([scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0])] * 2)
-        axis_vector.append([scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2)
-        axis_vector.append([origin[direction_id], scale(origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
-             
-        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2], color=color, linewidth=line_width, clip_on=False, zorder=z_order)
 
-        
+        axis_vector = []
+        axis_vector.append(
+            [scale((origin[0] + length[0] * axis_origin[2][0]), origin[0], scale_factor[0])] * 2)
+        axis_vector.append(
+            [scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1])] * 2)
+        axis_vector.append([origin[direction_id], scale(
+            origin[direction_id] + length[direction_id], origin[direction_id], scale_factor[direction_id])])
+
+        ax.plot(axis_vector[0], axis_vector[1], axis_vector[2],
+                color=color, linewidth=line_width, clip_on=False, zorder=z_order)
+
         for i in range(len(tick_list)):
-               
+
             # plot major tick
             if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
                 # the major tick under consideration is within the axis interval -> plot its tick line and its tick label
-                   
+
                 ti.plot_3d_tick(
-                    ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, 
+                    ax, direction_id, tick_list[i][0], tick_list[i][
+                        1], tick_length, tick_label_offset, tick_label_format, origin, length,
                     scale_factor=scale_factor,
                     axis_origin=axis_origin,
                     font_size=font_size,
@@ -213,37 +227,35 @@ def plot_3d_axis(ax, origin, length, direction_id,
                     line_width=line_width,
                     tick_label_angle=tick_label_angle
                 )
-                
+
             # plot minor ticks
             if (i < len(tick_list)-1) and (n_minor_ticks[direction_id] is not None):
-                
+
                 for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks[direction_id]+2):
-                    
+
                     if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
                         # the minor tick under consideration is within the axis interval -> plot its tick line and its tick label
-                    
+
                         ti.plot_3d_tick(
-                                    ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, 
-                                    scale_factor=scale_factor,
-                                    axis_origin=axis_origin,
-                                    font_size=font_size,
-                                    z_order=z_order,
-                                    color=color,
-                                    line_width=line_width,
-                                    tick_label_angle=tick_label_angle
+                            ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length,
+                            scale_factor=scale_factor,
+                            axis_origin=axis_origin,
+                            font_size=font_size,
+                            z_order=z_order,
+                            color=color,
+                            line_width=line_width,
+                            tick_label_angle=tick_label_angle
                         )
-                
+
         # plot the axis label
         ax.text(
-                scale((origin[0] + length[0] * axis_origin[2][0]) - axis_label_offset[2] * length[0], origin[0], scale_factor[0]), 
-                scale((origin[1] + length[1] * axis_origin[2][1]) - axis_label_offset[2] * length[1], origin[1], scale_factor[1]), 
-                scale(origin[2] + length[2]/2, origin[2], scale_factor[2]), 
-                axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
-            )
-        
-            
-        
-
+            scale((origin[0] + length[0] * axis_origin[2][0]) -
+                  axis_label_offset[2] * length[0], origin[0], scale_factor[0]),
+            scale((origin[1] + length[1] * axis_origin[2][1]) -
+                  axis_label_offset[2] * length[1], origin[1], scale_factor[1]),
+            scale(origin[2] + length[2]/2, origin[2], scale_factor[2]),
+            axis_label, fontsize=font_size, ha='center', va='center', zorder=z_order
+        )
 
 
 def plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick_length, line_width, axis_label,
@@ -262,7 +274,6 @@ def plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick
         ax.text(r[0] + scale_factor * l / 2, r[1] - axis_label_offset, r[2], axis_label, fontsize=font_size, ha='center',
                 va='center', zorder=z_order)
 
-
     elif direction == "y":
 
         ax.plot([r[0], r[0]], [r[1], r[1] + scale_factor * l], [r[2], r[2]], color='black', linewidth=line_width,
@@ -276,7 +287,6 @@ def plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick
 
         ax.text(r[0] - axis_label_offset, r[1] + scale_factor * l / 2, r[2], axis_label, fontsize=font_size,
                 ha='center', va='center', zorder=z_order)
-
 
     elif direction == "z":
 
@@ -307,123 +317,128 @@ Input values:
 '''
 
 
-def plot_3d_axes(ax, origin, length, 
-                 scale_factor=[1,1,1], 
+def plot_3d_axes(ax, origin, length,
+                 scale_factor=[1, 1, 1],
                  axis_origin=None,
-                 axis_label=['','',''], 
-                 axis_label_offset=[0, 0, 0], 
+                 axis_label=['', '', ''],
+                 axis_label_offset=[0, 0, 0],
                  tick_length=[const.default_tick_length] * 3,
-                 tick_label_offset=[0, 0, 0], 
+                 tick_label_offset=[0, 0, 0],
                  tick_label_angle=[const.default_tick_label_angle] * 3,
                  margin=[0, 0, 0],
-                 tick_label_format=[const.default_label_format,const.default_label_format, const.default_label_format], 
-                 font_size=[const.default_font_size] * 3, 
-                 line_width=[const.default_line_width, const.default_line_width, const.default_line_width],
+                 tick_label_format=[const.default_label_format,
+                                    const.default_label_format, const.default_label_format],
+                 font_size=[const.default_font_size] * 3,
+                 line_width=[const.default_line_width,
+                             const.default_line_width, const.default_line_width],
                  n_minor_ticks=[None] * 3,
                  minor_tick_length=[const.default_minor_tick_length] * 3,
                  plot_label=None,
-                 plot_label_position = [0] * 2,
-                 plot_label_font_size = const.default_font_size,
+                 plot_label_position=[0] * 2,
+                 plot_label_font_size=const.default_font_size,
                  z_order=const.default_z_order):
-    
-        # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
+
+    # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
         axis_origin = [[0] * 2] * 3
-        
+
     ax.set(
-            xlim=[
-                min(
-                    origin[0], 
-                    (origin[0] + length[0] * axis_origin[1][0]),
-                    (origin[0] + length[0] * axis_origin[2][0])
-                    ), 
-                max(
-                    origin[0] + length[0] * (1 + margin[0]), 
-                    (origin[0] + length[0] * axis_origin[1][0]),
-                    (origin[0] + length[0] * axis_origin[2][0])
-                    )], 
-            ylim=[
-                min(
-                    origin[1], 
-                    (origin[1] + length[1] * axis_origin[0][1]),
-                    (origin[1] + length[1] * axis_origin[2][1])
-                    ), 
-                max(
-                    origin[1] + length[1] * ( 1 +margin[1]), 
-                    (origin[1] + length[1] * axis_origin[0][1]),
-                    (origin[1] + length[1] * axis_origin[2][1]),
-                    )],
-            zlim=[min(
-                        origin[2], 
-                        (origin[2] + length[2] * axis_origin[0][1]),
-                        (origin[2] + length[2] * axis_origin[1][1])
-                    ), 
-                  max(
-                        origin[2] + length[2] * (1+margin[2]), 
-                        (origin[2] + length[2] * axis_origin[0][1]),
-                        (origin[2] + length[2] * axis_origin[1][1])                      
-                    )
-                ]
-        )    
+        xlim=[
+            min(
+                origin[0],
+                (origin[0] + length[0] * axis_origin[1][0]),
+                (origin[0] + length[0] * axis_origin[2][0])
+            ),
+            max(
+                origin[0] + length[0] * (1 + margin[0]),
+                (origin[0] + length[0] * axis_origin[1][0]),
+                (origin[0] + length[0] * axis_origin[2][0])
+            )],
+        ylim=[
+            min(
+                origin[1],
+                (origin[1] + length[1] * axis_origin[0][1]),
+                (origin[1] + length[1] * axis_origin[2][1])
+            ),
+            max(
+                origin[1] + length[1] * (1 + margin[1]),
+                (origin[1] + length[1] * axis_origin[0][1]),
+                (origin[1] + length[1] * axis_origin[2][1]),
+            )],
+        zlim=[min(
+            origin[2],
+            (origin[2] + length[2] * axis_origin[0][1]),
+            (origin[2] + length[2] * axis_origin[1][1])
+        ),
+            max(
+            origin[2] + length[2] * (1+margin[2]),
+            (origin[2] + length[2] * axis_origin[0][1]),
+            (origin[2] + length[2] * axis_origin[1][1])
+        )
+        ]
+    )
 
-
-    
     dim = 3
 
-    for i in range(3):    
-        
-        plot_3d_axis(ax, origin, length, i, 
-                    scale_factor=scale_factor,
-                    tick_length=tick_length,
-                    line_width=line_width[i], 
-                    axis_label=axis_label[i],
-                    axis_label_offset=axis_label_offset,
-                    tick_label_offset=tick_label_offset[i], 
-                    tick_label_format=tick_label_format[i], 
-                    tick_label_angle=tick_label_angle[i],
-                    font_size=font_size[i], 
-                    axis_origin=axis_origin,
-                    n_minor_ticks=n_minor_ticks,
-                    minor_tick_length=minor_tick_length,
-                    z_order=z_order)
-        
+    for i in range(3):
+
+        plot_3d_axis(ax, origin, length, i,
+                     scale_factor=scale_factor,
+                     tick_length=tick_length,
+                     line_width=line_width[i],
+                     axis_label=axis_label[i],
+                     axis_label_offset=axis_label_offset,
+                     tick_label_offset=tick_label_offset[i],
+                     tick_label_format=tick_label_format[i],
+                     tick_label_angle=tick_label_angle[i],
+                     font_size=font_size[i],
+                     axis_origin=axis_origin,
+                     n_minor_ticks=n_minor_ticks,
+                     minor_tick_length=minor_tick_length,
+                     z_order=z_order)
+
     if plot_label is not None:
-        
+
         # plot_label_offset now means axes-relative coordinates (0–1)
         ax.text2D(plot_label_position[0],
-                plot_label_position[1],
-                f"${plot_label}$",
-                transform=ax.transAxes,
-                fontsize=plot_label_font_size,
-                ha='center',
-                va='center',
-                zorder=z_order)
-
-
+                  plot_label_position[1],
+                  f"${plot_label}$",
+                  transform=ax.transAxes,
+                  fontsize=plot_label_font_size,
+                  ha='center',
+                  va='center',
+                  zorder=z_order)
 
 
 def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axis_labels, axis_label_offsets,
                               tick_lengths,
                               tick_label_offsets, tick_label_formats, font_size, z_order):
     plot_3d_axis_custom_ticks(ax, origin, lengths[0], "x", scale_factors[0], tick_list[0],
-                              tick_lengths[0] * lengths[1] * scale_factors[1], 0.3, axis_labels[0],
-                              axis_label_offsets[0] * lengths[1] * scale_factors[1],
-                              tick_label_offsets[0] * lengths[1] * scale_factors[1], tick_label_formats[0], font_size,
+                              tick_lengths[0] * lengths[1] *
+                              scale_factors[1], 0.3, axis_labels[0],
+                              axis_label_offsets[0] *
+                              lengths[1] * scale_factors[1],
+                              tick_label_offsets[0] * lengths[1] *
+                              scale_factors[1], tick_label_formats[0], font_size,
                               z_order)
     plot_3d_axis_custom_ticks(ax, origin, lengths[1], "y", scale_factors[1], tick_list[1],
-                              tick_lengths[1] * lengths[0] * scale_factors[0], 0.3, axis_labels[1],
-                              axis_label_offsets[1] * lengths[0] * scale_factors[0],
-                              tick_label_offsets[1] * lengths[0] * scale_factors[0], tick_label_formats[1], font_size,
+                              tick_lengths[1] * lengths[0] *
+                              scale_factors[0], 0.3, axis_labels[1],
+                              axis_label_offsets[1] *
+                              lengths[0] * scale_factors[0],
+                              tick_label_offsets[1] * lengths[0] *
+                              scale_factors[0], tick_label_formats[1], font_size,
                               z_order)
     plot_3d_axis_custom_ticks(ax, origin, lengths[2], "z", scale_factors[2], tick_list[2],
-                              tick_lengths[2] * (lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
+                              tick_lengths[2] * (lengths[0] * scale_factors[0] +
+                                                 lengths[1] * scale_factors[1]) / 2,
                               0.3,
                               axis_labels[2],
                               axis_label_offsets[2] * (
-                                      lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
-                              tick_label_offsets[2] * (
-                                      lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
-                              tick_label_formats[2], font_size, z_order)
+        lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
+        tick_label_offsets[2] * (
+        lengths[0] * scale_factors[0] + lengths[1] * scale_factors[1]) / 2,
+        tick_label_formats[2], font_size, z_order)
 
 
 '''
@@ -447,262 +462,271 @@ Input values:
     - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
     - 'custom_ticks' [optional]: a list of custom ticks to be plotted on top of the automated ones, in the form [[custom_tick_x_0, custom_tick_x_1, ...], [custom_tick_y_0, custom_tick_y_1, ...]]
 '''
+
+
 def plot_2d_axis(
-                    ax, origin, length, direction_id, 
-                    axis_label='',
-                    z_order=0, 
-                    scale='lin', 
-                    log_base=10.0, 
-                    axis_origin=None, 
-                    color='black', 
-                    axis_label_offset=[0]*2,
-                    tick_label_offset=[0]*2,
-                    n_minor_ticks=None,
-                    tick_label_format=const.default_label_format, 
-                    minor_tick_length=[const.default_minor_tick_length] * 2,
-                    custom_ticks=[[], []],
-                    clip_on=False,
-                    axis_label_angle=0,
-                    tick_length=const.default_tick_length,
-                    line_width=const.default_line_width,
-                    tick_label_angle=0,
-                    font_size=const.default_font_size
-                ):
-    
-    
+    ax, origin, length, direction_id,
+    axis_label='',
+    z_order=0,
+    scale='lin',
+    log_base=10.0,
+    axis_origin=None,
+    color='black',
+    axis_label_offset=[0]*2,
+    tick_label_offset=[0]*2,
+    n_minor_ticks=None,
+    tick_label_format=const.default_label_format,
+    minor_tick_length=[const.default_minor_tick_length] * 2,
+    custom_ticks=[[], []],
+    clip_on=False,
+    axis_label_angle=0,
+    tick_length=const.default_tick_length,
+    line_width=const.default_line_width,
+    tick_label_angle=0,
+    font_size=const.default_font_size
+):
+
     dim = 2
-    
+
     if scale == 'lin':
         # plot the axis in linear scale
-        
+
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
-        if axis_origin is None: 
+        if axis_origin is None:
             axis_origin = [0] * dim
-        
+
         # compute ticks
-        ticks = ti.generate_ticks(origin[direction_id], origin[direction_id] + length[direction_id])
+        ticks = ti.generate_ticks(
+            origin[direction_id], origin[direction_id] + length[direction_id])
 
         # draw ticks
         tick_list = []
         for tick in ticks:
-        
+
             tick_list.append([
                 tick,
                 text.float_to_latex(tick, tick_label_format)
             ])
-            
-    
+
         if direction_id == 0:
 
-            
             ax.plot(
-                [origin[0], origin[0] + length[0]], 
-                [origin[1] + length[1] * axis_origin[0]] * dim, 
+                [origin[0], origin[0] + length[0]],
+                [origin[1] + length[1] * axis_origin[0]] * dim,
                 color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)
 
             for i in range(len(tick_list)):
-      
+
                 # plot major tick
-                
+
                 if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
-                
-                    ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
-                
+
+                    ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+
                 # plot minor ticks
                 if (i < len(tick_list)-1) and (n_minor_ticks is not None):
-                
-                    for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks+2):
-                        
-                        if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
-                            # the minor tick is within the axes limit -> plot it 
-                            
-                            ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
 
+                    for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks+2):
+
+                        if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
+                            # the minor tick is within the axes limit -> plot it
+
+                            ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin,
+                                            length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
 
             # plot the axis label
             if axis_label is not None:
-                ax.text(origin[0] + length[0] / 2, 
-                        origin[1] + length[1] * axis_origin[0] - axis_label_offset[0] * length[1], 
+                ax.text(origin[0] + length[0] / 2,
+                        origin[1] + length[1] * axis_origin[0] -
+                        axis_label_offset[0] * length[1],
                         rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=z_order, clip_on=clip_on)
-            
-
 
         elif direction_id == 1:
 
             ax.plot(
-                [origin[0] + length[0] * axis_origin[1]] * dim, 
-                [origin[1], origin[1] + length[1]], 
+                [origin[0] + length[0] * axis_origin[1]] * dim,
+                [origin[1], origin[1] + length[1]],
                 color=color, linewidth=line_width, zorder=z_order, clip_on=clip_on)
 
             for i in range(len(tick_list)):
-    
+
                 # plot major tick
                 if (tick_list[i][0] >= origin[direction_id]) and (tick_list[i][0] <= origin[direction_id] + length[direction_id]):
-                # the tick under consideration is within the axis interval -> plot its tick line and its tick label
+                    # the tick under consideration is within the axis interval -> plot its tick line and its tick label
 
-                  ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
-                  
+                    ti.plot_2d_tick(ax, direction_id, tick_list[i][0], tick_list[i][1], tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+
                 # plot minor ticks
                 if (i < len(tick_list)-1) and (n_minor_ticks is not None):
-                    
+
                     for minor_tick in np.linspace(tick_list[i][0], tick_list[i+1][0], n_minor_ticks + 2):
-                        
+
                         if (minor_tick >= origin[direction_id]) and (minor_tick <= origin[direction_id] + length[direction_id]):
-                            # the minor tick is within the axes limit -> plot it 
-                        
-                            ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
-                
+                            # the minor tick is within the axes limit -> plot it
+
+                            ti.plot_2d_tick(ax, direction_id, minor_tick, None, minor_tick_length, tick_label_offset, tick_label_format, origin,
+                                            length, axis_origin, log_base, font_size, z_order, color, line_width, 'lin', tick_label_angle, clip_on=clip_on)
+
             # plot the axis label
-            if axis_label is not None: 
-                ax.text(origin[0] + length[0] * axis_origin[1] - axis_label_offset[1] * length[0], 
-                        origin[1] + length[1] / 2, 
-                        rf'${axis_label}$', 
+            if axis_label is not None:
+                ax.text(origin[0] + length[0] * axis_origin[1] - axis_label_offset[1] * length[0],
+                        origin[1] + length[1] / 2,
+                        rf'${axis_label}$',
                         fontsize=font_size, ha='center', va='center',
                         rotation=axis_label_angle, zorder=z_order, clip_on=clip_on)
-            
-    elif scale == 'log':  
-        # plot the axis in log scale 
-        
+
+    elif scale == 'log':
+        # plot the axis in log scale
+
         # compute x and y ticks
-        x_ticks = ti.generate_ticks(origin[0], origin[0]+length[0], scale='log', log_base=log_base)
-        y_ticks = ti.generate_ticks(origin[1], origin[1]+length[1], scale='log', log_base=log_base)
-                        
+        x_ticks = ti.generate_ticks(
+            origin[0], origin[0]+length[0], scale='log', log_base=log_base)
+        y_ticks = ti.generate_ticks(
+            origin[1], origin[1]+length[1], scale='log', log_base=log_base)
+
         if direction_id == 0:
-            
+
             # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
             n_plotted_ticks = 0
-                    
+
             # plot the x ticks
             for tick in x_ticks:
-                
-                    # plot the major tick
-                    if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
-                    # if the tick falls within the boundaries of the axis, plot it 
-                        
-                        ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset,tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-                        
-                    n_plotted_ticks += 1
 
-                        
-                    # plot the minor ticks
-                    for i in range(log_base-1):
-                        
-                            minor_tick = np.emath.logn(log_base, log_base**(tick-1) * (i+1))
-                            
-                            if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
-                            # if the tick falls within the boundaries of the axis, plot it 
+                # plot the major tick
+                if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
+                    # if the tick falls within the boundaries of the axis, plot it
 
-                                ax.plot(
-                                    [minor_tick, minor_tick], 
-                                    [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
-                                    zorder=0)  
-                
+                    ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+
+                n_plotted_ticks += 1
+
+                # plot the minor ticks
+                for i in range(log_base-1):
+
+                    minor_tick = np.emath.logn(
+                        log_base, log_base**(tick-1) * (i+1))
+
+                    if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
+                        # if the tick falls within the boundaries of the axis, plot it
+
+                        ax.plot(
+                            [minor_tick, minor_tick],
+                            [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
+                            zorder=0)
+
             if n_plotted_ticks == 0:
                 # no ticks have been plotted: plot an extra tick that is the closest, among y_ticks, to the mid value of the axis values to plot at least one tick
-            
-                extra_tick = lis.closest_element(x_ticks, 
-                                            (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
-                
+
+                extra_tick = lis.closest_element(x_ticks,
+                                                 (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
+
                 x_ticks.append(extra_tick)
-                
+
                 '''
                 ax.plot([extra_tick, extra_tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
                         zorder=0)  
                 ax.text(extra_tick, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
                         text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                 '''
-                
-                ti.plot_2d_tick(ax, 'x', extra_tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-                
+
+                ti.plot_2d_tick(ax, 'x', extra_tick, tick_length, tick_label_offset, tick_label_format,
+                                origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+
                 if (extra_tick < (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2):
                     # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[0] + length[0])
 
                     axis_min = extra_tick
                     axis_max = np.emath.logn(log_base, origin[0] + length[0])
-                else: 
+                else:
                     # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[0])
 
                     axis_min = np.emath.logn(log_base, origin[0])
                     axis_max = extra_tick
-                    
-            else: 
+
+            else:
                 # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])
                 axis_min = np.emath.logn(log_base, origin[0])
                 axis_max = np.emath.logn(log_base, origin[0] + length[0])
 
-
             # plot the x custom ticks
-            if len(custom_ticks[0]) > 0: 
+            if len(custom_ticks[0]) > 0:
                 # custom ticks have been specified when plot_2d_axis has been called -> draw them
-                
+
                 for tick in custom_ticks[0]:
                     # cycle through the custom ticks on the x axis
-                    
+
                     x_ticks.append(tick)
-                    
+
                     # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
                     if axis_min > np.emath.logn(log_base, tick):
                         axis_min = np.emath.logn(log_base, tick)
-                        
+
                     if axis_max < np.emath.logn(log_base, tick):
                         axis_max = np.emath.logn(log_base, tick)
-                                     
-                    #plot the custom tick    
-                    ti.plot_2d_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-  
-  
+
+                    # plot the custom tick
+                    ti.plot_2d_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+
             # plot the x axis
-            ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1])], color=color, linewidth=line_width, zorder=0)
-                        
+            ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(
+                log_base, axis_origin[1])], color=color, linewidth=line_width, zorder=0)
+
             # plot the x axis label
-            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1], 
+            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
-                        
+
         elif direction_id == 1:
-            
-                # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
-                n_plotted_ticks = 0
 
-                # plot the y ticks 
-                for tick in y_ticks:
-                    
-                    if (tick > np.emath.logn(log_base, origin[1])) and (tick < np.emath.logn(log_base, origin[1] + length[1])):
-                        # if the tick falls within the boundaries of the axis, plot it 
+            # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
+            n_plotted_ticks = 0
 
-                        '''
-                        ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
-                                [tick, tick], 
-                                color=color, linewidth=line_width, zorder=0) 
-                        ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], tick, 
-                                text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
-                        '''
-                        
-                        ti.plot_2d_tick(ax, 'y', tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-                        
-                        n_plotted_ticks += 1
-                        
-                     # plot the minor ticks
-                    for i in range(log_base-1):
-                        
-                        minor_tick = np.emath.logn(log_base, log_base**(tick-1) * (i+1))
-                        
-                        if (minor_tick > np.emath.logn(log_base, origin[1])) and (minor_tick < np.emath.logn(log_base, origin[1] + length[1])):
-                        # if the tick falls within the boundaries of the axis, plot it 
+            # plot the y ticks
+            for tick in y_ticks:
 
-                            ax.plot( 
-                                [np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + minor_tick_length * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
-                                [minor_tick, minor_tick], color=color, linewidth=line_width,
-                                zorder=0) 
-                
-                if n_plotted_ticks == 0:
-                    # no ticks have been plotted: plot an extra tick that is the closest, among x_ticks, to the mid value of the axis values to plot at least one tick
-                    
-                    extra_tick = lis.closest_element(y_ticks, 
-                                                (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
-                    
-                    y_ticks.append(extra_tick)
-                    
+                if (tick > np.emath.logn(log_base, origin[1])) and (tick < np.emath.logn(log_base, origin[1] + length[1])):
+                    # if the tick falls within the boundaries of the axis, plot it
+
                     '''
+                    ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
+                            [tick, tick], 
+                            color=color, linewidth=line_width, zorder=0) 
+                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], tick, 
+                            text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
+                    '''
+
+                    ti.plot_2d_tick(ax, 'y', tick, tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+
+                    n_plotted_ticks += 1
+
+                 # plot the minor ticks
+                for i in range(log_base-1):
+
+                    minor_tick = np.emath.logn(
+                        log_base, log_base**(tick-1) * (i+1))
+
+                    if (minor_tick > np.emath.logn(log_base, origin[1])) and (minor_tick < np.emath.logn(log_base, origin[1] + length[1])):
+                        # if the tick falls within the boundaries of the axis, plot it
+
+                        ax.plot(
+                            [np.emath.logn(log_base, axis_origin[0]), np.emath.logn(
+                                log_base, axis_origin[0]) + minor_tick_length * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
+                            [minor_tick, minor_tick], color=color, linewidth=line_width,
+                            zorder=0)
+
+            if n_plotted_ticks == 0:
+                # no ticks have been plotted: plot an extra tick that is the closest, among x_ticks, to the mid value of the axis values to plot at least one tick
+
+                extra_tick = lis.closest_element(y_ticks,
+                                                 (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
+
+                y_ticks.append(extra_tick)
+
+                '''
                     ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
                             [extra_tick, extra_tick], 
                             color=color, linewidth=line_width, zorder=0) 
@@ -710,62 +734,58 @@ def plot_2d_axis(
                     ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], extra_tick, 
                             text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
                     '''
-                    
-                    ti.plot_2d_tick(ax, 'y', extra_tick, tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-                        
-                    if (extra_tick < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
-                        # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[1] + length[1])
 
-                        axis_min = extra_tick
-                        axis_max = np.emath.logn(log_base, origin[1] + length[1])
-                    else: 
-                        # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[1])
+                ti.plot_2d_tick(ax, 'y', extra_tick, tick_length, tick_label_offset, tick_label_format,
+                                origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
 
-                        axis_min = np.emath.logn(log_base, origin[1])
-                        axis_max = extra_tick
-                        
-                else: 
-                    # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[1]), np.emath.logn(log_base, origin[1] + length[1])
-                    
-                    axis_min = np.emath.logn(log_base, origin[1])
+                if (extra_tick < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
+                    # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[1] + length[1])
+
+                    axis_min = extra_tick
                     axis_max = np.emath.logn(log_base, origin[1] + length[1])
-                    
-                # plot the x custom ticks
-                if len(custom_ticks[1]): 
-                    # custom ticks have been specified when plot_2d_axis has been called -> draw them
-                    
-                    for tick in custom_ticks[1]:
-                        # cycle through the custom ticks on the x axis
-                        
-                        y_ticks.append(tick)
-                        
-                        # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
-                        if axis_min > np.emath.logn(log_base, tick):
-                            axis_min = np.emath.logn(log_base, tick)
-                            
-                        if axis_max < np.emath.logn(log_base, tick):
-                            axis_max = np.emath.logn(log_base, tick)
-                                        
-                        #plot the custom tick    
-                        ti.plot_2d_tick(ax, 'y', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format, origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+                else:
+                    # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[1])
 
-                # plot the y axis
-                ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])], 
-                        [axis_min, axis_max], color=color, linewidth=line_width, zorder=0)
+                    axis_min = np.emath.logn(log_base, origin[1])
+                    axis_max = extra_tick
 
-                    
-                # plot the y axis label
-                ax.text(
-                    np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0], 
-                    (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1])) / 2, 
-                    rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
-                        
+            else:
+                # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[1]), np.emath.logn(log_base, origin[1] + length[1])
 
+                axis_min = np.emath.logn(log_base, origin[1])
+                axis_max = np.emath.logn(log_base, origin[1] + length[1])
 
-        
-        
+            # plot the x custom ticks
+            if len(custom_ticks[1]):
+                # custom ticks have been specified when plot_2d_axis has been called -> draw them
 
+                for tick in custom_ticks[1]:
+                    # cycle through the custom ticks on the x axis
 
+                    y_ticks.append(tick)
+
+                    # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
+                    if axis_min > np.emath.logn(log_base, tick):
+                        axis_min = np.emath.logn(log_base, tick)
+
+                    if axis_max < np.emath.logn(log_base, tick):
+                        axis_max = np.emath.logn(log_base, tick)
+
+                    # plot the custom tick
+                    ti.plot_2d_tick(ax, 'y', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+
+            # plot the y axis
+            ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])],
+                    [axis_min, axis_max], color=color, linewidth=line_width, zorder=0)
+
+            # plot the y axis label
+            ax.text(
+                np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(
+                    log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
+                (np.emath.logn(
+                    log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1])) / 2,
+                rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
 
 # set the values of 'grid' to 'value' in the disk centered at cr and with radius r, in such a way that they are not plotted and the disk is left blank
@@ -854,8 +874,10 @@ def rho_cone(z, r_A_cone, r_B_cone, z_A_cone, z_B_cone, L, h):
 # tabulate the coordinates of the cone surface and return them as a 3d vector
 def tabulate_cone(z_A_cone, z_B_cone, r_A_cone, r_B_cone, cr, L, h):
     z_cone, theta_cone = np.mgrid[z_A_cone:z_B_cone:100j, 0:2 * (np.pi):100j]
-    X_cone = cr[0] + rho_cone(z_cone, r_A_cone, r_B_cone, z_A_cone, z_B_cone, L, h) * np.cos(theta_cone)
-    Y_cone = cr[1] + rho_cone(z_cone, r_A_cone, r_B_cone, z_A_cone, z_B_cone, L, h) * np.sin(theta_cone)
+    X_cone = cr[0] + rho_cone(z_cone, r_A_cone, r_B_cone,
+                              z_A_cone, z_B_cone, L, h) * np.cos(theta_cone)
+    Y_cone = cr[1] + rho_cone(z_cone, r_A_cone, r_B_cone,
+                              z_A_cone, z_B_cone, L, h) * np.sin(theta_cone)
     Z_cone = cr[2] + z_cone
 
     return X_cone, Y_cone, Z_cone
@@ -885,7 +907,8 @@ Return values:
 
 
 def tabulate_analytical_surface(f, mins, maxs, n_bins, mask=None):
-    X, Y = np.mgrid[mins[0]:maxs[0]:n_bins[0] * 1j, mins[1]:maxs[1]:n_bins[1] * 1j]
+    X, Y = np.mgrid[mins[0]:maxs[0]:n_bins[0]
+                    * 1j, mins[1]:maxs[1]:n_bins[1] * 1j]
     Z = f(X, Y)
 
     if mask is not None:
@@ -913,7 +936,8 @@ def plot_analytical_surface(ax, f, mins, maxs, n_bins, color, alpha, z_order, ma
     if mask is None:
 
         X, Y, Z = tabulate_analytical_surface(f, mins, maxs, n_bins)
-        surface = ax.plot_surface(X, Y, Z, color=color, alpha=alpha, zorder=z_order)
+        surface = ax.plot_surface(
+            X, Y, Z, color=color, alpha=alpha, zorder=z_order)
 
     else:
         # Plot by keeping only the  triangles whose distance from cr is > r
@@ -956,7 +980,8 @@ def plot_analytical_grid(ax, f, mins, maxs, n_curves, n_bins, color, line_width,
 
         # plot a curve which runs along the y axis
         curves.append(plot_analytical_curve(ax,
-                                            lambda t: gamma_y(t, mins, maxs, f, X[i]),
+                                            lambda t: gamma_y(
+                                                t, mins, maxs, f, X[i]),
                                             0, 1, n_bins, color, '', z_order, line_width,
                                             mask[0][i]
                                             ))
@@ -964,7 +989,8 @@ def plot_analytical_grid(ax, f, mins, maxs, n_curves, n_bins, color, line_width,
     for i in range(len(Y)):
         # plot a curve which runs along the x axis
         curves.append(plot_analytical_curve(ax,
-                                            lambda t: gamma_x(t, mins, maxs, f, Y[i]),
+                                            lambda t: gamma_x(
+                                                t, mins, maxs, f, Y[i]),
                                             0, 1, n_bins, color, '', z_order, line_width,
                                             mask[1][i]
                                             ))
@@ -987,9 +1013,11 @@ Return values:
 
 
 def plot_point(ax, r, color, point_size, legend, legend_position, legend_font_size, z_order):
-    point = ax.plot(r[0], r[1], r[2], 'o', color=color, zorder=z_order, label=legend, markersize=point_size)
+    point = ax.plot(r[0], r[1], r[2], 'o', color=color,
+                    zorder=z_order, label=legend, markersize=point_size)
     legend = ax.legend(handles=[ax.lines[-1]], loc="upper left",
-                       bbox_to_anchor=(legend_position[0], legend_position[1]), frameon=False,
+                       bbox_to_anchor=(
+                           legend_position[0], legend_position[1]), frameon=False,
                        fontsize=legend_font_size)
     ax.add_artist(legend)
 
@@ -1049,18 +1077,22 @@ the plotted curve
 def plot_analytical_curve(ax, f, t_min, t_max, n_bins, color, legend, z_order, line_width, mask=None, style=None, alpha=None):
     X, Y, Z, t = tabulate_analytical_curve(f, t_min, t_max, n_bins, mask)
     if style is None:
-        curve = ax.plot(X, Y, Z, color=color, zorder=z_order, linewidth=line_width, label=legend, alpha=alpha)
+        curve = ax.plot(X, Y, Z, color=color, zorder=z_order,
+                        linewidth=line_width, label=legend, alpha=alpha)
     else:
-        curve = ax.plot(X, Y, Z, color=color, zorder=z_order, linewidth=line_width, label=legend, linestyle=style, alpha=alpha)
+        curve = ax.plot(X, Y, Z, color=color, zorder=z_order,
+                        linewidth=line_width, label=legend, linestyle=style, alpha=alpha)
 
     return curve
 
 
 def plot_analytical_curve_with_legend(ax, f, t_min, t_max, n_bins, color, label, legend_position, label_font_size,
                                       z_order, line_width, style=None):
-    curve = plot_analytical_curve(ax, f, t_min, t_max, n_bins, color, label, z_order, line_width, None, style)
+    curve = plot_analytical_curve(
+        ax, f, t_min, t_max, n_bins, color, label, z_order, line_width, None, style)
     legend = ax.legend(handles=[ax.lines[-1]], loc="upper left",
-                       bbox_to_anchor=(legend_position[0], legend_position[1]), frameon=False,
+                       bbox_to_anchor=(
+                           legend_position[0], legend_position[1]), frameon=False,
                        fontsize=label_font_size)
     ax.add_artist(legend)
 
@@ -1085,14 +1117,15 @@ plot an analytical curve by loading the symbol of its legend from a pdf file
 
 
 def plot_analytical_curve_with_legend_pdf_image(ax, f, t_min, t_max, n_bins, color, legend, legend_position,
-                                                z_order, line_width, zoom, box_alignment, dpi, 
+                                                z_order, line_width, zoom, box_alignment, dpi,
                                                 style=None,
                                                 path=''):
-    
-    plot_analytical_curve_with_legend(ax, f, t_min, t_max, n_bins, color, r' ', legend_position, 0, z_order, line_width, style)
-    
-    images.import_image(os.path.join(path, legend + '.pdf'), 
-                            zoom, legend_position, box_alignment, dpi, ax)
+
+    plot_analytical_curve_with_legend(
+        ax, f, t_min, t_max, n_bins, color, r' ', legend_position, 0, z_order, line_width, style)
+
+    images.import_image(os.path.join(path, legend + '.pdf'),
+                        zoom, legend_position, box_alignment, dpi, ax)
 
 
 '''
@@ -1154,8 +1187,10 @@ Input values:
         - tick_label_offset': offset of the tick labels, [tick_label_offset_x, tick_label_offset_y], expressed in units of the tick length and heigh, respectively
         - 'prune': if True, ticks and tick labels which overlap will be removed 
 '''
-def set_colorbar_ticks(colorbar, ticks, min, scale_factor, 
-                       font_size=const.default_font_size, 
+
+
+def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
+                       font_size=const.default_font_size,
                        tick_label_angle=0,
                        color='black',
                        line_width=const.default_line_width,
@@ -1163,10 +1198,8 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                        tick_length=const.default_tick_length,
                        tick_label_offset=[0, 0],
                        prune=True):
-        
-        
-    
-    # remove the default colorbar ticks because I will be plotting the custom ones 
+
+    # remove the default colorbar ticks because I will be plotting the custom ones
     colorbar.ax.tick_params(axis='y', length=0, width=0, which='both')
     colorbar.ax.set_yticklabels([])
 
@@ -1177,61 +1210,60 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
     # run through all ticks
     for i in range(len(ticks)):
         # for each tick
-        
+
         if (ticks[i] >= colorbar.ax.get_ylim()[0]) and (ticks[i] <= colorbar.ax.get_ylim()[1]):
-            # the tick under consideration is within the interval of the colorbar -> plot it 
-            
+            # the tick under consideration is within the interval of the colorbar -> plot it
+
             # draw the tick line
             tick_lines.append(
                 colorbar.ax.plot(
-                [colorbar.ax.get_xlim()[1], colorbar.ax.get_xlim()[1] + tick_length * (colorbar.ax.get_xlim()[1]- colorbar.ax.get_xlim()[0])],           # x-coordinates
-                [ticks[i] , ticks[i]],       
-                color=color,       
-                linewidth=line_width,          
-                zorder=z_order,          
-                clip_on=False)  # Don't clip if outside bounds
+                    [colorbar.ax.get_xlim()[1], colorbar.ax.get_xlim()[1] + tick_length * (
+                        colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0])],           # x-coordinates
+                    [ticks[i], ticks[i]],
+                    color=color,
+                    linewidth=line_width,
+                    zorder=z_order,
+                    clip_on=False)  # Don't clip if outside bounds
             )
-            
+
             # generate the tick label
-            latex_tick_labels.append(cal.to_latex_scientific(min + (ticks[i] - min) / scale_factor))
-                
-            # plot the tick labels    
+            latex_tick_labels.append(cal.to_latex_scientific(
+                min + (ticks[i] - min) / scale_factor))
+
+            # plot the tick labels
             tick_labels.append(
                 colorbar.ax.text(
-                    colorbar.ax.get_xlim()[0] + tick_label_offset[0] * (colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0]), 
-                    ticks[i] + tick_label_offset[1] * (colorbar.ax.get_ylim()[1] - colorbar.ax.get_ylim()[0]), 
-                    cal.to_latex_scientific(min + (ticks[i] - min) / scale_factor), 
-                    fontsize=font_size, 
-                    ha='center', va='center', 
+                    colorbar.ax.get_xlim()[
+                        0] + tick_label_offset[0] * (colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0]),
+                    ticks[i] + tick_label_offset[1] *
+                    (colorbar.ax.get_ylim()[1] - colorbar.ax.get_ylim()[0]),
+                    cal.to_latex_scientific(
+                        min + (ticks[i] - min) / scale_factor),
+                    fontsize=font_size,
+                    ha='center', va='center',
                     rotation=tick_label_angle, zorder=z_order)
             )
-      
-    
-    if prune:   
-        # remove ticks and tick lables for ticks that overlap 
-            
+
+    if prune:
+        # remove ticks and tick lables for ticks that overlap
+
         fig = colorbar.ax.figure
         fig.canvas.draw()
         renderer = fig.canvas.get_renderer()  # Get the renderer
-            
+
         # run through all ticks
         for i in range(len(tick_labels)):
             for j in range(i + 1, len(tick_labels)):
-                
+
                 tick_label_1 = tick_labels[i].get_window_extent()
                 tick_label_2 = tick_labels[j].get_window_extent()
-                
+
                 if tick_label_1.overlaps(tick_label_2):
                     # if two ticks overlap, remove one of them
 
                     tick_labels[j].set_visible(False)
                     if j < len(tick_lines[j]):
                         tick_lines[j][0].remove()
-            
-    
-
-
-
 
 
 # create a list of ticks on a 'base 10 ' grid between 'min' and 'max'
@@ -1267,7 +1299,6 @@ def ticks_base_10(min, max, n):
     return list(dict.fromkeys(result))
 
 
-
 '''
 plot axes for a two-dimensional plot
 Input values: 
@@ -1296,98 +1327,96 @@ Input values:
         - 'minor_tick_length': the lengths of minor ticks
 '''
 
-def plot_2d_axes(ax, origin, length, \
-                 tick_length=[const.default_tick_length] * 2, line_width=0.1, \
-                 axis_label_angle=[0,0], \
-                 axis_label_offset=[0,0], 
-                 tick_label_offset=[0,0],
-                 tick_label_format=[const.default_label_format,const.default_label_format],
-                 font_size=[const.default_font_size, const.default_font_size], 
-                 z_order=0, 
-                 axis_origin=None, tick_label_angle=[0, 0], axis_bounds=None, 
-                 margin=[0,0], 
-                 axis_label=[None,None], 
-                 plot_label_offset=[0,0], 
-                 plot_label_font_size=const.default_font_size, 
+
+def plot_2d_axes(ax, origin, length,
+                 tick_length=[const.default_tick_length] * 2, line_width=0.1,
+                 axis_label_angle=[0, 0],
+                 axis_label_offset=[0, 0],
+                 tick_label_offset=[0, 0],
+                 tick_label_format=[
+                     const.default_label_format, const.default_label_format],
+                 font_size=[const.default_font_size, const.default_font_size],
+                 z_order=0,
+                 axis_origin=None, tick_label_angle=[0, 0], axis_bounds=None,
+                 margin=[0, 0],
+                 axis_label=[None, None],
+                 plot_label_offset=[0, 0],
+                 plot_label_font_size=const.default_font_size,
                  plot_label=None,
                  n_minor_ticks=[None] * 2,
-                 minor_tick_length = [const.default_minor_tick_length] * 2):
-    
+                 minor_tick_length=[const.default_minor_tick_length] * 2):
+
     dim = 2
-    
+
     # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
         axis_origin = [0] * dim
-    
-    if axis_bounds is None: 
+
+    if axis_bounds is None:
         # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
-        
+
         # gr.set_2d_axes_limits(ax, [0, 0], [parameters['L'], parameters['h']], [0, 0])
 
-        
         ax.set(
             xlim=[
                 min(
-                    origin[0], 
+                    origin[0],
                     (origin[0] + length[0] * axis_origin[1])
-                    ), 
+                ),
                 max(
-                    origin[0] + length[0] * (1 + margin[0]), 
+                    origin[0] + length[0] * (1 + margin[0]),
                     (origin[0] + length[0] * axis_origin[1])
-                    )
-                ], 
+                )
+            ],
             ylim=[
                 min(
-                    origin[1], 
+                    origin[1],
                     (origin[1] + length[1] * axis_origin[0]),
-                    ), 
+                ),
                 max(
-                    origin[1] + length[1]*(1 + margin[1]), 
+                    origin[1] + length[1]*(1 + margin[1]),
                     (origin[1] + length[1] * axis_origin[0])
-                    )
-                ]
-            )    
-
-    else: 
-        # axis_bounds have been specified -> set the axis bounds according to them
-            ax.set(
-                xlim=[axis_bounds[0][0] - length[0] * margin[0], axis_bounds[0][1] + length[0] * margin[0]], 
-                ylim=[axis_bounds[1][0] - length[1] * margin[1], axis_bounds[1][1] + length[1] * margin[1]]
                 )
-    
-    #plot the axes 
-    for i in range(2):    
-            
-        plot_2d_axis(
-                        ax, origin, length, i, 
-                        tick_length=tick_length, 
-                        line_width=line_width, 
-                        axis_label=axis_label[i], 
-                        axis_label_offset=axis_label_offset,
-                        axis_label_angle=axis_label_angle[i], 
-                        tick_label_offset=tick_label_offset,
-                        tick_label_format=tick_label_format[i], 
-                        tick_label_angle=tick_label_angle[i], 
-                        n_minor_ticks=n_minor_ticks[i],
-                        minor_tick_length=minor_tick_length,
-                        font_size=font_size[i], 
-                        z_order=z_order, 
-                        axis_origin=axis_origin
-                    )
+            ]
+        )
 
-    
+    else:
+        # axis_bounds have been specified -> set the axis bounds according to them
+        ax.set(
+            xlim=[axis_bounds[0][0] - length[0] * margin[0],
+                  axis_bounds[0][1] + length[0] * margin[0]],
+            ylim=[axis_bounds[1][0] - length[1] * margin[1],
+                  axis_bounds[1][1] + length[1] * margin[1]]
+        )
+
+    # plot the axes
+    for i in range(2):
+
+        plot_2d_axis(
+            ax, origin, length, i,
+            tick_length=tick_length,
+            line_width=line_width,
+            axis_label=axis_label[i],
+            axis_label_offset=axis_label_offset,
+            axis_label_angle=axis_label_angle[i],
+            tick_label_offset=tick_label_offset,
+            tick_label_format=tick_label_format[i],
+            tick_label_angle=tick_label_angle[i],
+            n_minor_ticks=n_minor_ticks[i],
+            minor_tick_length=minor_tick_length,
+            font_size=font_size[i],
+            z_order=z_order,
+            axis_origin=axis_origin
+        )
+
     if plot_label != None:
         # draw the panel label
         ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
-                rf'${plot_label}$', 
-                fontsize=plot_label_font_size, 
-                ha='center', 
+                rf'${plot_label}$',
+                fontsize=plot_label_font_size,
+                ha='center',
                 va='center',
                 zorder=z_order)
-
-
-
-
 
 
 # scale up by 'scale_factor' the scalar 'x' with respect to the reference value 'min'
@@ -1410,39 +1439,41 @@ Input values
     - 'line_width' [optional]: the line with with which the color map will be plotted
     - 'plot_label': the plot label of the curve
 '''
-def plot_curve_grid(ax, X, 
-                    color_map=None, 
-                    line_color=const.default_color, 
-                    line_width=const.default_line_width,  
+
+
+def plot_curve_grid(ax, X,
+                    color_map=None,
+                    line_color=const.default_color,
+                    line_width=const.default_line_width,
                     plot_label='',
                     alpha=const.default_alpha):
-    
+
     if color_map is None:
-        
-        ax.plot(X[:, 0], X[:, 1], '-', 
-                color=line_color, 
-                linewidth=line_width, 
-                label=plot_label, 
+
+        ax.plot(X[:, 0], X[:, 1], '-',
+                color=line_color,
+                linewidth=line_width,
+                label=plot_label,
                 alpha=alpha)
     else:
-        
+
         from matplotlib.collections import LineCollection
-        
+
         # Create line segments
         points = X.reshape(-1, 1, 2)
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
-        
+
         # print(f'segments = {segments}')
         # print(f'points = {points}')
-        
+
         # Create line collection with colors
-        lc = LineCollection(segments, 
-                            colors=color_map[:-1], 
+        lc = LineCollection(segments,
+                            colors=color_map[:-1],
                             linewidth=line_width,
                             alpha=alpha)
         ax.add_collection(lc)
         ax.autoscale()
-        
+
 
 '''
 plot a surface from the data in 'X', 'Y' and 'grid', with colormap 'color_map', with surface stride 'stride_surface' and opacity 'alpha_surface' 
@@ -1460,7 +1491,8 @@ def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surfa
                                    linewidth=grid_line_width,
                                    shade=False
                                    )
-    surface_grid.set_facecolor((0, 0, 0, 0))  # RGBA with alpha=0 (fully transparent)
+    # RGBA with alpha=0 (fully transparent)
+    surface_grid.set_facecolor((0, 0, 0, 0))
 
     if (len(color_map) != 0):
         surface = ax.plot_surface(X, Y, Z,
@@ -1485,16 +1517,17 @@ def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surfa
     return (surface, surface_grid)
 
 
-
-
 def set_axes_limits(ax, mins, maxs):
     lengths = np.subtract(maxs, mins)
 
-    ax.set( \
-        xlim=[mins[0] - epsilon_axes * lengths[0], maxs[0] + epsilon_axes * lengths[0]], \
-        ylim=[mins[1] - epsilon_axes * lengths[1], maxs[1] + epsilon_axes * lengths[1]], \
-        zlim=[mins[2] - epsilon_axes * lengths[2], maxs[2] + epsilon_axes * lengths[2]] \
-        )
+    ax.set(
+        xlim=[mins[0] - epsilon_axes * lengths[0],
+              maxs[0] + epsilon_axes * lengths[0]],
+        ylim=[mins[1] - epsilon_axes * lengths[1],
+              maxs[1] + epsilon_axes * lengths[1]],
+        zlim=[mins[2] - epsilon_axes * lengths[2],
+              maxs[2] + epsilon_axes * lengths[2]]
+    )
 
 
 '''
@@ -1532,13 +1565,14 @@ def set_cylinder(r, z_top, z_bottom, z_min, scale_factor_z):
 
 # plot a line fom point 'r_start' to point 'r_end' by stretching it by the vector 'scale_factor' in each respective direction
 def plot_line_scaled(ax, r_start, r_end, length, mins, scale_factors, line_width, color, alpha, z_order):
-    
+
     r_start_scaled = scale_list(r_start, mins, scale_factors)
     r_end_scaled = scale_list(r_end, mins, scale_factors)
 
     dr_scaled = np.subtract(r_end_scaled, r_start_scaled)
 
-    r_end_scaled = r_start_scaled + dr_scaled / np.sqrt(np.dot(dr_scaled, dr_scaled)) * length
+    r_end_scaled = r_start_scaled + dr_scaled / \
+        np.sqrt(np.dot(dr_scaled, dr_scaled)) * length
 
     r_start_end = list(zip(r_start_scaled, r_end_scaled))
 
@@ -1598,11 +1632,13 @@ delete all axes of a figure: unlike 'remove_all_axes', this method uses 'delaxes
 Input values: 
 - 'fig': the figure whose axes will be rewmoved
 '''
+
+
 def delete_all_axes(fig):
     for ax in fig.axes[:]:
         fig.delaxes(ax)
-        
-        
+
+
 '''
 interpolate a function of one variable in an interval
 Input values: 
@@ -1615,6 +1651,8 @@ Return values:
 - 'values_grid': a zipped array [(x_0,f_0), (x_1,f_1),...] of the interpolated values
 - 'points_grid'; the values of the x axis [x_0, x_1,..]
 '''
+
+
 def interpolate_1d_function(data, n_bins, x_min=None, x_max=None, interpolation_method='cubic'):
 
     if x_min is None:
@@ -1634,6 +1672,7 @@ def interpolate_1d_function(data, n_bins, x_min=None, x_max=None, interpolation_
 
     return values_grid, points_grid
 
+
 '''
 interpolate a set of discrete data for a surface f(x,y) into agrid  of points. If the original data does not cover a region of the grid of points, extrapolation is used. 
 
@@ -1650,43 +1689,40 @@ interpolate a set of discrete data for a surface f(x,y) into agrid  of points. I
 '''
 
 
-def interpolate_surface(data, mins, maxs, n_bins, 
-                        scale_factor=1, 
-                        f_min=None, 
+def interpolate_surface(data, mins, maxs, n_bins,
+                        scale_factor=1,
+                        f_min=None,
                         method='rbf',
                         label_x_column=':0', label_y_column=':1', label_f_column='f'):
-    
+
     X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins[0]), np.linspace(mins[1], maxs[1], n_bins[1]),
                        indexing='ij')
 
     # 1. re-arrange the x, y values into a points
     points = []
-    points.extend([list(element) for element in zip(data[label_x_column], data[label_y_column])])
-    
+    points.extend([list(element) for element in zip(
+        data[label_x_column], data[label_y_column])])
+
     # 2 re-arrange the function  values into values
     if f_min != None:
-        values = data[label_f_column].apply(lambda x: scale(x, f_min, scale_factor))
-    else: 
+        values = data[label_f_column].apply(
+            lambda x: scale(x, f_min, scale_factor))
+    else:
         values = data[label_f_column]
 
     # 3 interpolate values and points, and write the result of the interpolated function on the lattice (X, Y) into grid
     if method == 'rbf':
-        
+
         rbf = RBFInterpolator(points, values, kernel='thin_plate_spline')
         Z = rbf(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
-        
+
     elif method == 'griddata':
-    
+
         Z = griddata(points, values, (X, Y), method='cubic')
 
-    
     norm_Z_min, norm_Z_max, norm_Z = cal.min_max_scalar_field(Z)
 
     return X, Y, Z, norm_Z_min, norm_Z_max, norm_Z
-
-
-
-
 
 
 '''
@@ -1699,6 +1735,8 @@ Input values:
 Return values: 
 - 'values_grid' <class 'numpy.ndarray'>: the array containing the values of the curve interpolated on the grid of n_bins points, [X_1, X_2]
 '''
+
+
 def interpolate_curve(data, x_min, x_max, n_bins):
 
     points_grid = np.linspace(x_min, x_max, n_bins)
@@ -1714,6 +1752,7 @@ def interpolate_curve(data, x_min, x_max, n_bins):
 
     return values_grid, points_grid
 
+
 '''
 set the limits of a 2d axis:
 - 'ax' the axis where to set the limits
@@ -1723,10 +1762,12 @@ set the limits of a 2d axis:
 '''
 
 
-def set_2d_axes_limits(ax, mins, maxs, margins=[0,0]):
-    
-    ax.set_xlim(mins[0] - (maxs[0] - mins[0]) * margins[0], maxs[0] + (maxs[0] - mins[0]) * margins[0])
-    ax.set_ylim(mins[1] - (maxs[1] - mins[1]) * margins[1], maxs[1] + (maxs[1] - mins[1]) * margins[1])
+def set_2d_axes_limits(ax, mins, maxs, margins=[0, 0]):
+
+    ax.set_xlim(mins[0] - (maxs[0] - mins[0]) * margins[0],
+                maxs[0] + (maxs[0] - mins[0]) * margins[0])
+    ax.set_ylim(mins[1] - (maxs[1] - mins[1]) * margins[1],
+                maxs[1] + (maxs[1] - mins[1]) * margins[1])
 
 
 '''
@@ -1736,15 +1777,14 @@ Input values:
 - 'data': the data, of the shape [(x_0, y_0), (x_1, y_1), ... ]
 - 'margins' [optional]: a two-entry vector, containing the margin on the x and y axis
 '''
+
+
 def set_2d_axes_limits_from_data(ax, data, margins=[0, 0]):
 
     min_max = lis.min_max_coordinates(data)
-    
-    set_2d_axes_limits(ax, [min_max[0, 0], min_max[1, 0]], [min_max[0, 1], min_max[1, 1]], margins)
-    
-    
 
-
+    set_2d_axes_limits(ax, [min_max[0, 0], min_max[1, 0]], [
+                       min_max[0, 1], min_max[1, 1]], margins)
 
 
 '''
@@ -1798,7 +1838,8 @@ Return values:
 def plot_rectangle(ax, p_left_bottom, L, h, color, line_width, z_order):
     rectangle = []
 
-    rectangle.append(plot_line(ax, p_left_bottom, np.add(p_left_bottom, [L, 0, 0]), color, line_width, z_order))
+    rectangle.append(plot_line(ax, p_left_bottom, np.add(
+        p_left_bottom, [L, 0, 0]), color, line_width, z_order))
     rectangle.append(
         plot_line(ax, np.add(p_left_bottom, [L, 0, 0]), np.add(p_left_bottom, [L, h, 0]), color, line_width, z_order))
     rectangle.append(
@@ -1823,7 +1864,7 @@ Input values
 
 
 def plot_mesh(ax, data_line_vertices, line_width, color, alpha):
-    
+
     points_start = []
     points_end = []
     points_start.extend([list(a) for a in
@@ -1835,15 +1876,15 @@ def plot_mesh(ax, data_line_vertices, line_width, color, alpha):
 
     for i in range(len(points_start)):
         ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]],
-                 [points_start[i][2], points_end[i][2]], linewidth=line_width, color=color, alpha=alpha)
+                [points_start[i][2], points_end[i][2]], linewidth=line_width, color=color, alpha=alpha)
 
 
-def plot_2d_mesh(ax, data_line_vertices, 
-                 line_width=const.default_line_width, 
-                 color=const.default_color, 
+def plot_2d_mesh(ax, data_line_vertices,
+                 line_width=const.default_line_width,
+                 color=const.default_color,
                  alpha=const.default_alpha,
                  zorder=const.default_z_order):
-    
+
     points_start = []
     points_end = []
     points_start.extend([list(a) for a in
@@ -1854,4 +1895,5 @@ def plot_2d_mesh(ax, data_line_vertices,
                               data_line_vertices[clab.label_end_z_column])])
 
     for i in range(len(points_start)):
-        ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]], linewidth=line_width, color=color, alpha=alpha, zorder=zorder)
+        ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i]
+                [1]], linewidth=line_width, color=color, alpha=alpha, zorder=zorder)
