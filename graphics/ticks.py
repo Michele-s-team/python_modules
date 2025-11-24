@@ -172,6 +172,41 @@ def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_of
 
 
 '''
+draw a text in a three-dimensional axis, by converting its 3d coordinates to 2d coordinates on the plane of the screen. This overcomes issues with plotting 3d text directly in matplotlib
+
+Input values: 
+    * Mandatory:
+        - 'ax': the 3d axis where the text will be drawn
+        - 'label': the text to be drawn
+        - 'position_3d': the 3d coordinates of the text [x, y, z] with respect to the 3d axis
+    * Optional:
+        - 'font_size': the font size of the text
+        - 'z_order': the z order of the text
+        - 'tick_label_angle': the rotation angle of the text
+'''
+
+
+def draw_3d_text(ax, label, position_3d,
+                 font_size=const.default_font_size,
+                 z_order=const.default_z_order,
+                 tick_label_angle=const.default_tick_label_angle
+                 ):
+
+    # project the 3d position to 2d space (the plane of the screen)
+    position_2d = proj3d.proj_transform(
+        position_3d[0], position_3d[1], position_3d[2], ax.get_proj())[:2]
+
+   # plot the tick label in 2d space
+    ax.text2D(position_2d[0], position_2d[1], label,
+              fontsize=font_size,
+              rotation=tick_label_angle,
+              ha='center', va='center',
+              zorder=z_order,
+              transform=ax.transData
+              )
+
+
+'''
 plot a tick on a three-dimensional axis
 
 '''
@@ -203,27 +238,18 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
         # plot the tick label
         if label != None:
 
-            # compute the position of the tick in 3d space
-            position_3d = [
-                gr.scale(value, origin[0], scale_factor[0]),
-                gr.scale((origin[1] + length[1] * axis_origin[0][0]) -
-                         tick_label_offset * length[1], origin[1], scale_factor[1]),
-                gr.scale((origin[2] + length[2] * axis_origin[0]
-                         [1]), origin[2], scale_factor[2])
-            ]
-
-            # project the 3d position to 2d space (the plane of the screen)
-            position_2d = proj3d.proj_transform(
-                position_3d[0], position_3d[1], position_3d[2], ax.get_proj())[:2]
-
-           # plot the tick label in 2d space
-            ax.text2D(position_2d[0], position_2d[1], label,
-                      fontsize=font_size,
-                      rotation=tick_label_angle,
-                      ha='center', va='center',
-                      zorder=z_order,
-                      transform=ax.transData
-                      )
+            draw_3d_text(ax, label,
+                         [
+                             gr.scale(value, origin[0], scale_factor[0]),
+                             gr.scale((origin[1] + length[1] * axis_origin[0][0]) -
+                                      tick_label_offset * length[1], origin[1], scale_factor[1]),
+                             gr.scale((origin[2] + length[2] * axis_origin[0]
+                                       [1]), origin[2], scale_factor[2])
+                         ],
+                         font_size=font_size,
+                         z_order=z_order,
+                         tick_label_angle=tick_label_angle
+                         )
 
     elif axis_direction == 1:
         # plot the tick line
@@ -242,27 +268,18 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
         # plot the tick label
         if label != None:
 
-            # compute the position of the tick in 3d space
-            position_3d = [
-                gr.scale((origin[0] + length[0] * axis_origin[1][0]) -
-                         tick_label_offset * length[0], origin[0], scale_factor[0]),
-                gr.scale(value, origin[1], scale_factor[1]),
-                gr.scale((origin[2] + length[2] * axis_origin[1]
-                         [1]), origin[2], scale_factor[2])
-            ]
-
-            # project the 3d position to 2d space (the plane of the screen)
-            position_2d = proj3d.proj_transform(
-                position_3d[0], position_3d[1], position_3d[2], ax.get_proj())[:2]
-
-            # plot the tick label in 2d space
-            ax.text2D(position_2d[0], position_2d[1], label,
-                      fontsize=font_size,
-                      rotation=tick_label_angle,
-                      ha='center', va='center',
-                      zorder=z_order,
-                      transform=ax.transData
-                      )
+            draw_3d_text(ax, label,
+                         [
+                             gr.scale((origin[0] + length[0] * axis_origin[1][0]) -
+                                      tick_label_offset * length[0], origin[0], scale_factor[0]),
+                             gr.scale(value, origin[1], scale_factor[1]),
+                             gr.scale((origin[2] + length[2] * axis_origin[1]
+                                       [1]), origin[2], scale_factor[2])
+                         ],
+                         font_size=font_size,
+                         z_order=z_order,
+                         tick_label_angle=tick_label_angle
+                         )
 
     elif axis_direction == 2:
 
@@ -270,7 +287,7 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
         ax.plot(
             [
                 gr.scale((origin[0] + length[0] * axis_origin[2]
-                         [0]), origin[0], scale_factor[0]),
+                          [0]), origin[0], scale_factor[0]),
                 gr.scale((origin[0] + length[0] * axis_origin[2][0]) + tick_length[2] *
                          length[0], (origin[0] + length[0] * axis_origin[2][0]), scale_factor[0])
             ],
@@ -282,24 +299,15 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
         # plot the tick label
         if label != None:
 
-            # compute the position of the tick in 3d space
-            position_3d = [
-                gr.scale((origin[0] + length[0] * axis_origin[2][0]) -
-                         tick_label_offset * length[0], origin[0], scale_factor[0]),
-                gr.scale((origin[1] + length[1] * axis_origin[2]
-                         [1]), origin[1], scale_factor[1]),
-                gr.scale(value, origin[2], scale_factor[2])
-            ]
-
-            # project the 3d position to 2d space (the plane of the screen)
-            position_2d = proj3d.proj_transform(
-                position_3d[0], position_3d[1], position_3d[2], ax.get_proj())[:2]
-
-            # plot the tick label in 2d space
-            ax.text2D(position_2d[0], position_2d[1], label,
-                      fontsize=font_size,
-                      rotation=tick_label_angle,
-                      ha='center', va='center',
-                      zorder=z_order,
-                      transform=ax.transData
-                      )
+            draw_3d_text(ax, label,
+                         [
+                             gr.scale((origin[0] + length[0] * axis_origin[2][0]) -
+                                      tick_label_offset * length[0], origin[0], scale_factor[0]),
+                             gr.scale((origin[1] + length[1] * axis_origin[2]
+                                       [1]), origin[1], scale_factor[1]),
+                             gr.scale(value, origin[2], scale_factor[2])
+                         ],
+                         font_size=font_size,
+                         z_order=z_order,
+                         tick_label_angle=tick_label_angle
+                         )
