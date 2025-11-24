@@ -4,7 +4,6 @@ import numpy as np
 import os 
 import pandas as pd
 import proplot as pplt
-from pandas.core.methods.selectn import SelectNSeries
 from scipy.interpolate import griddata
 from scipy.interpolate import interp1d
 from scipy.interpolate import RBFInterpolator
@@ -315,6 +314,7 @@ def plot_3d_axes(ax, origin, length,
                  axis_label_offset=[0, 0, 0], 
                  tick_length=[const.default_tick_length] * 3,
                  tick_label_offset=[0, 0, 0], 
+                 tick_label_angle=[const.default_tick_label_angle] * 3,
                  margin=[0, 0, 0],
                  tick_label_format=[const.default_label_format,const.default_label_format, const.default_label_format], 
                  font_size=[const.default_font_size] * 3, 
@@ -380,6 +380,7 @@ def plot_3d_axes(ax, origin, length,
                     axis_label_offset=axis_label_offset,
                     tick_label_offset=tick_label_offset[i], 
                     tick_label_format=tick_label_format[i], 
+                    tick_label_angle=tick_label_angle[i],
                     font_size=font_size[i], 
                     axis_origin=axis_origin,
                     n_minor_ticks=n_minor_ticks,

@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import proj3d
 import numpy as np
 import pandas as pd
 import proplot as pplt
@@ -99,8 +99,16 @@ Input values:
     - 'tick_label_angle' [optional]: the rotation angle with which the tick labels will be drawn
 '''
 
-def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_offset, tick_label_format, 
-              origin, length, axis_origin=None, log_base=10, font_size=8, z_order=0, color='black', line_width=const.default_line_width, scale='lin', tick_label_angle=0, clip_on=False):
+def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_offset, tick_label_format, origin, length, 
+                 axis_origin=None, 
+                 log_base=const.default_log_base, 
+                 font_size=const.default_font_size, 
+                 z_order=const.default_z_order, 
+                 color=const.default_color, 
+                 line_width=const.default_line_width, 
+                 scale='lin', 
+                 tick_label_angle=const.default_tick_label_angle, 
+                 clip_on=False):
     
     dim = 2
     
@@ -166,7 +174,11 @@ plot a tick on a three-dimensional axis
 '''
 def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offset, tick_label_format, origin, length, 
                  scale_factor = [1] * 3,
-                 axis_origin=[0] * 3, font_size=const.default_font_size, z_order=const.default_z_order, color='black', line_width=const.default_line_width, tick_label_angle=const.default_tick_label_angle):
+                 axis_origin=[0] * 3, font_size=const.default_font_size, 
+                 z_order=const.default_z_order, 
+                 color='black', 
+                 line_width=const.default_line_width, 
+                 tick_label_angle=const.default_tick_label_angle):
     
     if axis_direction == 0:
     
@@ -186,7 +198,10 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
                     gr.scale(value, origin[0], scale_factor[0]), 
                     gr.scale((origin[1] + length[1] * axis_origin[0][0]) - tick_label_offset * length[1], origin[1], scale_factor[1]), 
                     gr.scale((origin[2] + length[2] * axis_origin[0][1]), origin[2], scale_factor[2]),
-                    label, fontsize=font_size, ha='center', va='center', zorder=z_order
+                    label, fontsize=font_size, 
+                    ha='center', va='center', 
+                    rotation=tick_label_angle,
+                    zorder=z_order
                 )
             
     elif axis_direction == 1:
@@ -206,7 +221,11 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
                     gr.scale((origin[0] + length[0] * axis_origin[1][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
                     gr.scale(value, origin[1], scale_factor[1]), 
                     gr.scale((origin[2] + length[2] * axis_origin[1][1]), origin[2], scale_factor[2]),
-                    label, fontsize=font_size, ha='center', va='center', zorder=z_order
+                    label, 
+                    fontsize=font_size, 
+                    ha='center', va='center', 
+                    rotation=tick_label_angle,
+                    zorder=z_order
                 )
             
     elif axis_direction == 2:
@@ -224,10 +243,19 @@ def plot_3d_tick(ax, axis_direction, value, label, tick_length, tick_label_offse
     
         # plot the tick label
         if label != None:
-            ax.text(
-                    gr.scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]), 
-                    gr.scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
-                    gr.scale(value, origin[2], scale_factor[2]), 
-                    label, fontsize=font_size, ha='center', va='center', zorder=z_order
-                )
+            
+            position_3d = [
+                            gr.scale((origin[0] + length[0] * axis_origin[2][0]) - tick_label_offset * length[0], origin[0], scale_factor[0]),
+                            gr.scale((origin[1] + length[1] * axis_origin[2][1]), origin[1], scale_factor[1]),
+                            gr.scale(value, origin[2], scale_factor[2])
+                        ]
+            
+            position_2d = proj3d.proj_transform(position_3d[0], position_3d[1], position_3d[2], ax.get_proj())[:2]
+            ax.text2D(position_2d[0], position_2d[1], label, 
+                      fontsize=font_size, 
+                      rotation=tick_label_angle, 
+                    ha='center', va='center', 
+                    zorder=z_order, 
+                    transform=ax.transData
+                    )
     
