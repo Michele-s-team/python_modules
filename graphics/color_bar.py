@@ -27,6 +27,7 @@ Arguments:
         - 'aspect_value' : the aspect value of the colorbar
         - 'tick_label_angle' : the rotation angle of the tick labels
         - 'custom_ticks': a list of custom ticks for the colorbar
+        - 'tick_label_format': the format in which the tick labels will be displayed, e.g., 'e' or 'f'
 '''
 
 
@@ -45,6 +46,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   mappable=None,
                   prune_ticks=True,
                   custom_ticks=None,
+                  tick_label_format=const.default_label_format,
                   axis=None):
 
     # Use existing axis or create new one
@@ -105,6 +107,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                           tick_length=tick_length,
                           tick_label_offset=tick_label_offset,
                           line_width=line_width,
+                          tick_label_format=tick_label_format,
                           prune=prune_ticks)
 
     if label is not None:
@@ -143,6 +146,7 @@ Input values:
         - 'font_size' : the font size of all texts in the colorbar
         - 'min_max' [optional]: a list with two entries, the min and max of the values which will bound the color bar. If none, this method will compute the min and max values of the field f along the curve and assign them to min_max
         - 'tick_label_offset': the offset of tick labels
+        - 'tick_label_format': the format with which tick labels are displayed, for example, 'e' or 'f'
         - 'tick_label_angle': the rotation angle of tick labels
         - 'tick_length': the length of the ticks
         - 'line_width': the line width for the ticks
@@ -156,6 +160,7 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
                         font_size=const.default_font_size,
                         min_max=None,
                         tick_label_offset=[0, 0],
+                        tick_label_format=const.default_label_format,
                         label_angle=0,
                         line_width=const.default_line_width,
                         tick_length=const.default_tick_length,
@@ -200,6 +205,7 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
                           tick_label_offset=tick_label_offset,
                           tick_label_angle=tick_label_angle,
                           line_width=line_width,
+                          tick_label_format=tick_label_format,
                           tick_length=tick_length)
 
     # colorbar.set_label(label, rotation=label_angle, fontsize=font_size)

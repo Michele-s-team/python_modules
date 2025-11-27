@@ -1184,7 +1184,8 @@ Input values:
         - 'line_width': the line width of the ticks
         - 'z_order': the z order
         - 'tick_lengt': the length of the ticks, expressed in units of the colorbar width
-        - tick_label_offset': offset of the tick labels, [tick_label_offset_x, tick_label_offset_y], expressed in units of the tick length and heigh, respectively
+        - 'tick_label_offset': offset of the tick labels, [tick_label_offset_x, tick_label_offset_y], expressed in units of the tick length and heigh, respectively
+        - 'tick_label_format': numerical format with which the tick label is plotted, e.g., 'e', or 'f'
         - 'prune': if True, ticks and tick labels which overlap will be removed 
 '''
 
@@ -1197,6 +1198,7 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                        z_order=const.default_z_order,
                        tick_length=const.default_tick_length,
                        tick_label_offset=[0, 0],
+                       tick_label_format=const.default_label_format,
                        prune=True):
 
     # remove the default colorbar ticks because I will be plotting the custom ones
@@ -1237,8 +1239,8 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                         0] + tick_label_offset[0] * (colorbar.ax.get_xlim()[1] - colorbar.ax.get_xlim()[0]),
                     ticks[i] + tick_label_offset[1] *
                     (colorbar.ax.get_ylim()[1] - colorbar.ax.get_ylim()[0]),
-                    cal.to_latex_scientific(
-                        min + (ticks[i] - min) / scale_factor),
+                    text.float_to_latex(
+                        min + (ticks[i] - min) / scale_factor, tick_label_format),
                     fontsize=font_size,
                     ha='center', va='center',
                     rotation=tick_label_angle, zorder=z_order)
