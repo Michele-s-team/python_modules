@@ -23,9 +23,10 @@ Arguments:
         - 'font_size' : the font size of all texts in the colorbar
         - 'label_angle' the label of the colorbar
         - 'label_pad': displacement of the label of the colorbar with respect to the origin of the colorbar, in units given by the size of the colorbar
-        - 'shrink_value' [optional] : the shrink value of the colorbar
-        - 'aspect_value' [optional]: the aspect value of the colorbar
-        - 'tick_label_angle' [optional]: the rotation angle of the tick labels
+        - 'shrink_value'  : the shrink value of the colorbar
+        - 'aspect_value' : the aspect value of the colorbar
+        - 'tick_label_angle' : the rotation angle of the tick labels
+        - 'custom_ticks': a list of custom ticks for the colorbar
 '''
 
 
@@ -43,6 +44,7 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                   line_width=const.default_line_width,
                   mappable=None,
                   prune_ticks=True,
+                  custom_ticks=None,
                   axis=None):
 
     # Use existing axis or create new one
@@ -77,11 +79,22 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
 
         scaled_max = gr.scale(max_value, min_value, scale_factor)
 
-    colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max))
 
-    # colorbar_axis = figure.add_axes([position[0], position[1], size[0], size[1]])
-    colorbar = figure.colorbar(mappable, shrink=shrink_value,
-                               aspect=aspect_value, location='left', cax=colorbar_axis)
+    if custom_ticks == None:
+        # the method has not been called with custom ticks -> generate ticks
+        
+        colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max))
+    else:
+        # the method has been called with  custom ticks -> draw the custom ticks
+        
+        colorbar_ticks = custom_ticks
+
+
+    colorbar = figure.colorbar(mappable, 
+                               shrink=shrink_value,
+                               aspect=aspect_value, 
+                               location='left', 
+                               cax=colorbar_axis)
 
     # --- Remove border and outline ---
     colorbar.outline.set_visible(False)  # removes the black rectangle border
@@ -93,9 +106,6 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
                           tick_label_offset=tick_label_offset,
                           line_width=line_width,
                           prune=prune_ticks)
-
-    # colorbar.set_label(rf'${label}$', rotation=label_angle, fontsize=font_size)
-    # colorbar.ax.yaxis.set_label_coords(label_pad[0], 0.5 + label_pad[1])  # Adjust -1.2 for spacing
 
     if label is not None:
 
