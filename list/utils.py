@@ -57,6 +57,8 @@ Example of usage:
     filtered = lis.remove_close_elements(data, epsilon=0.2)
     print(filtered)
 '''
+
+
 def remove_close_elements(input_list, epsilon):
     result = []
     for x in input_list:
@@ -76,8 +78,10 @@ Example of usage:
     add_lists_of_lists([[1,2],[2,4]], [[3,2],[2,3]])
 '''
 
+
 def add_lists_of_lists(list_a, list_b):
     return [[A + B for A, B in zip(row_A, row_B)] for row_A, row_B in zip(list_a, list_b)]
+
 
 '''
 substract element by element two lists of lists
@@ -89,6 +93,7 @@ Return values:
 Example of usage: 
     substract_lists_of_lists([[1,2],[2,4]], [[3,2],[2,3]])
 '''
+
 
 def substract_lists_of_lists(list_a, list_b):
     return [[A - B for A, B in zip(row_A, row_B)] for row_A, row_B in zip(list_a, list_b)]
@@ -102,8 +107,10 @@ Input values:
 Return values:
 - the data for omega, a data frame with columns 'f:0', 'f:1', 'f:2', ':0', ':1', ':2'
 '''
+
+
 def data_omega(data_nu, data_psi):
-    
+
     return pd.DataFrame({
         'f:0': data_nu['f'] * np.cos(data_psi['f']),
         'f:1': -data_nu['f'] * np.sin(data_psi['f']),
@@ -112,8 +119,8 @@ def data_omega(data_nu, data_psi):
         ':1': data_nu[':1'],
         ':2': data_nu[':2']
     })
-   
-    
+
+
 '''
 Compute the min and max of the coordinates in a data set
 Input values: 
@@ -122,14 +129,15 @@ Input values:
 Return values: 
 - [[min_i x_{i1}, max_i x_{i1}], [min_i x_{i2}, max_i x_{i2}, ...]]
 '''
-def min_max_coordinates(data):
-    
-    result = []
-    for i in range(len(data[0])):    
-        result.append([min(data[:,i]), max(data[:,i])])
-        
-    return np.array(result)
 
+
+def min_max_coordinates(data):
+
+    result = []
+    for i in range(len(data[0])):
+        result.append([min(data[:, i]), max(data[:, i])])
+
+    return np.array(result)
 
 
 '''
@@ -141,6 +149,8 @@ Input values:
 Return values: 
 - the purged list
 '''
+
+
 def purge_list(list, n):
     i = 0
     result = []
@@ -158,9 +168,11 @@ Input values:
     - 'list', the list
 '''
 
+
 def remove_duplicates(a):
     a[:] = list(set(a))
-    
+
+
 '''
 Find the  element in a list which is closest to a value
 Input values: 
@@ -170,16 +182,19 @@ Input values:
 Return values: 
     - the closest element 
 '''
+
+
 def closest_element(list, value):
-    
+
     diff = abs(list[0]-value)
     result = list[0]
-    
-    for i in range(1, len(list)): 
-        if abs(list[i]-value) < diff: 
-            result = list[i]            
+
+    for i in range(1, len(list)):
+        if abs(list[i]-value) < diff:
+            result = list[i]
 
     return result
+
 
 '''
 multiply each element of a list by a value, and return the resulting list
@@ -189,6 +204,32 @@ Input values:
 Return values:
     - the resulting list, whose ith element is list[i] * value
 '''
+
+
 def multiply(value, list):
     return np.multiply(value, list).tolist()
-    
+
+
+'''
+add a value from all numbers in an arbitrarily nested list.
+Input values: 
+    - 'input_list': the list
+    - 'value': the value
+Return values: 
+    - the modified list
+'''
+
+
+def add_value(input_list, value):
+
+    result = []
+
+    for item in input_list:
+
+        if isinstance(item, list):
+            # item is of type list -> Recursively call add_value
+            result.append(add_value(item, value))
+        else:
+            # Subtract value from the list entry
+            result.append(item + value)
+    return result

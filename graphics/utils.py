@@ -1914,7 +1914,8 @@ def plot_2d_mesh(ax, data_line_vertices,
                  line_width=const.default_line_width,
                  color=const.default_color,
                  alpha=const.default_alpha,
-                 zorder=const.default_z_order):
+                 zorder=const.default_z_order,
+                 clip_on=False):
 
     points_start = []
     points_end = []
@@ -1927,4 +1928,9 @@ def plot_2d_mesh(ax, data_line_vertices,
 
     for i in range(len(points_start)):
         ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i]
-                [1]], linewidth=line_width, color=color, alpha=alpha, zorder=zorder)
+                [1]],
+                linewidth=line_width,
+                color=color,
+                alpha=alpha,
+                zorder=zorder,
+                clip_on=clip_on)
