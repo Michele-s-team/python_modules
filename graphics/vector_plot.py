@@ -124,6 +124,7 @@ Input values:
         - 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
         - 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
         - 'z_order': z-order of the arrows
+        - 'clip_on': chose whether the vector field will be clipped if it lies outside the axis bounds
         - 'threshold_arrow_length': the threshold for the length of the arrows such that arrows with length smaller than the threshold will not be plotted
 
 Example of usage:
@@ -148,6 +149,7 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                          alpha=const.default_alpha,
                          color=const.default_color,
                          z_order=const.default_z_order,
+                         clip_on=False,
                          threshold_arrow_length=const.default_threshold_arrow_length):
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
@@ -174,7 +176,8 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
         arr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
                           np.add([grid_r[0][i], grid_r[1][i]],
                                  [grid_v[0][i], grid_v[1][i]]),
-                          shaft_length_to_plot, head_over_shaft_length_to_plot, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length)
+                          shaft_length_to_plot, head_over_shaft_length_to_plot, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length,
+                          clip_on=clip_on)
 
 
 '''

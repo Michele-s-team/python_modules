@@ -34,3 +34,6 @@ default_color = 'black'
 default_alpha = 1
 
 default_column_name = 'f'
+
+default_legend_location = 'center'
+default_legend_position = [0.5] * 2

@@ -1,4 +1,6 @@
-import matplotlib.pyplot as plt
+
+from matplotlib.collections import LineCollection
+from matplotlib.legend import Legend
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import os
@@ -1451,21 +1453,26 @@ def plot_curve_grid(ax, X,
                     color_map=None,
                     line_color=const.default_color,
                     line_width=const.default_line_width,
-                    plot_label='',
+                    legend='',
+                    legend_position=const.default_legend_position,
+                    legend_inner_location=const.default_legend_location,
+                    legend_font_size=const.default_font_size,
+                    legend_alpha=const.default_alpha,
+                    legend_frame=False,
                     alpha=const.default_alpha,
+                    clip_on=False,
                     z_order=const.default_z_order):
 
     if color_map is None:
 
-        ax.plot(X[:, 0], X[:, 1], '-',
-                color=line_color,
-                linewidth=line_width,
-                label=plot_label,
-                alpha=alpha,
-                zorder=z_order)
+        line = ax.plot(X[:, 0], X[:, 1], '-',
+                       color=line_color,
+                       linewidth=line_width,
+                       label=legend,
+                       alpha=alpha,
+                       zorder=z_order,
+                       clip_on=clip_on)[0]
     else:
-
-        from matplotlib.collections import LineCollection
 
         # Create line segments
         points = X.reshape(-1, 1, 2)
@@ -1479,9 +1486,24 @@ def plot_curve_grid(ax, X,
                             colors=color_map[:-1],
                             linewidth=line_width,
                             alpha=alpha,
-                            zorder=z_order)
+                            zorder=z_order,
+                            clip_on=clip_on)
         ax.add_collection(lc)
         ax.autoscale()
+
+    if legend != '':
+        # show the legend
+
+        # Create a new legend for just this line
+        legend = Legend(ax, [line], [legend],
+                        bbox_to_anchor=legend_position,
+                        loc=legend_inner_location,
+                        frameon=legend_frame,
+                        fontsize=legend_font_size,
+                        framealpha=legend_alpha)
+
+        # Add the legend as a separate artist (doesn't replace previous legends)
+        ax.add_artist(legend)
 
 
 '''
