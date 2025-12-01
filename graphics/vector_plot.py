@@ -153,6 +153,7 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                          threshold_arrow_length=const.default_threshold_arrow_length,
                          legend=None,
                          legend_position=[0]*2,
+                         legend_text_arrow_space=const.default_legend_text_arrow_space,
                          legend_arrow_length=const.default_legend_arrow_length,
                          legend_head_over_shaft_length=const.default_head_over_shaft_length,
                          legend_font_size=const.default_font_size):
@@ -185,9 +186,12 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                           clip_on=clip_on)
 
     if legend != None:
+        # plot the legend of the vector field
 
-        axis_min_max = [ax.get_xlim(), ax.get_ylim()]
+        # get axis bounds
+        axis_min_max = [np.sort(ax.get_xlim()), np.sort(ax.get_ylim())]
 
+        # plot the text of the legend
         ax.text(
             axis_min_max[0][0] + (axis_min_max[0][1] -
                                   axis_min_max[0][0]) * legend_position[0],
@@ -199,17 +203,19 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
             zorder=z_order
         )
 
-        arrow_start = [
+        # plot the arrow sample of the legend, next to the legend text
+        arrow_position = np.add([
             axis_min_max[0][0] + (axis_min_max[0][1] -
                                   axis_min_max[0][0]) * legend_position[0],
             axis_min_max[1][0] + (axis_min_max[1][1] -
                                   axis_min_max[1][0]) * legend_position[1]
-        ]
+        ], [legend_text_arrow_space * (axis_min_max[0][1] -
+                                       axis_min_max[0][0]), 0])
 
         arr.plot_2d_arrow(ax,
-                          arrow_start,
-                          np.add(arrow_start, [
-                                 -legend_arrow_length * (axis_min_max[0][1] - axis_min_max[0][0]), 0]),
+                          arrow_position,
+                          np.add(arrow_position, [
+                              legend_arrow_length * (axis_min_max[0][1] - axis_min_max[0][0]), 0]),
                           legend_arrow_length,
                           legend_head_over_shaft_length,
                           head_angle,
