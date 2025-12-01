@@ -126,6 +126,12 @@ Input values:
         - 'z_order': z-order of the arrows
         - 'clip_on': chose whether the vector field will be clipped if it lies outside the axis bounds
         - 'threshold_arrow_length': the threshold for the length of the arrows such that arrows with length smaller than the threshold will not be plotted
+        - 'legend': text label for the legend. If None, no legend is plotted
+        - 'legend_position': position of the legend as normalized coordinates [x, y] where 0 is the axis minimum and 1 is the axis maximum
+        - 'legend_text_arrow_space': spacing between the legend arrow and legend text as a fraction of axis width
+        - 'legend_arrow_length': length of the arrow shown in the legend as a fraction of axis width
+        - 'legend_head_over_shaft_length': ratio between head length and shaft length for the legend arrow
+        - 'legend_font_size': font size for the legend text
 
 Example of usage:
 
@@ -191,26 +197,13 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
         # get axis bounds
         axis_min_max = [np.sort(ax.get_xlim()), np.sort(ax.get_ylim())]
 
-        # plot the text of the legend
-        ax.text(
-            axis_min_max[0][0] + (axis_min_max[0][1] -
-                                  axis_min_max[0][0]) * legend_position[0],
-            axis_min_max[1][0] + (axis_min_max[1][1] -
-                                  axis_min_max[1][0]) * legend_position[1],            legend,
-            fontsize=legend_font_size,
-            ha='center',
-            va='center',
-            zorder=z_order
-        )
-
         # plot the arrow sample of the legend, next to the legend text
-        arrow_position = np.add([
+        arrow_position = [
             axis_min_max[0][0] + (axis_min_max[0][1] -
                                   axis_min_max[0][0]) * legend_position[0],
             axis_min_max[1][0] + (axis_min_max[1][1] -
                                   axis_min_max[1][0]) * legend_position[1]
-        ], [legend_text_arrow_space * (axis_min_max[0][1] -
-                                       axis_min_max[0][0]), 0])
+        ]
 
         arr.plot_2d_arrow(ax,
                           arrow_position,
@@ -224,6 +217,18 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                           alpha,
                           z_order,
                           clip_on=clip_on)
+
+        # plot the text of the legend
+        ax.text(
+            arrow_position[0] + legend_text_arrow_space *
+            (axis_min_max[0][1] - axis_min_max[0][0]),
+            arrow_position[1],
+            legend,
+            fontsize=legend_font_size,
+            ha='center',
+            va='center',
+            zorder=z_order
+        )
 
 
 '''
@@ -359,9 +364,9 @@ def norm_vector_field(grid_v):
 
 '''
 interpolate a vector field on the tangent bundle of a 2d manifold parameterized with the arc-length gauge
-Input values: 
-- 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored. 
-- 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored. 
+Input values:
+- 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored.
+- 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored.
 - 'n_bins': number of bins of the grid where to interpolate the vector field
 
 Return values:
@@ -468,7 +473,7 @@ def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega,
     v_z = griddata(points, values_v_z, (X_v, Y_v), method='cubic')
 
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([
-                                                                    v_x, v_y, v_z])
+        v_x, v_y, v_z])
 
     return X_v, Y_v, Z_v, v_x, v_y, v_z, grid_norm_v, norm_v_min, norm_v_max, norm_v
 
@@ -496,7 +501,7 @@ def interpolating_function_2d_vector_field(data_v,
 
 
 '''
-interpolate a two-dimensional vector field living on a plane 
+interpolate a two-dimensional vector field living on a plane
 Input values:
 - 'data_v': data where the values of the vector field, on an arbitrary set of points, xy, are stored
 - 'min', 'maxs': limits of the rectangular region where to interpolate
@@ -594,7 +599,7 @@ def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_
     w_z = griddata(points, values_w_z, (X_w, Y_w), method='cubic')
 
     grid_norm_w, norm_w_min, norm_w_max, norm_w = norm_vector_field([
-                                                                    w_x, w_y, w_z])
+        w_x, w_y, w_z])
 
     return X_w, Y_w, Z_w, w_x, w_y, w_z, grid_norm_w, norm_w_min, norm_w_max, norm_w
 
@@ -602,12 +607,12 @@ def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_
 '''
 return the min/max norm of the vector on a manifold considered as a vector in three-dimensional euclidean space in which the manifold is embedded
 - 'name_file_v' : name of file storing the data for the vector field
-- 'name_file_omega' : name of file storing the data for the manifold gradient 
+- 'name_file_omega' : name of file storing the data for the manifold gradient
 - 'columns_v' : column labels of the file for the vector field
 - 'label_v_column' : label of the column of the vector field
 - 'columns_omega' : column labels of the file for the omega (manifold gradient) field
 
-Return values: 
+Return values:
 - 'norm_v_min' : minimal norm of the vector field
 - 'norm_v_max' : maximal norm of the vector field
 '''
@@ -632,15 +637,15 @@ def norm_v_min_max_file(name_file_v, name_file_omega, columns_v, label_v_column,
 
 '''
 compute the minimum and maximum norm, across multiple snapshots of the field, of a vector field defined on the tangent bundle of a manifold
-- 'file_path' : path where to find both the file for the vector field and the one for the manifold gradient (omega) 
+- 'file_path' : path where to find both the file for the vector field and the one for the manifold gradient (omega)
 - 'name_file_v' : name of file storing the data for the vector field
-- 'name_file_omega' : name of file storing the data for the manifold gradient 
+- 'name_file_omega' : name of file storing the data for the manifold gradient
 - 'columns_v' : column labels of the file for the vector field
 - 'label_v_column' : label of the column of the vector field
 - 'columns_omega' : column labels of the file for the omega (manifold gradient) field
 - 'n_file_min' : the snapshot to start with'
 - 'n_file_max' : the snapshot to end with'
-- 'n_file_stride' : the stride across one snapshot and the next 
+- 'n_file_stride' : the stride across one snapshot and the next
 '''
 
 

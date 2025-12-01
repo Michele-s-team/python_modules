@@ -17,7 +17,7 @@ colorbar_aspect_value = 10
 default_head_length = 0.5
 default_shaft_length = 1
 default_legend_arrow_length = 0.1
-default_head_over_shaft_length = 0.3
+default_head_over_shaft_length = 0.2
 default_legend_text_arrow_space = 0.1
 default_head_angle = 30
 # the default value of the arrow length such that arrows with lengths below this value will not be plotted
