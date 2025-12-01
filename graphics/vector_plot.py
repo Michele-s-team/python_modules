@@ -12,7 +12,6 @@ import list.column_labels as clab
 import graphics.utils as gr
 
 
-
 '''
 tabulate a vector field given by an analytical expression
 - 'v': the analytical function  v(x,y) for the vector field
@@ -43,7 +42,8 @@ def tabulate_analytical_vector_field_on_surface(v, f, mins, maxs, n_bins):
 
 def plot_analytical_vector_field_on_surface(ax, v, f, mins, maxs, n_bins, scale_factor_z, z_min, shaft_length,
                                             head_over_shaft_length, head_angle, line_width, color, alpha, z_order):
-    X, Y, Z, V = tabulate_analytical_vector_field_on_surface(v, f, mins, maxs, n_bins)
+    X, Y, Z, V = tabulate_analytical_vector_field_on_surface(
+        v, f, mins, maxs, n_bins)
 
     plot_vector_field(ax, [X, Y, Z], V, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle,
                       line_width, alpha, color, z_order)
@@ -51,7 +51,8 @@ def plot_analytical_vector_field_on_surface(ax, v, f, mins, maxs, n_bins, scale_
 
 def plot_analytical_vector_field_on_surface_outside_disk(ax, v, f, mins, maxs, r, cr, n_bins, scale_factor_z, z_min, shaft_length,
                                                          head_over_shaft_length, threshold_arrow_length, head_angle, line_width, color, alpha, z_order):
-    X, Y, Z, V = tabulate_analytical_vector_field_on_surface(v, f, mins, maxs, n_bins)
+    X, Y, Z, V = tabulate_analytical_vector_field_on_surface(
+        v, f, mins, maxs, n_bins)
 
     for i in range(len(X)):
         for j in range(len(X[i])):
@@ -62,6 +63,7 @@ def plot_analytical_vector_field_on_surface_outside_disk(ax, v, f, mins, maxs, r
 
     plot_vector_field(ax, [X, Y, Z], V, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle,
                       threshold_arrow_length, line_width, alpha, color, z_order)
+
 
 '''
 plot a vector field
@@ -80,9 +82,11 @@ Input values:
 - 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
 - 'z_order': z-order of the arrows
 '''
+
+
 def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, head_over_shaft_length, head_angle, threshold_arrow_length,
                       line_width, alpha, color, z_order):
-    
+
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
@@ -96,12 +100,12 @@ def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, h
                 arrow_color = color
 
             arr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
-                          np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
-                                 [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]), \
-                          shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
-                          [1, 1, scale_factor_z], threshold_arrow_length,
-                          line_width, arrow_color, alpha, z_order)
-
+                           np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
+                                  [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]),
+                           shaft_length, head_over_shaft_length, head_angle, [
+                               0, 0, z_min],
+                           [1, 1, scale_factor_z], threshold_arrow_length,
+                           line_width, arrow_color, alpha, z_order)
 
 
 '''
@@ -112,8 +116,9 @@ Input values:
         - 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector
         - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field
     * Optional:
-        - 'shaft_length': length of the shaft of the arrows
+        - 'shaft_length': length of the shaft of the arrows. If 'None' the norm of the vector field will be used as shaft length
         - 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
+        - 'head_length': this is provided only if 'shaft_length' = None: the absolute length of arrow heads
         - 'head_angle': angle of between the head and the shaft of the arrows
         - 'line_width': line width of the arrows
         - 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
@@ -132,20 +137,23 @@ Example of usage:
                             color='color_from_map', 
                             threshold_arrow_length=parameters['threshold_arrow_length'])
 '''
-def plot_1d_vector_field(ax, grid_r, grid_v, 
-                         shaft_length=const.default_shaft_length, 
+
+
+def plot_1d_vector_field(ax, grid_r, grid_v,
+                         shaft_length=const.default_shaft_length,
                          head_over_shaft_length=const.default_head_over_shaft_length,
-                         head_angle=const.default_head_angle, 
-                         line_width=const.default_line_width, 
-                         alpha=const.default_alpha, 
-                         color=const.default_color, 
-                         z_order=const.default_z_order, 
-                         threshold_arrow_length = const.default_threshold_arrow_length):
-    
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
+                         head_length=const.default_head_length,
+                         head_angle=const.default_head_angle,
+                         line_width=const.default_line_width,
+                         alpha=const.default_alpha,
+                         color=const.default_color,
+                         z_order=const.default_z_order,
+                         threshold_arrow_length=const.default_threshold_arrow_length):
+
+    grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
-            
+
         vector_norm = grid_norm_v[i]
 
         if color == 'color_from_map':
@@ -154,11 +162,19 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
         else:
             arrow_color = color
 
+        if shaft_length == None:
+            # the method has been called with shaft_length = None: the shaft length which will be used in the plot is set to the length of the vector [grid_v[0][i], grid_v[1][i]]
+            shaft_length_to_plot = np.linalg.norm([grid_v[0][i], grid_v[1][i]])
+            head_over_shaft_length_to_plot = head_length/shaft_length_to_plot
+        else:
+            # the method has been aclled with shaft_length != None: the shaft length which will be used in the plot is set to shaft_length
+            shaft_length_to_plot = shaft_length
+            head_over_shaft_length_to_plot = head_over_shaft_length
+
         arr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
-                            np.add([grid_r[0][i], grid_r[1][i]],
-                                [grid_v[0][i], grid_v[1][i]]), \
-                            shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length)
-            
+                          np.add([grid_r[0][i], grid_r[1][i]],
+                                 [grid_v[0][i], grid_v[1][i]]),
+                          shaft_length_to_plot, head_over_shaft_length_to_plot, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length)
 
 
 '''
@@ -179,14 +195,16 @@ Input values:
 * Optional:
     - 'clip_on': if False, the arrow will be plotted even if it lies outside the axes' limits
 '''
+
+
 def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order,
                          clip_on=True):
-    
+
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
-            
+
             vector_norm = grid_norm_v[i, j]
 
             if color == 'color_from_map':
@@ -196,11 +214,11 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                 arrow_color = color
 
             arr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
-                             np.add([grid_r[0][i, j], grid_r[1][i, j]],
-                                    [grid_v[0][i, j], grid_v[1][i, j]]), \
-                             shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order,
-                             clip_on=clip_on)
-            
+                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
+                                     [grid_v[0][i, j], grid_v[1][i, j]]),
+                              shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order,
+                              clip_on=clip_on)
+
 
 def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
@@ -216,15 +234,17 @@ def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_ov
                 arrow_color = color
 
             arr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
-                             np.add([grid_r[0][i, j], grid_r[1][i, j]],
-                                    [grid_v[0][i, j], grid_v[1][i, j]]), \
-                             0.0 + shaft_length * (vector_norm - norm_v_min)/(norm_v_max-norm_v_min), head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
+                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
+                                     [grid_v[0][i, j], grid_v[1][i, j]]),
+                              0.0 + shaft_length * (vector_norm - norm_v_min)/(norm_v_max-norm_v_min), head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order)
 
 
 '''
 plot a vector field by setting the shaft length of each arrow according 
 to the norm of the vector and to a parameter shaft_length selected by the user
 '''
+
+
 def plot_vector_field_alpha_map(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, head_over_shaft_length,
                                 head_angle, threshold_arrow_length, line_width, alpha_map, z_order):
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field(grid_v)
@@ -237,11 +257,13 @@ def plot_vector_field_alpha_map(ax, grid_r, grid_v, scale_factor_z, z_min, shaft
             color = gr.cb.color_map_type(norm_v(vector_norm))
 
             arr.plot_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
-                          np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
-                                 [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]), \
-                          shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
-                          [1, 1, scale_factor_z], threshold_arrow_length,
-                          line_width, color, alpha_map[i][j], z_order)
+                           np.add([grid_r[0][i, j], grid_r[1][i, j], grid_r[2][i, j]],
+                                  [grid_v[0][i, j], grid_v[1][i, j], grid_v[2][i, j]]),
+                           shaft_length, head_over_shaft_length, head_angle, [
+                               0, 0, z_min],
+                           [1, 1, scale_factor_z], threshold_arrow_length,
+                           line_width, color, alpha_map[i][j], z_order)
+
 
 '''
 compute the minimum and maximum norm of a vector field
@@ -250,6 +272,7 @@ Input values:
 Return values:
 - 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field across the grid
 '''
+
 
 def min_max_vector_field(grid_v):
     grid_norm_v = np.sqrt(grid_v[0] ** 2 + grid_v[1] ** 2 + grid_v[2] ** 2)
@@ -268,22 +291,21 @@ Return values:
 - 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field
 - 'norm_v': the normalization function for color maps, with respect to the norm of the vector field
 '''
+
+
 def norm_vector_field(grid_v):
-    
+
     grid_norm_v = 0
     for i in range(len(grid_v)):
         grid_norm_v += grid_v[i]**2
-        
-    grid_norm_v = np.sqrt(grid_norm_v)    
-    
+
+    grid_norm_v = np.sqrt(grid_norm_v)
+
     norm_v_min, norm_v_max = np.nanmin(grid_norm_v), np.nanmax(grid_norm_v)
-    norm_v = mcolors.Normalize(vmin=norm_v_min, vmax=norm_v_max)  # Normalize norms to [0,1]
+    # Normalize norms to [0,1]
+    norm_v = mcolors.Normalize(vmin=norm_v_min, vmax=norm_v_max)
 
     return grid_norm_v, norm_v_min, norm_v_max, norm_v
-
-
-
-
 
 
 '''
@@ -303,35 +325,35 @@ Return values:
 - 'norm_v_max' the maximum of the norm of the interpolated vector field
 - 'norm_v' the normalization function for color maps, with respect to the norm of the interpolated vector field
 '''
+
+
 def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
                                                    data_omega,
                                                    data_v,
                                                    bins_v):
-    
-    
-    
+
     # transform the value v^1 of the vector field in the tangent manifold into the value v^{2d alpha} of the vector field in the 2d euclidean space where the manifold is embedded, by using data_omega
     values_v_2d = pd.DataFrame({
-        'f:0': data_v['f:0'] * data_omega['f:0'] ,
-        'f:1': data_v['f:0'] * data_omega['f:1'] ,
+        'f:0': data_v['f:0'] * data_omega['f:0'],
+        'f:1': data_v['f:0'] * data_omega['f:1'],
         'f:2': 0,
         ':0': data_v[':0'],
         ':1': 0,
         ':2': 0
     })
-    
+
     # compute min and max of the coordinate x^1
     x_min = np.min(data_X[':0'])
     x_max = np.max(data_X[':0'])
-    
+
     # the non-interpolated  (abscissa) points of the fields to interpolate
     points = data_v[':0']
     # the interpolated points of the fields to interpolate
     points_interpolated = np.linspace(x_min, x_max, bins_v)
-    
+
     idx = data_v[':0'].argsort()
-    
-    # interpolate the values of the parametric curve 
+
+    # interpolate the values of the parametric curve
     values_X_interpolated = pd.DataFrame({
         'f:0': np.interp(points_interpolated, points.iloc[idx].values, data_X['f:0'].iloc[idx].values),
         'f:1': np.interp(points_interpolated, points.iloc[idx].values, data_X['f:1'].iloc[idx].values),
@@ -340,7 +362,7 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
         ':1': 0,
         ':2': 0
     })
-    
+
     # interpolate the values of the vector field in the 2d euclidean space where the manifold is embedded
     values_v_2d_interpolated = pd.DataFrame({
         'f:0': np.interp(points_interpolated, points.iloc[idx].values, values_v_2d['f:0'].iloc[idx].values),
@@ -350,30 +372,33 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
         ':1': 0,
         ':2': 0
     })
-    
+
     X = values_X_interpolated['f:0']
     Y = values_X_interpolated['f:1']
-    
+
     V_x = values_v_2d_interpolated['f:0']
     V_y = values_v_2d_interpolated['f:1']
-    
+
     grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([V_x, V_y])
-                                
+
     return X, Y, V_x, V_y, grid_norm_v, norm_v_min, norm_v_max, norm_v
+
 
 '''
 interpolate a vector field on the tangent bundle of a 3d manifold parameterized with the Monge guage
 '''
 
-def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega, 
-                                              mins, maxs, z_min, N_bins_v, 
+
+def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega,
+                                              mins, maxs, z_min, N_bins_v,
                                               label_x_column, label_y_column, label_z_column, label_v_column, label_omega_column):
-    
-    X_v, Y_v, Z_v, _, _, _ = gr.interpolate_surface(data_z, mins, maxs, N_bins_v, 
-                                           f_min=z_min, method='griddata')
+
+    X_v, Y_v, Z_v, _, _, _ = gr.interpolate_surface(data_z, mins, maxs, N_bins_v,
+                                                    f_min=z_min, method='griddata')
 
     points = []
-    points.extend([list(element) for element in zip(data_v[label_x_column], data_v[label_y_column])])
+    points.extend([list(element) for element in zip(
+        data_v[label_x_column], data_v[label_y_column])])
     # 2 re-arrange the f-values into values
 
     # Transformation from v^i to v^{3d alpha}:
@@ -393,29 +418,31 @@ def interpolate_t_vector_field_3d_monge_gauge(data_v, data_z, data_omega,
     v_y = griddata(points, values_v_y, (X_v, Y_v), method='cubic')
     v_z = griddata(points, values_v_z, (X_v, Y_v), method='cubic')
 
-    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([v_x, v_y, v_z])
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([
+                                                                    v_x, v_y, v_z])
 
     return X_v, Y_v, Z_v, v_x, v_y, v_z, grid_norm_v, norm_v_min, norm_v_max, norm_v
 
 
 def interpolating_function_2d_vector_field(data_v,
-                                            label_x_column=':0', 
-                                            label_y_column=':1',
-                                            label_v_column='f'
-                                        ):
-    
+                                           label_x_column=':0',
+                                           label_y_column=':1',
+                                           label_v_column='f'
+                                           ):
+
     # points are the values of the coordinates x, y stored in data_v
     points = []
-    points.extend([list(element) for element in zip(data_v[label_x_column], data_v[label_y_column])])
-    
+    points.extend([list(element) for element in zip(
+        data_v[label_x_column], data_v[label_y_column])])
+
     # values_v_* are the values of the vector field stored in data_v, on the points stored in points
     values_v_x = data_v[label_v_column + label_x_column]
     values_v_y = data_v[label_v_column + label_y_column]
-    
+
     # Create interpolating functions
     V_x = CloughTocher2DInterpolator(points, values_v_x)
     V_y = CloughTocher2DInterpolator(points, values_v_y)
-    
+
     return V_x, V_y
 
 
@@ -432,8 +459,8 @@ Input values:
 '''
 
 
-def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v, 
-                                label_x_column=':0', 
+def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v,
+                                label_x_column=':0',
                                 label_y_column=':1',
                                 label_v_column='f'):
     # X, Y are the values of x and y coordinated over a mesh composed of tiled rectangles
@@ -441,7 +468,8 @@ def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v,
                        indexing='ij')
     # points are the values of x,y stored in data_v
     points = []
-    points.extend([list(element) for element in zip(data_v[label_x_column], data_v[label_y_column])])
+    points.extend([list(element) for element in zip(
+        data_v[label_x_column], data_v[label_y_column])])
 
     # values_v_* are the values of the vector field stored in data_v, on the points stored in points
     values_v_x = data_v[label_v_column + label_x_column]
@@ -450,11 +478,11 @@ def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v,
     # # interpolate the vector field on the grid X, Y
     # v_x = griddata(points, values_v_x, (X, Y), method='cubic')
     # v_y = griddata(points, values_v_y, (X, Y), method='cubic')
-    
-        # interpolate the vector field on the grid X, Y with extrapolation
+
+    # interpolate the vector field on the grid X, Y with extrapolation
     rbf_x = RBFInterpolator(points, values_v_x, kernel='thin_plate_spline')
     rbf_y = RBFInterpolator(points, values_v_y, kernel='thin_plate_spline')
-    
+
     v_x = rbf_x(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
     v_y = rbf_y(np.column_stack([X.ravel(), Y.ravel()])).reshape(X.shape)
 
@@ -491,12 +519,13 @@ Return values:
 
 def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_bins_w, label_x_column, label_y_column,
                                label_z_column, label_w_column, label_omega_column):
-    
+
     X_w, Y_w, Z_w = gr.interpolate_surface(data_z, mins, maxs, z_min, N_bins_w, 1, label_x_column,
                                            label_y_column, label_z_column)
 
     points = []
-    points.extend([list(element) for element in zip(data_w[label_x_column], data_w[label_y_column])])
+    points.extend([list(element) for element in zip(
+        data_w[label_x_column], data_w[label_y_column])])
 
     data_omega_w = zip(data_omega[label_omega_column + label_x_column], data_omega[label_omega_column + label_y_column],
                        data_w[label_w_column])
@@ -515,7 +544,8 @@ def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_
     w_y = griddata(points, values_w_y, (X_w, Y_w), method='cubic')
     w_z = griddata(points, values_w_z, (X_w, Y_w), method='cubic')
 
-    grid_norm_w, norm_w_min, norm_w_max, norm_w = norm_vector_field([w_x, w_y, w_z])
+    grid_norm_w, norm_w_min, norm_w_max, norm_w = norm_vector_field([
+                                                                    w_x, w_y, w_z])
 
     return X_w, Y_w, Z_w, w_x, w_y, w_z, grid_norm_w, norm_w_min, norm_w_max, norm_w
 
@@ -542,10 +572,11 @@ def norm_v_min_max_file(name_file_v, name_file_omega, columns_v, label_v_column,
     values_v_y = data_v[label_v_column + clab.label_y_column]
     values_v_z = data_v[label_v_column + clab.label_x_column] * data_omega[
         clab.label_omega_column + clab.label_x_column] + data_v[
-                     clab.label_v_column + clab.label_y_column] * data_omega[
-                     clab.label_omega_column + clab.label_y_column]
+        clab.label_v_column + clab.label_y_column] * data_omega[
+        clab.label_omega_column + clab.label_y_column]
 
-    norm_v_min, norm_v_max = min_max_vector_field([values_v_x, values_v_y, values_v_z])
+    norm_v_min, norm_v_max = min_max_vector_field(
+        [values_v_x, values_v_y, values_v_z])
 
     return norm_v_min, norm_v_max
 
@@ -566,15 +597,15 @@ compute the minimum and maximum norm, across multiple snapshots of the field, of
 
 def norm_v_min_max_files(name_file_v, name_file_omega, file_path, columns_v, label_v_column, columns_omega, n_file_min,
                          n_file_max, n_file_stride):
-    
-    
+
     abs_min = np.inf
     abs_max = - np.inf
 
     for i in range(n_file_min, n_file_max, n_file_stride):
 
         min, max = norm_v_min_max_file(file_path + name_file_v + str(i) + '.csv',
-                                       file_path + name_file_omega + str(i) + '.csv',
+                                       file_path + name_file_omega +
+                                       str(i) + '.csv',
                                        columns_v, label_v_column, columns_omega)
 
         if min < abs_min:
@@ -587,17 +618,19 @@ def norm_v_min_max_files(name_file_v, name_file_omega, file_path, columns_v, lab
 
 
 def norm_v_min_max_file_list(name_file_v, name_file_omega, file_path,
-                             n_file_list, 
+                             n_file_list,
                              columns_v, label_v_column, columns_omega):
-    
+
     abs_min, abs_max = norm_v_min_max_file(file_path + name_file_v + str(n_file_list[0]) + '.csv',
-                                           file_path + name_file_omega + str(n_file_list[0]) + '.csv',
+                                           file_path + name_file_omega +
+                                           str(n_file_list[0]) + '.csv',
                                            columns_v, label_v_column, columns_omega)
 
     for n_file in n_file_list:
 
         min, max = norm_v_min_max_file(file_path + name_file_v + str(n_file) + '.csv',
-                                       file_path + name_file_omega + str(n_file) + '.csv',
+                                       file_path + name_file_omega +
+                                       str(n_file) + '.csv',
                                        columns_v, label_v_column, columns_omega)
 
         if min < abs_min:
@@ -611,12 +644,14 @@ def norm_v_min_max_file_list(name_file_v, name_file_omega, file_path,
 
 def plot_analytical_vector_field_on_curve(ax, v, gamma, min, max, n_bins, scale_factor_z, z_min, shaft_length,
                                           head_over_shaft_length, head_angle, threshold_arrow_length, line_width, color, alpha, z_order):
-    X, Y, Z, V, ts = tabulate_analytical_vector_field_on_curve(v, gamma, min, max, n_bins)
+    X, Y, Z, V, ts = tabulate_analytical_vector_field_on_curve(
+        v, gamma, min, max, n_bins)
 
     for i in range(len(ts)):
         arr.plot_arrow(ax, [X[i], Y[i], Z[i]],
-                      np.add([X[i], Y[i], Z[i]],
-                             V[i]), \
-                      shaft_length, head_over_shaft_length, head_angle, [0, 0, z_min],
-                      [1, 1, scale_factor_z], threshold_arrow_length,
-                      line_width, color, alpha, z_order)
+                       np.add([X[i], Y[i], Z[i]],
+                              V[i]),
+                       shaft_length, head_over_shaft_length, head_angle, [
+                           0, 0, z_min],
+                       [1, 1, scale_factor_z], threshold_arrow_length,
+                       line_width, color, alpha, z_order)

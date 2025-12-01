@@ -1434,12 +1434,16 @@ def scale_list(v, mins, scale_factors):
 '''
 plot a curve with a color map on it
 Input values
-    - 'ax': the axis where the plot will be made
-    - 'X': the curve points
-    - 'color_map' [optional]: the color map containing the colors
-    - 'color' [optional]' : the color with which the curve will be plotted if 'color_map' is None
-    - 'line_width' [optional]: the line with with which the color map will be plotted
-    - 'plot_label': the plot label of the curve
+    * Mandatory: 
+        - 'ax': the axis where the plot will be made
+        - 'X': the curve points
+    * Optional:
+        - 'color_map' : the color map containing the colors
+        - 'line_color' ' : the color with which the curve will be plotted if 'color_map' is None
+        - 'line_width' : the line with with which the color map will be plotted
+        - 'plot_label': the plot label of the curve
+        - 'alpha': the transparency
+        - 'z_order': the z order with which the curve will be drawn
 '''
 
 
@@ -1448,7 +1452,8 @@ def plot_curve_grid(ax, X,
                     line_color=const.default_color,
                     line_width=const.default_line_width,
                     plot_label='',
-                    alpha=const.default_alpha):
+                    alpha=const.default_alpha,
+                    z_order=const.default_z_order):
 
     if color_map is None:
 
@@ -1456,7 +1461,8 @@ def plot_curve_grid(ax, X,
                 color=line_color,
                 linewidth=line_width,
                 label=plot_label,
-                alpha=alpha)
+                alpha=alpha,
+                zorder=z_order)
     else:
 
         from matplotlib.collections import LineCollection
@@ -1472,7 +1478,8 @@ def plot_curve_grid(ax, X,
         lc = LineCollection(segments,
                             colors=color_map[:-1],
                             linewidth=line_width,
-                            alpha=alpha)
+                            alpha=alpha,
+                            zorder=z_order)
         ax.add_collection(lc)
         ax.autoscale()
 

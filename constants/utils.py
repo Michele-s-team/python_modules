@@ -14,6 +14,7 @@ default_label_format = 'f'
 colorbar_shrink_value = 0.2
 colorbar_aspect_value = 10
 
+default_head_length = 0.5
 default_shaft_length = 1
 default_head_over_shaft_length = 0.3
 default_head_angle = 30
