@@ -17,7 +17,7 @@ tabulate a vector field given by an analytical expression
 - 'v': the analytical function  v(x,y) for the vector field
 - 'mins', 'maxs': min and max values of x,y where to tabulate the vector field
 - 'n_bins': number of bins in which x and y axes are divided
-Return values: 
+Return values:
 
 - three tables V_x, V_y, V_z, where each table is the table of a component of the vector field  on the grid
 
@@ -67,7 +67,7 @@ def plot_analytical_vector_field_on_surface_outside_disk(ax, v, f, mins, maxs, r
 
 '''
 plot a vector field
-Input values: 
+Input values:
 - 'ax': the axis on which the vector field will be plotted
 - 'grid_r': the grid where the vector field is defined, given as a list of three tables, one for each component of the position vector, it is of the form [X, Y, Z]
 - 'grid_v': the vector field on the grid, given as a list of three tables, one for each component of the vector field, it is of the form [V_x, V_y, V_z]
@@ -109,9 +109,9 @@ def plot_vector_field(ax, grid_r, grid_v, scale_factor_z, z_min, shaft_length, h
 
 
 '''
-plot a vector field defined on a 1d manifold 
-Input values: 
-    * Mandatory: 
+plot a vector field defined on a 1d manifold
+Input values:
+    * Mandatory:
         - 'ax': the axis where to plot
         - 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector
         - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field
@@ -129,13 +129,13 @@ Input values:
 
 Example of usage:
 
-    vp.plot_1d_vector_field(ax, [X_v, Y_v], [V_x, V_y], 
-                            shaft_length=parameters['shaft_length'], 
-                            head_over_shaft_length=parameters['head_over_shaft_length'], 
-                            head_angle=parameters['head_angle'], 
-                            line_width=parameters['arrow_line_width'], 
-                            alpha=parameters['alpha'], 
-                            color='color_from_map', 
+    vp.plot_1d_vector_field(ax, [X_v, Y_v], [V_x, V_y],
+                            shaft_length=parameters['shaft_length'],
+                            head_over_shaft_length=parameters['head_over_shaft_length'],
+                            head_angle=parameters['head_angle'],
+                            line_width=parameters['arrow_line_width'],
+                            alpha=parameters['alpha'],
+                            color='color_from_map',
                             threshold_arrow_length=parameters['threshold_arrow_length'])
 '''
 
@@ -150,7 +150,12 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                          color=const.default_color,
                          z_order=const.default_z_order,
                          clip_on=False,
-                         threshold_arrow_length=const.default_threshold_arrow_length):
+                         threshold_arrow_length=const.default_threshold_arrow_length,
+                         legend=None,
+                         legend_position=[0]*2,
+                         legend_arrow_length=const.default_legend_arrow_length,
+                         legend_head_over_shaft_length=const.default_head_over_shaft_length,
+                         legend_font_size=const.default_font_size):
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
@@ -179,9 +184,44 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                           shaft_length_to_plot, head_over_shaft_length_to_plot, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length,
                           clip_on=clip_on)
 
+    if legend != None:
+
+        axis_min_max = [ax.get_xlim(), ax.get_ylim()]
+
+        ax.text(
+            axis_min_max[0][0] + (axis_min_max[0][1] -
+                                  axis_min_max[0][0]) * legend_position[0],
+            axis_min_max[1][0] + (axis_min_max[1][1] -
+                                  axis_min_max[1][0]) * legend_position[1],            legend,
+            fontsize=legend_font_size,
+            ha='center',
+            va='center',
+            zorder=z_order
+        )
+
+        arrow_start = [
+            axis_min_max[0][0] + (axis_min_max[0][1] -
+                                  axis_min_max[0][0]) * legend_position[0],
+            axis_min_max[1][0] + (axis_min_max[1][1] -
+                                  axis_min_max[1][0]) * legend_position[1]
+        ]
+
+        arr.plot_2d_arrow(ax,
+                          arrow_start,
+                          np.add(arrow_start, [
+                                 -legend_arrow_length * (axis_min_max[0][1] - axis_min_max[0][0]), 0]),
+                          legend_arrow_length,
+                          legend_head_over_shaft_length,
+                          head_angle,
+                          line_width,
+                          arrow_color,
+                          alpha,
+                          z_order,
+                          clip_on=clip_on)
+
 
 '''
-plot a vector field defined on a 2d manifold 
+plot a vector field defined on a 2d manifold
 
 Input values:
 * Mandatory:
@@ -243,7 +283,7 @@ def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_ov
 
 
 '''
-plot a vector field by setting the shaft length of each arrow according 
+plot a vector field by setting the shaft length of each arrow according
 to the norm of the vector and to a parameter shaft_length selected by the user
 '''
 
