@@ -1356,42 +1356,10 @@ def plot_2d_axes(ax, origin, length,
     if axis_origin is None:
         axis_origin = [0] * dim
 
-    if axis_bounds is None:
-        # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
-
-        # gr.set_2d_axes_limits(ax, [0, 0], [parameters['L'], parameters['h']], [0, 0])
-
-        ax.set(
-            xlim=[
-                min(
-                    origin[0],
-                    (origin[0] + length[0] * axis_origin[1])
-                ),
-                max(
-                    origin[0] + length[0] * (1 + margin[0]),
-                    (origin[0] + length[0] * axis_origin[1])
-                )
-            ],
-            ylim=[
-                min(
-                    origin[1],
-                    (origin[1] + length[1] * axis_origin[0]),
-                ),
-                max(
-                    origin[1] + length[1]*(1 + margin[1]),
-                    (origin[1] + length[1] * axis_origin[0])
-                )
-            ]
-        )
-
-    else:
-        # axis_bounds have been specified -> set the axis bounds according to them
-        ax.set(
-            xlim=[axis_bounds[0][0] - length[0] * margin[0],
-                  axis_bounds[0][1] + length[0] * margin[0]],
-            ylim=[axis_bounds[1][0] - length[1] * margin[1],
-                  axis_bounds[1][1] + length[1] * margin[1]]
-        )
+    set_2d_axes_limits(ax, origin, length,
+                       axis_origin=axis_origin,
+                       axis_bounds=axis_bounds,
+                       margin=margin)
 
     # plot the axes
     for i in range(2):
@@ -1782,40 +1750,6 @@ def interpolate_curve(data, x_min, x_max, n_bins):
     values_grid = np.array(list(zip(X1(points_grid), X2(points_grid))))
 
     return values_grid, points_grid
-
-
-'''
-set the limits of a 2d axis:
-- 'ax' the axis where to set the limits
-- 'mins' the min value for the x axis (min[0]) and for the y axis (min[1])
-- 'maxs' the max value for the x axis (max[0]) and for the y axis (max[1])
-- 'margins' the margin, relative to max-min, which will be included in the axes limits to enlarge them
-'''
-
-
-def set_2d_axes_limits(ax, mins, maxs, margins=[0, 0]):
-
-    ax.set_xlim(mins[0] - (maxs[0] - mins[0]) * margins[0],
-                maxs[0] + (maxs[0] - mins[0]) * margins[0])
-    ax.set_ylim(mins[1] - (maxs[1] - mins[1]) * margins[1],
-                maxs[1] + (maxs[1] - mins[1]) * margins[1])
-
-
-'''
-set the limits of 2d axis by requiring that the axes fit to a data set
-Input values: 
-- 'ax': the axis
-- 'data': the data, of the shape [(x_0, y_0), (x_1, y_1), ... ]
-- 'margins' [optional]: a two-entry vector, containing the margin on the x and y axis
-'''
-
-
-def set_2d_axes_limits_from_data(ax, data, margins=[0, 0]):
-
-    min_max = lis.min_max_coordinates(data)
-
-    set_2d_axes_limits(ax, [min_max[0, 0], min_max[1, 0]], [
-                       min_max[0, 1], min_max[1, 1]], margins)
 
 
 '''
