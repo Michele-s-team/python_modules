@@ -1769,6 +1769,25 @@ def plot_line(ax, p_start, p_end, color, line_width, z_order):
     return line
 
 
+'''
+set the limits for 2d axes
+Input values: 
+    * Mandatory: 
+        - 'ax'          : the Matplotlib axis whose limits should be set
+        - 'origin'      : lower-left physical origin of the domain (x0, y0)
+        - 'length'      : physical size of the domain in x and y directions (Lx, Ly)
+    * Optional
+        - 'axis_origin' :  (x, y) origin of the drawn axes, in units of
+                        the domain length (e.g. [0, 0] puts axes at bottom-left).
+                        Used only when 'axis_bounds' is not provided.
+        - 'axis_bounds' : optional explicit axis bounds
+                        ([[xmin, xmax], [ymin, ymax]]). When provided, these
+                        override all other heuristics.
+        - 'margin'      : extra fractional margin added around the domain in the
+                        x and y directions (e.g. [0.05, 0.05] adds 5% padding)
+'''
+
+
 def set_2d_axes_limits(ax, origin, length,
                        axis_origin=None,
                        axis_bounds=None,
