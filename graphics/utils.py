@@ -1835,6 +1835,50 @@ def plot_line(ax, p_start, p_end, color, line_width, z_order):
     return line
 
 
+def set_2d_axes_limits(ax, origin, length,
+                       axis_origin=None,
+                       axis_bounds=None,
+                       margin=[0]*2
+                       ):
+
+    if axis_bounds is None:
+        # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
+
+        # gr.set_2d_axes_limits(ax, [0, 0], [parameters['L'], parameters['h']], [0, 0])
+
+        ax.set(
+            xlim=[
+                min(
+                    origin[0],
+                    (origin[0] + length[0] * axis_origin[1])
+                ),
+                max(
+                    origin[0] + length[0] * (1 + margin[0]),
+                    (origin[0] + length[0] * axis_origin[1])
+                )
+            ],
+            ylim=[
+                min(
+                    origin[1],
+                    (origin[1] + length[1] * axis_origin[0]),
+                ),
+                max(
+                    origin[1] + length[1]*(1 + margin[1]),
+                    (origin[1] + length[1] * axis_origin[0])
+                )
+            ]
+        )
+
+    else:
+        # axis_bounds have been specified -> set the axis bounds according to them
+        ax.set(
+            xlim=[axis_bounds[0][0] - length[0] * margin[0],
+                  axis_bounds[0][1] + length[0] * margin[0]],
+            ylim=[axis_bounds[1][0] - length[1] * margin[1],
+                  axis_bounds[1][1] + length[1] * margin[1]]
+        )
+
+
 '''
 plot a circle: 
 - 'ax' the axis where to plot the circle
