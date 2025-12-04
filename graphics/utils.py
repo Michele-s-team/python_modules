@@ -1348,7 +1348,9 @@ def plot_2d_axes(ax, origin, length,
                  plot_label_font_size=const.default_font_size,
                  plot_label=None,
                  n_minor_ticks=[None] * 2,
-                 minor_tick_length=[const.default_minor_tick_length] * 2):
+                 minor_tick_length=[const.default_minor_tick_length] * 2,
+                 colorbar_axis=None,
+                 colorbar_axis_offset = [0]*2):
 
     dim = 2
 
@@ -1389,6 +1391,19 @@ def plot_2d_axes(ax, origin, length,
                 ha='center',
                 va='center',
                 zorder=z_order)
+        
+        
+    if colorbar_axis is not None:
+        # the method has been called with colorbar != None -> set the position of colorbar with respect to the origin of 'ax' with offset colorbar_offset
+        
+        fig = ax.get_figure()
+        
+        # Get the transformation from data coordinates to figure coordinates
+        transform = ax.transData + fig.transFigure.inverted()
+        # Transform the origin point from data coordinates to figure coordinates
+        fig_coords = transform.transform(np.add(origin, [length[i] * colorbar_axis_offset[i] for i in range(len(length))]))
+
+        cb.set_position(colorbar_axis, fig_coords)
 
 
 # scale up by 'scale_factor' the scalar 'x' with respect to the reference value 'min'
@@ -1481,14 +1496,17 @@ the surface and the surface grid are returned
 '''
 
 
-def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surface_alpha, grid_line_width):
+def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surface_alpha, grid_line_width,
+                      z_order=const.default_z_order):
+
     surface_grid = ax.plot_surface(X, Y, Z,
                                    edgecolor='black',
                                    rstride=grid_stride,
                                    cstride=grid_stride,
                                    alpha=0,
                                    linewidth=grid_line_width,
-                                   shade=False
+                                   shade=False,
+                                   zorder=z_order
                                    )
     # RGBA with alpha=0 (fully transparent)
     surface_grid.set_facecolor((0, 0, 0, 0))
@@ -1501,7 +1519,8 @@ def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surfa
                                   cstride=surface_stride,
                                   alpha=surface_alpha,
                                   linewidth=0,
-                                  shade=False)
+                                  shade=False,
+                                  zorder=z_order)
     else:
         surface = ax.plot_surface(X, Y, Z,
                                   color='gray',
@@ -1510,7 +1529,8 @@ def plot_surface_grid(ax, X, Y, Z, color_map, surface_stride, grid_stride, surfa
                                   cstride=surface_stride,
                                   alpha=surface_alpha,
                                   linewidth=0,
-                                  shade=False
+                                  shade=False,
+                                  zorder=z_order
                                   )
 
     return (surface, surface_grid)

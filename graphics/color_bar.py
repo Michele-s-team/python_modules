@@ -229,3 +229,18 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
     colorbar.ax.set_label("colorbar")
 
     return color_map
+
+'''
+set the position of a an axis
+Input values:
+    - 'ax': the axis
+    - 'position': the position
+'''
+def set_position(ax, position):
+
+    # Get current position and size
+    current_position = ax.get_position()
+
+    # Set position while keeping current size
+    ax.set_position([position[0], position[1],
+                    current_position.width,  current_position.height])
