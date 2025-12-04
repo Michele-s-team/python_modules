@@ -39,3 +39,7 @@ default_column_name = 'f'
 
 default_legend_location = 'center'
 default_legend_position = [0.5] * 2
+
+default_axis_position = [0]*2
+default_axis_size = [1]*2
+default_axis_position_size = [default_axis_position[0], default_axis_position[1], default_axis_size[0], default_axis_size[1]]

@@ -17,8 +17,9 @@ Arguments:
         - 'figure' : the figure where the colorbar is made
         - 'grid_values' the grid values of the field over which the color bar is made
         - 'min_value', 'max_value' the minimal , maximal value of the field above
-        - 'position': position of the colorbar
     * Optional:
+        - 'position': position of the colorbar
+        - 'size': size of the colorbar
         - 'scale_factor': the scale_factor of the field above with respect to 'min'
         - 'label': the label of the color bar
         - 'font_size' : the font size of all texts in the colorbar
@@ -32,7 +33,9 @@ Arguments:
 '''
 
 
-def make_colorbar(figure, grid_values, min_value, max_value, position, size,
+def make_colorbar(figure, grid_values, min_value, max_value, 
+                  position=None, 
+                  size=None,
                   scale_factor=1,
                   label=None,
                   font_size=const.default_font_size,
@@ -52,8 +55,13 @@ def make_colorbar(figure, grid_values, min_value, max_value, position, size,
 
     # Use existing axis or create new one
     if axis is None:
-        colorbar_axis = figure.add_axes(
-            [position[0], position[1], size[0], size[1]])
+        colorbar_axis = figure.add_axes([const.default_axis_position[0], const.default_axis_position[1], const.default_axis_size[0], const.default_axis_size[1]])
+
+        if position is not None:
+            cb.set_position(colorbar_axis, position)
+                    
+        if size is not None:
+            cb.set_size(colorbar_axis, size)
     else:
         axis.clear()  # Clear the existing axis
         colorbar_axis = axis
@@ -138,9 +146,9 @@ Input values:
         - 'figure' : the figure where the colorbar is made
         - 't_values': a list with the grid of the values of the parametric coordinate t which parametrizes the curve
         - 'f_values': a dataframe with the values of the field f along the curve
-        - 'size': size of the colorbar
     * Optional:
         - 'position': position of the colorbar
+        - 'size': size of the colorbar
         - 'angle' : rotation angle of the colorbar
         - 'label_offset': displacement of the label of the colorbar
         - 'label' the label of the colorbar
@@ -172,7 +180,7 @@ def make_curve_colorbar(figure, t_values, f_values,
     # Use existing axis or create new one
     if axis is None:
 
-        colorbar_axis = figure.add_axes()
+        colorbar_axis = figure.add_axes([const.default_axis_position[0], const.default_axis_position[1], const.default_axis_size[0], const.default_axis_size[1]])
 
         if position is not None:
             cb.set_position(colorbar_axis, position)
