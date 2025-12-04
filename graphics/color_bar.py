@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import constants.utils as const
+import graphics.color_bar as cb
 import graphics.utils as gr
 import graphics.ticks as ticks
 from scipy.interpolate import interp1d
@@ -137,9 +138,9 @@ Input values:
         - 'figure' : the figure where the colorbar is made
         - 't_values': a list with the grid of the values of the parametric coordinate t which parametrizes the curve
         - 'f_values': a dataframe with the values of the field f along the curve
-        - 'position': position of the colorbar
         - 'size': size of the colorbar
     * Optional:
+        - 'position': position of the colorbar
         - 'angle' : rotation angle of the colorbar
         - 'label_offset': displacement of the label of the colorbar
         - 'label' the label of the colorbar
@@ -153,7 +154,9 @@ Input values:
 '''
 
 
-def make_curve_colorbar(figure, t_values, f_values, position, size,
+def make_curve_colorbar(figure, t_values, f_values, 
+                        position=None,
+                        size=None,
                         tick_label_angle=const.default_tick_label_angle,
                         label_offset=[0, 0],
                         label='',
@@ -168,8 +171,15 @@ def make_curve_colorbar(figure, t_values, f_values, position, size,
 
     # Use existing axis or create new one
     if axis is None:
-        colorbar_axis = figure.add_axes(
-            [position[0], position[1], size[0], size[1]])
+
+        colorbar_axis = figure.add_axes()
+
+        if position is not None:
+            cb.set_position(colorbar_axis, position)
+                    
+        if size is not None:
+            cb.set_size(colorbar_axis, size)
+            
     else:
         axis.clear()  # Clear the existing axis
         colorbar_axis = axis
@@ -244,3 +254,20 @@ def set_position(ax, position):
     # Set position while keeping current size
     ax.set_position([position[0], position[1],
                     current_position.width,  current_position.height])
+    
+
+'''
+Set axis size while preserving its position.
+
+Input values: 
+    - ax : matplotlib axis
+    - size : the size of the axis to be set
+'''
+def set_size(ax, size):
+
+    # Get current position
+    current_position = ax.get_position()
+
+    # Set size while keeping current position
+    ax.set_position([current_position.x0, current_position.y0,
+                     size[0], size[1]])
