@@ -132,6 +132,7 @@ Input values:
         - 'legend_arrow_length': length of the arrow shown in the legend as a fraction of axis width
         - 'legend_head_over_shaft_length': ratio between head length and shaft length for the legend arrow
         - 'legend_font_size': font size for the legend text
+        - 'stride': the stride with which arrows will be plotted, this method will plot every 'stride' arrows
 
 Example of usage:
 
@@ -162,34 +163,38 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
                          legend_text_arrow_space=const.default_legend_text_arrow_space,
                          legend_arrow_length=const.default_legend_arrow_length,
                          legend_head_over_shaft_length=const.default_head_over_shaft_length,
-                         legend_font_size=const.default_font_size):
+                         legend_font_size=const.default_font_size,
+                         stride=1):
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
     for i in range(len(grid_r[0])):
 
-        vector_norm = grid_norm_v[i]
+        if (i % stride) == 0:
 
-        if color == 'color_from_map':
-            # Get corresponding arrow_color from colormap
-            arrow_color = gr.cb.color_map_type(norm_v(vector_norm))
-        else:
-            arrow_color = color
+            vector_norm = grid_norm_v[i]
 
-        if shaft_length == None:
-            # the method has been called with shaft_length = None: the shaft length which will be used in the plot is set to the length of the vector [grid_v[0][i], grid_v[1][i]]
-            shaft_length_to_plot = np.linalg.norm([grid_v[0][i], grid_v[1][i]])
-            head_over_shaft_length_to_plot = head_length/shaft_length_to_plot
-        else:
-            # the method has been aclled with shaft_length != None: the shaft length which will be used in the plot is set to shaft_length
-            shaft_length_to_plot = shaft_length
-            head_over_shaft_length_to_plot = head_over_shaft_length
+            if color == 'color_from_map':
+                # Get corresponding arrow_color from colormap
+                arrow_color = gr.cb.color_map_type(norm_v(vector_norm))
+            else:
+                arrow_color = color
 
-        arr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
-                          np.add([grid_r[0][i], grid_r[1][i]],
-                                 [grid_v[0][i], grid_v[1][i]]),
-                          shaft_length_to_plot, head_over_shaft_length_to_plot, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length,
-                          clip_on=clip_on)
+            if shaft_length == None:
+                # the method has been called with shaft_length = None: the shaft length which will be used in the plot is set to the length of the vector [grid_v[0][i], grid_v[1][i]]
+                shaft_length_to_plot = np.linalg.norm(
+                    [grid_v[0][i], grid_v[1][i]])
+                head_over_shaft_length_to_plot = head_length/shaft_length_to_plot
+            else:
+                # the method has been aclled with shaft_length != None: the shaft length which will be used in the plot is set to shaft_length
+                shaft_length_to_plot = shaft_length
+                head_over_shaft_length_to_plot = head_over_shaft_length
+
+            arr.plot_2d_arrow(ax, [grid_r[0][i], grid_r[1][i]],
+                              np.add([grid_r[0][i], grid_r[1][i]],
+                                     [grid_v[0][i], grid_v[1][i]]),
+                              shaft_length_to_plot, head_over_shaft_length_to_plot, head_angle, line_width, arrow_color, alpha, z_order, threshold_arrow_length,
+                              clip_on=clip_on)
 
     if legend != None:
         # plot the legend of the vector field

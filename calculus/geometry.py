@@ -105,11 +105,15 @@ def point_in_mesh(mesh_file, point):
 '''
 compute the displacement field of a line
 Input values: 
-    - 'data_X': a pandas dataframe containing the columns 'f:0', 'f:1', 'f:2' for the three coordinates of the line, and the columns ':0' for the parametric coordinate x^1, and ':1', ':2' identically zero
+    - Mandatory: 
+        * 'data_X': a pandas dataframe containing the columns 'f:0', 'f:1', 'f:2' for the three coordinates of the line, and the columns ':0' for the parametric coordinate x^1, and ':1', ':2' identically zero
+    - Optional:
+        * 'h' the height of the curve in the reference configuration
 '''
 
 
-def u_1d(data_X):
+def u_1d(data_X,
+         h=0):
 
     U_x = []
     U_y = []
@@ -118,10 +122,10 @@ def u_1d(data_X):
     for _, row in data_X.iterrows():
 
         X_U.append(row[':0'])
-        Y_U.append(0)
+        Y_U.append(h)
 
         U_x.append(row['f:0'] - row[':0'])
-        U_y.append(row['f:1'] - 0)
+        U_y.append(row['f:1'] - h)
 
     # Convert to numpy arrays
     X_U = np.array(X_U)
