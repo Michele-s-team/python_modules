@@ -603,6 +603,37 @@ def plot_2d_axis(
                         log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
+                # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
+            n_plotted_ticks = 0
+
+            '''
+            # plot the ticks
+            for tick in x_ticks:
+
+                # plot the major tick
+                if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
+                    # if the tick falls within the boundaries of the axis, plot it
+
+                    ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset, tick_label_format,
+                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
+
+                n_plotted_ticks += 1
+
+                # plot the minor ticks
+                for i in range(log_base-1):
+
+                    minor_tick = np.emath.logn(
+                        log_base, log_base**(tick-1) * (i+1))
+
+                    if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
+                        # if the tick falls within the boundaries of the axis, plot it
+
+                        ax.plot(
+                            [minor_tick, minor_tick],
+                            [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
+                            zorder=0)
+            '''
+
         elif direction_id == 1:
 
             # set the values of 'grid' to 'value' in the disk centered at cr and with radius r, in such a way that they are not plotted and the disk is left blank
