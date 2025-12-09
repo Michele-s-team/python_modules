@@ -27,7 +27,7 @@ epsilon_axes = 5e-2
 
 '''
 plot a three-dimensional axis
-Input values: 
+Input values:
     - 'ax': the axis where the plot will be made
     [to be conmpleted...]
 '''
@@ -308,14 +308,14 @@ def plot_3d_axis_custom_ticks(ax, r, l, direction, scale_factor, tick_list, tick
 
 
 '''
-plot a triad of 3d axes 
+plot a triad of 3d axes
 Input values:
     * Mandatory
     * Optional
-        - 'axis_origin': a list with three entries: 
+        - 'axis_origin': a list with three entries:
             ** : axis_origin[0][0] sets the y position of the x axis. If axis_origin[0][0] = 0, then the x axis will be located at the min of the values of the y axis. If axis_origin[0][0] = 1, then the x axis will be located at the max of the values of the y axis.
             ** : axis_origin[0][1] sets the z position of the x axis. If axis_origin[0][1] = 0, then the x axis will be located at the min of the values of the z axis. If axis_origin[0][1] = 1, then the x axis will be located at the max of the values of the z axis.
-        - ... 
+        - ...
 '''
 
 
@@ -445,7 +445,7 @@ def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axi
 
 '''
 plot an axis for a 2d plot
-Input values: 
+Input values:
     - 'origin': a two-ple containing the x,y coordinates of the origin of the axis
     - 'length': a two-ple containing the x, y length of the origin of the axis
     - 'direction_id': 0 or 1: the direction id of the axis to be drawn, 0 for x axis, 1 for y axis
@@ -582,6 +582,12 @@ def plot_2d_axis(
     elif scale == 'log':
         # plot the axis in log scale
 
+        # compute x and y ticks
+        x_ticks = ti.generate_ticks(
+            origin[0], origin[0]+length[0], scale='log', log_base=log_base)
+        y_ticks = ti.generate_ticks(
+            origin[1], origin[1]+length[1], scale='log', log_base=log_base)
+
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
         if axis_origin is None:
             axis_origin = [0] * dim
@@ -603,10 +609,9 @@ def plot_2d_axis(
                         log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
-                # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
+            # this counter is used to count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
             n_plotted_ticks = 0
 
-            '''
             # plot the ticks
             for tick in x_ticks:
 
@@ -614,7 +619,7 @@ def plot_2d_axis(
                 if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
                     # if the tick falls within the boundaries of the axis, plot it
 
-                    ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset, tick_label_format,
+                    ti.plot_2d_tick(ax, direction_id, tick, 'xx', tick_length, tick_label_offset, tick_label_format,
                                     origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
 
                 n_plotted_ticks += 1
@@ -628,17 +633,36 @@ def plot_2d_axis(
                     if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
                         # if the tick falls within the boundaries of the axis, plot it
 
+                        dy = [np.emath.logn(
+                            log_base, origin[1] + length[1] * axis_origin[0]),
+                            np.emath.logn(
+                            log_base, origin[1] + length[1] * axis_origin[0]) + minor_tick_length[direction_id] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])]
+
                         ax.plot(
-                            [minor_tick, minor_tick],
-                            [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
+                            [minor_tick] * 2,
+                            [np.emath.logn(
+                                log_base, origin[1] + length[1] * axis_origin[0]),
+                                np.emath.logn(
+                                log_base, origin[1] + length[1] * axis_origin[0]) + minor_tick_length[direction_id] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])],
+                            color=color, linewidth=line_width,
                             zorder=0)
-            '''
 
         elif direction_id == 1:
 
-            # set the values of 'grid' to 'value' in the disk centered at cr and with radius r, in such a way that they are not plotted and the disk is left blank
+            # plot the axis
+            ax.plot([np.emath.logn(
+                log_base, origin[0] + length[0] * axis_origin[1])] * 2,
+                [np.emath.logn(log_base, origin[1]), np.emath.logn(log_base,  origin[1]+length[1])], color=color, linewidth=line_width, zorder=0)
 
-            pass
+            # plot the  axis label
+            if axis_label is not None:
+
+                ax.text(np.emath.logn(
+                        log_base, origin[0] + length[0] * axis_origin[1]) - np.emath.logn(
+                        log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
+                        (np.emath.logn(
+                            log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2.0,
+                        rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
 
 def set_inside_disk(X, Y, cr, r, grid, value):
@@ -652,8 +676,10 @@ def set_inside_disk(X, Y, cr, r, grid, value):
 
 
 '''
+
+
 set the values of a grid of points on the xy plane to a value for points which lie in an ellipse
-Input values: 
+Input values:
 - 'X', 'Y': x and y values
 - 'c' center of the ellipse
 - 'a', 'b', semi-major and semi-minor axis of the ellipse
@@ -749,12 +775,12 @@ def tabulate_cylinder(z_top, z_bottom, r, cr, z_min, scale_factor):
 
 '''
 tabulate a surface from an analytical solution
-- 'f' : the analytical solution f(x,y)
+- 'f': the analytical solution f(x, y)
 - 'mins', 'maxs': limits of the rectangular region where 'f' will be tabulated
-- 'n_bins': number of bins 
+- 'n_bins': number of bins
 - 'mask' [optional]: a mask defining a subdomain where the plot will be made. This can be generated, for example, with mask.flat_surface_mask_disk
-Return values: 
-- 'X', 'Y', 'Z': the grids of x, y, and of the tabulated function z = f(x,y)
+Return values:
+- 'X', 'Y', 'Z': the grids of x, y, and of the tabulated function z = f(x, y)
 '''
 
 
@@ -774,9 +800,9 @@ def tabulate_analytical_surface(f, mins, maxs, n_bins, mask=None):
 '''
 plot a surface given by an analytical expression
 - 'ax': the axis where the plot will be made
-- 'f': f(x,y): the function defining the surface
+- 'f': f(x, y): the function defining the surface
 - 'mins': mins, maxs: limits of the rectangular region where the plot will be made
-- 'n_bins': number of bins 
+- 'n_bins': number of bins
 - 'color': the color of the plotted surface
 - 'z_order': the z-order of the plotted surface
 - 'mask' [optional]: a mask defining a subdomain where the plot will be made, generated, for example, with mask.flat_surface_mask_disk
@@ -810,14 +836,14 @@ def gamma_y(t, mins, maxs, f, x):
 
 '''
 plot the grid describing a surface given by an analytical expression
-- 'ax' : the axis where the plot will be made
-- 'f': the analytical expression for the surface f(x,y)
+- 'ax': the axis where the plot will be made
+- 'f': the analytical expression for the surface f(x, y)
 - 'mins', 'maxs': limits of the rectangular region where 'f' will be plotted
 - 'color': the color of the gird
-- 'z_order' : the z-order of the grid
+- 'z_order': the z-order of the grid
 - 'mask': a mask which defines a region where the grid will not be plotted. The mask may be genereated with mask.grid_mask_disk
-Return vallues: 
-- 'curves': a list containig the curves of the grid 
+Return vallues:
+- 'curves': a list containig the curves of the grid
 '''
 
 
@@ -851,16 +877,16 @@ def plot_analytical_grid(ax, f, mins, maxs, n_curves, n_bins, color, line_width,
 
 
 '''
-plot a point 
-- 'ax' : the axis where the point will be plotted
-- 'r' :the point coordinates
-- 'color' : the point color
-- 'point_size' : the size of the point
+plot a point
+- 'ax': the axis where the point will be plotted
+- 'r': the point coordinates
+- 'color': the point color
+- 'point_size': the size of the point
 - 'legend': the legend of the point
-- 'z_order' : the z_order of the point
+- 'z_order': the z_order of the point
 
-Return values: 
-- 'point': the point 
+Return values:
+- 'point': the point
 '''
 
 
@@ -880,10 +906,10 @@ def plot_point(ax, r, color, point_size, legend, legend_position, legend_font_si
 tabulate a curve
 - 'f': the analytical function desccribing the curve: f(t) = (x(t), y(t), z(t))
 - 't_min', 't_max', the minimum and maximum values of the curve parameter t
-- 'n_bins': the nunber of bins in which the interval [t_min, t_max] will be divided
+- 'n_bins': the nunber of bins in which the interval[t_min, t_max] will be divided
 
 Return values:
-- the tables of the coordinates [x,y,z] of the curve 
+- the tables of the coordinates[x, y, z] of the curve
 
 '''
 
@@ -912,15 +938,15 @@ def tabulate_analytical_curve(f, t_min, t_max, n_bins, mask=None):
 
 '''
 plot a curve defined by an analytical function
-- 'ax' : the axes where the plot will be made
-- 'f' : the parametric function f(t) = (x(t), y(t), z(t)) of the curve
+- 'ax': the axes where the plot will be made
+- 'f': the parametric function f(t) = (x(t), y(t), z(t)) of the curve
 - 't_min', 't_max', the minimum and maximum values of the curve parameter t
 - 'n_bins': the nunber of bins in which the interval will be divided
 - 'color': the color of the curve
 - 'z_order': the z-order of the curve
 - 'line_width': the linewidth of the curve
 
-Return values :
+Return values:
 the plotted curve
 
 '''
@@ -953,17 +979,17 @@ def plot_analytical_curve_with_legend(ax, f, t_min, t_max, n_bins, color, label,
 
 '''
 plot an analytical curve by loading the symbol of its legend from a pdf file
-- 'ax' : the axes where the plot will be made
-- 'f' : the parametric function f(t) = x(t) of the curve
+- 'ax': the axes where the plot will be made
+- 'f': the parametric function f(t) = x(t) of the curve
 - 't_min', 't_max', the minimum and maximum values of the curve parameter t
-- 'n_bins': the number of bins in which the interval [  't_min', 't_max' ] will be divided
+- 'n_bins': the number of bins in which the interval['t_min', 't_max'] will be divided
 - 'color': the color of the curve
 - 'legend': the name of the symbol which will be loaded from the pdf file
 - 'legend_position': the position of the legend of the curve
 - 'z_order': the z-order of the curve
 - 'line_width': the linewidth of the curve
-- 'zoom': the zoom factor of the image loaded from pdf file (it sets the image size)
-- 'dpi': the dpi of the image loaded from pdf file (it sets the image resolution)
+- 'zoom': the zoom factor of the image loaded from pdf file(it sets the image size)
+- 'dpi': the dpi of the image loaded from pdf file(it sets the image resolution)
 
 '''
 
@@ -999,7 +1025,7 @@ def tabulate_cicle(r, cr):
 
 
 '''
-tabulate a line 
+tabulate a line
 - 'p_start', 'p_end': coordinates of the start and end points
 Return values:
 - 'X', 'Y', grid of the points describing the line
@@ -1023,8 +1049,8 @@ def empty_panes(ax):
 
 '''
 draw the ticks of a colorbar
-Input values: 
-    * Mantatory: 
+Input values:
+    * Mantatory:
         - 'colorbar': the colorbar object whose ticks will be drawn
         - 'ticks': the list of ticks to be drawn
         - 'min': the minimal value of the colorbar axis
@@ -1038,7 +1064,7 @@ Input values:
         - 'tick_lengt': the length of the ticks, expressed in units of the colorbar width
         - 'tick_label_offset': offset of the tick labels, [tick_label_offset_x, tick_label_offset_y], expressed in units of the tick length and heigh, respectively
         - 'tick_label_format': numerical format with which the tick label is plotted, e.g., 'e', or 'f'
-        - 'prune': if True, ticks and tick labels which overlap will be removed 
+        - 'prune': if True, ticks and tick labels which overlap will be removed
 '''
 
 
@@ -1155,31 +1181,31 @@ def ticks_base_10(min, max, n):
 
 '''
 plot axes for a two-dimensional plot
-Input values: 
+Input values:
     * Mandatory
         - 'ax': the axis where the axes will be plotted
-        - 'origin': the origin of the numerical values of the axes (a vector with two components, [origin_x, origin_y])
-        - 'length': the length of the numerical values of the lengths (spans) of the axes (a vector wit two components [length_x, length_y])
-        
-    * Optional: 
+        - 'origin': the origin of the numerical values of the axes(a vector with two components, [origin_x, origin_y])
+        - 'length': the length of the numerical values of the lengths(spans) of the axes(a vector wit two components[length_x, length_y])
+
+    * Optional:
         - 'tick_length': the length of the ticks on each axis, [tick_length_x, tick_length_y]
         - 'line_width': the line width of the axes
         - 'axis_label_angle': the rotation angle of the labels of the axes, [axis_label_angle_x, axis_label_angle_y]
-        - 'axis_label_offset': the offsets of the axis labels [axis_label_offset_x, axis_label_offset_y]
-        - 'tick_label_offset': the offsets of the tick labels [tick_label_offset_x, tick_label_offset_y]
-        - 'tick_label_format': the numerical format of tick labels, either 'e' or 'f' for each entry. It is a list of the form [tick_label_format_x, tick_label_format_y]
+        - 'axis_label_offset': the offsets of the axis labels[axis_label_offset_x, axis_label_offset_y]
+        - 'tick_label_offset': the offsets of the tick labels[tick_label_offset_x, tick_label_offset_y]
+        - 'tick_label_format': the numerical format of tick labels, either 'e' or 'f' for each entry. It is a list of the form[tick_label_format_x, tick_label_format_y]
         - 'font_size': font size of the labels of the axes, [font_size_x, font_size_y]
         - 'z_order': the z order of the plot
-        - 'axis_origin': the origin where the axes will be placed [axis_origin_x, axis_origin_y]
+        - 'axis_origin': the origin where the axes will be placed[axis_origin_x, axis_origin_y]
         - 'tick_label_angle': the rotation angle of the tick labels of each axis, [tick_label_angle_x, tick_label_angle_y]
         - 'axis_bounds': the bounds of the axes, [[x_min, x_max], [y_min, y_max]]
-        - 'margin': margin (as a fraction of length) to be included in 'axis_bounds', [maring_x, margin_y]
+        - 'margin': margin(as a fraction of length) to be included in 'axis_bounds', [maring_x, margin_y]
         - 'axis_label': the labels of each axis, [label_x, label_y]
-        - 'plot_label_offset': offset of the plot label [plot_label_offset_x, plot_label_offset_y]
+        - 'plot_label_offset': offset of the plot label[plot_label_offset_x, plot_label_offset_y]
         - 'plot_label_font_size' = font size of the plot label
         - 'plot_label': the label of the plot
         - 'minor_tick_length': the lengths of minor ticks
-        - 'colorbar_axis', 'colorbar_axis_offset' : if 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the [width , height] of the axes box width and height, respectively
+        - 'colorbar_axis', 'colorbar_axis_offset': if 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the[width, height] of the axes box width and height, respectively
 '''
 
 
@@ -1276,13 +1302,13 @@ def scale_list(v, mins, scale_factors):
 '''
 plot a curve with a color map on it
 Input values
-    * Mandatory: 
+    * Mandatory:
         - 'ax': the axis where the plot will be made
         - 'X': the curve points
     * Optional:
-        - 'color_map' : the color map containing the colors
+        - 'color_map': the color map containing the colors
         - 'line_color' ' : the color with which the curve will be plotted if 'color_map' is None
-        - 'line_width' : the line with with which the color map will be plotted
+        - 'line_width': the line with with which the color map will be plotted
         - 'plot_label': the plot label of the curve
         - 'alpha': the transparency
         - 'z_order': the z order with which the curve will be drawn
@@ -1356,9 +1382,9 @@ def plot_curve_grid(ax, X,
 
 
 '''
-plot a surface from the data in 'X', 'Y' and 'grid', with colormap 'color_map', with surface stride 'stride_surface' and opacity 'alpha_surface' 
-Plot  a grid on top of the surface with the same data, stride 'stride_grid' and line_width 'line_width_grid' 
-the surface and the surface grid are returned 
+plot a surface from the data in 'X', 'Y' and 'grid', with colormap 'color_map', with surface stride 'stride_surface' and opacity 'alpha_surface'
+Plot  a grid on top of the surface with the same data, stride 'stride_grid' and line_width 'line_width_grid'
+the surface and the surface grid are returned
 '''
 
 
@@ -1417,7 +1443,7 @@ def set_axes_limits(ax, mins, maxs):
 
 '''
 given the upper radius of the cone 'r', the intervals for the z axis 'z_min', 'z_max' and the z-value 'z_circle' where one wants to put the upper ring of the cone,
-return the parameters for a cone: r_A_cone, r_B_cone, z_A_cone, z_B_cone, 
+return the parameters for a cone: r_A_cone, r_B_cone, z_A_cone, z_B_cone,
 '''
 
 
@@ -1435,8 +1461,8 @@ def set_cone(r, z_circle, z_min, z_max, scale_factor_z, height_fraction, omega_c
 
 
 '''
-give the radius 'r' of the cylinder, the heights   'z_top' ('z_bottom') of the top (bottom) face, the min value for the z axis 'z_min' and the scale factor 'scale_factor' for the z axis,
-return the cylinder parametrers z_A (z-value of the top face), z_B (z-value of the bottom face)
+give the radius 'r' of the cylinder, the heights   'z_top' ('z_bottom') of the top(bottom) face, the min value for the z axis 'z_min' and the scale factor 'scale_factor' for the z axis,
+return the cylinder parametrers z_A(z-value of the top face), z_B(z-value of the bottom face)
 '''
 
 
@@ -1514,7 +1540,7 @@ def remove_all_axes(fig):
 
 '''
 delete all axes of a figure: unlike 'remove_all_axes', this method uses 'delaxes' to remove the axes
-Input values: 
+Input values:
 - 'fig': the figure whose axes will be rewmoved
 '''
 
@@ -1526,15 +1552,15 @@ def delete_all_axes(fig):
 
 '''
 interpolate a function of one variable in an interval
-Input values: 
+Input values:
 - 'data': the data of the function, where the function value is written in column "f" and the x values in column ":0"
 - 'n_bins': the number of bins in which the interpoplated x interval will be divided
 - 'x_min', 'x_max' [optional]: min and max values of the x interval where interpolation will be made. If either of these is set to 'None', x_min and x_max will be set to the min and max value in data[":0"]
 - 'interpolation_method' [optional]: the method used to make the interpolation
 
-Return values: 
-- 'values_grid': a zipped array [(x_0,f_0), (x_1,f_1),...] of the interpolated values
-- 'points_grid'; the values of the x axis [x_0, x_1,..]
+Return values:
+- 'values_grid': a zipped array[(x_0, f_0), (x_1, f_1), ...] of the interpolated values
+- 'points_grid'; the values of the x axis[x_0, x_1, ..]
 '''
 
 
@@ -1559,17 +1585,17 @@ def interpolate_1d_function(data, n_bins, x_min=None, x_max=None, interpolation_
 
 
 '''
-interpolate a set of discrete data for a surface f(x,y) into agrid  of points. If the original data does not cover a region of the grid of points, extrapolation is used. 
+interpolate a set of discrete data for a surface f(x, y) into agrid  of points. If the original data does not cover a region of the grid of points, extrapolation is used.
 
 - Input values:
-    * Mandatory: 
-        - 'data': the data containing the values of x, y and f(x,y)
+    * Mandatory:
+        - 'data': the data containing the values of x, y and f(x, y)
         - 'mins', 'maxs' the bounds of the region where the interpolation should be made
-        - 'n_bins' the number of bins (for x and y, in each entry) in which the intervals given by 'mins' and 'maxs' should be divided
-    * Optional: 
+        - 'n_bins' the number of bins(for x and y, in each entry) in which the intervals given by 'mins' and 'maxs' should be divided
+    * Optional:
         - 'scale_factor': the scale factor for the field f
         - 'label_x_column' ... the labels for x, y, and f in 'data'
-        - 'method': the interpolation method. If it is equal to 'rbf', the RBFInterpolator (which extrapolates in regions where the original data is not defined) is used. If 'griddata', the griddata method is used. 
+        - 'method': the interpolation method. If it is equal to 'rbf', the RBFInterpolator(which extrapolates in regions where the original data is not defined) is used. If 'griddata', the griddata method is used.
         - 'f_min': the minimal value of the field with recspect to which the rescaling with 'scale_factor' will be made, if f_min != None
 '''
 
@@ -1612,13 +1638,13 @@ def interpolate_surface(data, mins, maxs, n_bins,
 
 '''
 given a set of discrete data for a curve in a two-dimensional planer, interpolate it into a grid of  points
-Input values: 
-- 'data'  <class 'pandas.core.frame.DataFrame'>: the array containing the values of the curve
-- 'x_min', 'x_max' <class 'float'>: the bounds of the interval for the parameter t by which the curve is parameterized
-- 'n_bins' <class 'int'>: the number of bins in which the interval [x_min, x_max] is divided
+Input values:
+- 'data'  < class 'pandas.core.frame.DataFrame' >: the array containing the values of the curve
+- 'x_min', 'x_max' < class 'float' >: the bounds of the interval for the parameter t by which the curve is parameterized
+- 'n_bins' < class 'int' >: the number of bins in which the interval [x_min, x_max] is divided
 
-Return values: 
-- 'values_grid' <class 'numpy.ndarray'>: the array containing the values of the curve interpolated on the grid of n_bins points, [X_1, X_2]
+Return values:
+- 'values_grid' < class 'numpy.ndarray' >: the array containing the values of the curve interpolated on the grid of n_bins points, [X_1, X_2]
 '''
 
 
@@ -1657,20 +1683,20 @@ def plot_line(ax, p_start, p_end, color, line_width, z_order):
 
 '''
 set the limits for 2d axes
-Input values: 
-    * Mandatory: 
-        - 'ax'          : the Matplotlib axis whose limits should be set
-        - 'origin'      : lower-left physical origin of the domain (x0, y0)
-        - 'length'      : physical size of the domain in x and y directions (Lx, Ly)
+Input values:
+    * Mandatory:
+        - 'ax': the Matplotlib axis whose limits should be set
+        - 'origin': lower-left physical origin of the domain(x0, y0)
+        - 'length': physical size of the domain in x and y directions(Lx, Ly)
     * Optional
-        - 'axis_origin' :  (x, y) origin of the drawn axes, in units of
-                        the domain length (e.g. [0, 0] puts axes at bottom-left).
+        - 'axis_origin':  (x, y) origin of the drawn axes, in units of
+                        the domain length(e.g. [0, 0] puts axes at bottom-left).
                         Used only when 'axis_bounds' is not provided.
-        - 'axis_bounds' : optional explicit axis bounds
+        - 'axis_bounds': optional explicit axis bounds
                         ([[xmin, xmax], [ymin, ymax]]). When provided, these
                         override all other heuristics.
-        - 'margin'      : extra fractional margin added around the domain in the
-                        x and y directions (e.g. [0.05, 0.05] adds 5% padding)
+        - 'margin': extra fractional margin added around the domain in the
+                        x and y directions(e.g. [0.05, 0.05] adds 5 % padding)
 '''
 
 
@@ -1719,11 +1745,11 @@ def set_2d_axes_limits(ax, origin, length,
 
 
 '''
-plot a circle: 
+plot a circle:
 - 'ax' the axis where to plot the circle
 - 'r' the radius of the circle
-- 'c_r' : the center of the circle
-- 'line_width' : the line width of the circle
+- 'c_r': the center of the circle
+- 'line_width': the line width of the circle
 - 'z_order' the z_order of the circle
 '''
 
@@ -1739,9 +1765,9 @@ def plot_circle(ax, r, cr, color, line_width, z_order):
 plot a rectangle
 - 'ax' the axis where to plot the rectangle
 - 'p_left_bottom' the left bottom point of the rectangle
-- 'L', 'h' : width and height of the rectangle
+- 'L', 'h': width and height of the rectangle
 - 'color': the color of the rectangle
-- 'line_width' : the line width of the rectangle
+- 'line_width': the line width of the rectangle
 - 'z_order' the z_order of the rectangle
 
 Return values:
@@ -1769,7 +1795,7 @@ def plot_rectangle(ax, p_left_bottom, L, h, color, line_width, z_order):
 plot a mesh by drawing its edges
 Input values
     - 'ax': the axis where the mesh will be plotted
-    - 'data_line_vertices': the data containing the coordinates of the lines which connect the vertices, as generated, for example, from 
+    - 'data_line_vertices': the data containing the coordinates of the lines which connect the vertices, as generated, for example, from
     'data_line_vertices = pd.read_csv(mesh_path + "line_vertices.csv", usecols=columns_line_vertices)'
     - 'line_width': the width of the mesh edges lines
     - 'color': the color of the mesh edges lines
