@@ -582,215 +582,34 @@ def plot_2d_axis(
     elif scale == 'log':
         # plot the axis in log scale
 
-        # compute x and y ticks
-        x_ticks = ti.generate_ticks(
-            origin[0], origin[0]+length[0], scale='log', log_base=log_base)
-        y_ticks = ti.generate_ticks(
-            origin[1], origin[1]+length[1], scale='log', log_base=log_base)
+        # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
+        if axis_origin is None:
+            axis_origin = [0] * dim
 
         if direction_id == 0:
 
-            # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
-            n_plotted_ticks = 0
-
-            # plot the x ticks
-            for tick in x_ticks:
-
-                # plot the major tick
-                if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
-                    # if the tick falls within the boundaries of the axis, plot it
-
-                    ti.plot_2d_tick(ax, 'x', tick, tick_length, tick_label_offset, tick_label_format,
-                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-
-                n_plotted_ticks += 1
-
-                # plot the minor ticks
-                for i in range(log_base-1):
-
-                    minor_tick = np.emath.logn(
-                        log_base, log_base**(tick-1) * (i+1))
-
-                    if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
-                        # if the tick falls within the boundaries of the axis, plot it
-
-                        ax.plot(
-                            [minor_tick, minor_tick],
-                            [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + minor_tick_length * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
-                            zorder=0)
-
-            if n_plotted_ticks == 0:
-                # no ticks have been plotted: plot an extra tick that is the closest, among y_ticks, to the mid value of the axis values to plot at least one tick
-
-                extra_tick = lis.closest_element(x_ticks,
-                                                 (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
-
-                x_ticks.append(extra_tick)
-
-                '''
-                ax.plot([extra_tick, extra_tick], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base,( origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
-                        zorder=0)  
-                ax.text(extra_tick, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])), 
-                        text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
-                '''
-
-                ti.plot_2d_tick(ax, 'x', extra_tick, tick_length, tick_label_offset, tick_label_format,
-                                origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-
-                if (extra_tick < (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2):
-                    # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[0] + length[0])
-
-                    axis_min = extra_tick
-                    axis_max = np.emath.logn(log_base, origin[0] + length[0])
-                else:
-                    # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[0])
-
-                    axis_min = np.emath.logn(log_base, origin[0])
-                    axis_max = extra_tick
-
-            else:
-                # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])
-                axis_min = np.emath.logn(log_base, origin[0])
-                axis_max = np.emath.logn(log_base, origin[0] + length[0])
-
-            # plot the x custom ticks
-            if len(custom_ticks[0]) > 0:
-                # custom ticks have been specified when plot_2d_axis has been called -> draw them
-
-                for tick in custom_ticks[0]:
-                    # cycle through the custom ticks on the x axis
-
-                    x_ticks.append(tick)
-
-                    # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
-                    if axis_min > np.emath.logn(log_base, tick):
-                        axis_min = np.emath.logn(log_base, tick)
-
-                    if axis_max < np.emath.logn(log_base, tick):
-                        axis_max = np.emath.logn(log_base, tick)
-
-                    # plot the custom tick
-                    ti.plot_2d_tick(ax, 'x', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format,
-                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-
             # plot the x axis
-            ax.plot([axis_min, axis_max], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(
-                log_base, axis_origin[1])], color=color, linewidth=line_width, zorder=0)
+            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base,  origin[0]+length[0])], [np.emath.logn(
+                log_base, origin[1] + length[1] * axis_origin[0])] * 2, color=color, linewidth=line_width, zorder=0)
 
             # plot the x axis label
-            ax.text((np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0, np.emath.logn(log_base, axis_origin[1]) - np.emath.logn(log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
+            if axis_label is not None:
+
+                ax.text(
+                    (np.emath.logn(
+                        log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0,
+                    np.emath.logn(
+                        log_base, origin[1] + length[1] * axis_origin[0]) - np.emath.logn(
+                        log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
         elif direction_id == 1:
 
-            # count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
-            n_plotted_ticks = 0
+            # set the values of 'grid' to 'value' in the disk centered at cr and with radius r, in such a way that they are not plotted and the disk is left blank
 
-            # plot the y ticks
-            for tick in y_ticks:
-
-                if (tick > np.emath.logn(log_base, origin[1])) and (tick < np.emath.logn(log_base, origin[1] + length[1])):
-                    # if the tick falls within the boundaries of the axis, plot it
-
-                    '''
-                    ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
-                            [tick, tick], 
-                            color=color, linewidth=line_width, zorder=0) 
-                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], tick, 
-                            text.float_to_latex(log_base**tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
-                    '''
-
-                    ti.plot_2d_tick(ax, 'y', tick, tick_length, tick_label_offset, tick_label_format,
-                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-
-                    n_plotted_ticks += 1
-
-                 # plot the minor ticks
-                for i in range(log_base-1):
-
-                    minor_tick = np.emath.logn(
-                        log_base, log_base**(tick-1) * (i+1))
-
-                    if (minor_tick > np.emath.logn(log_base, origin[1])) and (minor_tick < np.emath.logn(log_base, origin[1] + length[1])):
-                        # if the tick falls within the boundaries of the axis, plot it
-
-                        ax.plot(
-                            [np.emath.logn(log_base, axis_origin[0]), np.emath.logn(
-                                log_base, axis_origin[0]) + minor_tick_length * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
-                            [minor_tick, minor_tick], color=color, linewidth=line_width,
-                            zorder=0)
-
-            if n_plotted_ticks == 0:
-                # no ticks have been plotted: plot an extra tick that is the closest, among x_ticks, to the mid value of the axis values to plot at least one tick
-
-                extra_tick = lis.closest_element(y_ticks,
-                                                 (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
-
-                y_ticks.append(extra_tick)
-
-                '''
-                    ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base,( origin[0] + length[0])/origin[0])], 
-                            [extra_tick, extra_tick], 
-                            color=color, linewidth=line_width, zorder=0) 
-                    
-                    ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], extra_tick, 
-                            text.float_to_latex(log_base**extra_tick, 'e'), fontsize=font_size, ha='center', va='center', zorder=10)
-                    '''
-
-                ti.plot_2d_tick(ax, 'y', extra_tick, tick_length, tick_label_offset, tick_label_format,
-                                origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-
-                if (extra_tick < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
-                    # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[1] + length[1])
-
-                    axis_min = extra_tick
-                    axis_max = np.emath.logn(log_base, origin[1] + length[1])
-                else:
-                    # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[1])
-
-                    axis_min = np.emath.logn(log_base, origin[1])
-                    axis_max = extra_tick
-
-            else:
-                # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[1]), np.emath.logn(log_base, origin[1] + length[1])
-
-                axis_min = np.emath.logn(log_base, origin[1])
-                axis_max = np.emath.logn(log_base, origin[1] + length[1])
-
-            # plot the x custom ticks
-            if len(custom_ticks[1]):
-                # custom ticks have been specified when plot_2d_axis has been called -> draw them
-
-                for tick in custom_ticks[1]:
-                    # cycle through the custom ticks on the x axis
-
-                    y_ticks.append(tick)
-
-                    # if the custom tick under consideration lies outside the interval [axis_min, axis_max], extend axis_min, axis_max so it will be within the interval
-                    if axis_min > np.emath.logn(log_base, tick):
-                        axis_min = np.emath.logn(log_base, tick)
-
-                    if axis_max < np.emath.logn(log_base, tick):
-                        axis_max = np.emath.logn(log_base, tick)
-
-                    # plot the custom tick
-                    ti.plot_2d_tick(ax, 'y', np.emath.logn(log_base, tick), tick_length, tick_label_offset, tick_label_format,
-                                    origin, length, axis_origin, log_base, font_size, z_order, color, line_width, 'log')
-
-            # plot the y axis
-            ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0])],
-                    [axis_min, axis_max], color=color, linewidth=line_width, zorder=0)
-
-            # plot the y axis label
-            ax.text(
-                np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(
-                    log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
-                (np.emath.logn(
-                    log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1])) / 2,
-                rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+            pass
 
 
-# set the values of 'grid' to 'value' in the disk centered at cr and with radius r, in such a way that they are not plotted and the disk is left blank
 def set_inside_disk(X, Y, cr, r, grid, value):
     # Compute the distance from the center
     distance_from_center = np.sqrt((X - cr[0]) ** 2 + (Y - cr[1]) ** 2)
@@ -1482,17 +1301,26 @@ def plot_curve_grid(ax, X,
         ax.autoscale()
 
     if legend != '':
-        # show the legend
+        # Get axis bounds to convert normalized position to data coordinates
+        axis_min_max = [np.sort(ax.get_xlim()), np.sort(ax.get_ylim())]
 
-        # Create a new legend for just this line
+        # Convert normalized legend_position (0-1) to data coordinates
+        legend_data_position = [
+            axis_min_max[0][0] + (axis_min_max[0][1] -
+                                  axis_min_max[0][0]) * legend_position[0],
+            axis_min_max[1][0] + (axis_min_max[1][1] -
+                                  axis_min_max[1][0]) * legend_position[1]
+        ]
+
+        # Create a new legend with data coordinates
         legend = Legend(ax, [line], [legend],
-                        bbox_to_anchor=legend_position,
+                        bbox_to_anchor=legend_data_position,
+                        bbox_transform=ax.transData,  # use data coordinates
                         loc=legend_inner_location,
                         frameon=legend_frame,
                         fontsize=legend_font_size,
                         framealpha=legend_alpha)
 
-        # Add the legend as a separate artist (doesn't replace previous legends)
         ax.add_artist(legend)
 
 
