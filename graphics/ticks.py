@@ -154,21 +154,43 @@ def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_of
 
     elif scale == 'log':
 
-        if axis_direction_id == 'x':
+        if axis_direction_id == 0:
 
-            ax.plot([value, value], [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(log_base, axis_origin[1]) + tick_length * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])], color=color, linewidth=line_width,
-                    zorder=z_order)
+            ax.plot([value] * 2,
+                    [np.emath.logn(log_base, axis_origin[1]), np.emath.logn(
+                        log_base, axis_origin[1]) + tick_length[0] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])],
+                    color=color,
+                    linewidth=line_width,
+                    zorder=z_order
+                    )
 
-            ax.text(value, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])),
-                    text.float_to_latex(log_base**value, tick_label_format[0]), fontsize=font_size, ha='center', va='center', zorder=z_order)
+            # ax.text(value, np.emath.logn(log_base, axis_origin[1]) - tick_label_offset[1] * np.emath.logn(log_base, (origin[1] + length[1]/origin[1])),
+            #         label,
+            #         fontsize=font_size,
+            #         ha='center',
+            #         va='center',
+            #         zorder=z_order)
 
-        elif axis_direction_id == 'y':
+        elif axis_direction_id == 1:
 
-            ax.plot([np.emath.logn(log_base, axis_origin[0]), np.emath.logn(log_base, axis_origin[0]) + tick_length * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])], [value, value],
-                    color=color, linewidth=line_width, zorder=z_order)
+            ax.plot(
+                [np.emath.logn(
+                    log_base, origin[0] + length[0] * axis_origin[1]),
+                 np.emath.logn(
+                    log_base, origin[0] + length[0] * axis_origin[1]) + tick_length[axis_direction_id] * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
+                [value] * 2,
+                color=color,
+                linewidth=line_width,
+                zorder=z_order
+            )
 
-            ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value,
-                    text.float_to_latex(log_base**value, tick_label_format[1]), fontsize=font_size, ha='center', va='center', zorder=z_order)
+            # ax.text(np.emath.logn(log_base, axis_origin[0]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value,
+            #         label,
+            #         fontsize=font_size,
+            #         ha='center',
+            #         va='center',
+            #         zorder=z_order
+            #         )
 
 
 '''
