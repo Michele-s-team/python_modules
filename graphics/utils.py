@@ -633,7 +633,7 @@ def plot_2d_axis(
                 if (tick_list[j][0] > np.emath.logn(log_base, origin[0])) and (tick_list[j][0] < np.emath.logn(log_base, origin[0] + length[0])):
                     # if the tick falls within the boundaries of the axis, plot it
 
-                    ti.plot_2d_tick(ax, direction_id, tick_list[j][0], 'xx', tick_length, tick_label_offset, tick_label_format,
+                    ti.plot_2d_tick(ax, direction_id, tick_list[j][0], tick_list[j][1], tick_length, tick_label_offset, tick_label_format,
                                     origin, length,
                                     axis_origin=axis_origin,
                                     log_base=log_base,
