@@ -501,7 +501,7 @@ def plot_2d_axis(
         ticks = ti.generate_ticks(
             origin[direction_id], origin[direction_id] + length[direction_id])
 
-        # draw ticks
+        # set ticks and tick labels
         tick_list = []
         for tick in ticks:
 
@@ -582,15 +582,29 @@ def plot_2d_axis(
     elif scale == 'log':
         # plot the axis in log scale
 
-        # compute x and y ticks
-        x_ticks = ti.generate_ticks(
-            origin[0], origin[0]+length[0], scale='log', log_base=log_base)
-        y_ticks = ti.generate_ticks(
-            origin[1], origin[1]+length[1], scale='log', log_base=log_base)
-
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
         if axis_origin is None:
             axis_origin = [0] * dim
+
+        # compute ticks
+        ticks = ti.generate_ticks(
+            origin[direction_id], origin[direction_id] + length[direction_id],
+            scale='log', log_base=log_base)
+
+        # set ticks and tick labels
+        tick_list = []
+        for tick in ticks:
+
+            tick_list.append([
+                tick,
+                text.float_to_latex(log_base**tick, tick_label_format)
+            ])
+
+        # compute x and y ticks
+        # x_ticks = ti.generate_ticks(
+        #     origin[0], origin[0]+length[0], scale='log', log_base=log_base)
+        # y_ticks = ti.generate_ticks(
+        #     origin[1], origin[1]+length[1], scale='log', log_base=log_base)
 
         if direction_id == 0:
 
@@ -613,13 +627,13 @@ def plot_2d_axis(
             n_plotted_ticks = 0
 
             # plot the ticks
-            for tick in x_ticks:
+            for j in range(len(tick_list)):
 
                 # plot the major tick
-                if (tick > np.emath.logn(log_base, origin[0])) and (tick < np.emath.logn(log_base, origin[0] + length[0])):
+                if (tick_list[j][0] > np.emath.logn(log_base, origin[0])) and (tick_list[j][0] < np.emath.logn(log_base, origin[0] + length[0])):
                     # if the tick falls within the boundaries of the axis, plot it
 
-                    # ti.plot_2d_tick(ax, direction_id, tick, 'xx', tick_length, tick_label_offset, tick_label_format,
+                    # ti.plot_2d_tick(ax, direction_id, tick_list[j][0], 'xx', tick_length, tick_label_offset, tick_label_format,
                     #                 origin, length,
                     #                 axis_origin=axis_origin,
                     #                 log_base=log_base,
@@ -636,7 +650,7 @@ def plot_2d_axis(
                 for i in range(log_base-1):
 
                     minor_tick = np.emath.logn(
-                        log_base, log_base**(tick-1) * (i+1))
+                        log_base, log_base**(tick_list[j][0]-1) * (i+1))
 
                     if (minor_tick > np.emath.logn(log_base, origin[0])) and (minor_tick < np.emath.logn(log_base, origin[0] + length[0])):
                         # if the tick falls within the boundaries of the axis, plot it
@@ -671,13 +685,13 @@ def plot_2d_axis(
             n_plotted_ticks = 0
 
             # plot the ticks
-            for tick in y_ticks:
+            for j in range(len(tick_list)):
 
                 # plot the major tick
-                if (tick > np.emath.logn(log_base, origin[1])) and (tick < np.emath.logn(log_base, origin[1] + length[1])):
+                if (tick_list[j][0] > np.emath.logn(log_base, origin[1])) and (tick_list[j][0] < np.emath.logn(log_base, origin[1] + length[1])):
                     # if the tick falls within the boundaries of the axis, plot it
 
-                    ti.plot_2d_tick(ax, direction_id, tick, 'xx', tick_length, tick_label_offset, tick_label_format,
+                    ti.plot_2d_tick(ax, direction_id, tick_list[j][0], tick_list[j][1], tick_length, tick_label_offset, tick_label_format,
                                     origin, length,
                                     axis_origin=axis_origin,
                                     log_base=log_base,
@@ -693,7 +707,7 @@ def plot_2d_axis(
                 for i in range(log_base-1):
 
                     minor_tick = np.emath.logn(
-                        log_base, log_base**(tick-1) * (i+1))
+                        log_base, log_base**(tick_list[j][0]-1) * (i+1))
 
                     if (minor_tick > np.emath.logn(log_base, origin[1])) and (minor_tick < np.emath.logn(log_base, origin[1] + length[1])):
                         # if the tick falls within the boundaries of the axis, plot it
