@@ -316,6 +316,7 @@ Input values:
             ** : axis_origin[0][0] sets the y position of the x axis. If axis_origin[0][0] = 0, then the x axis will be located at the min of the values of the y axis. If axis_origin[0][0] = 1, then the x axis will be located at the max of the values of the y axis.
             ** : axis_origin[0][1] sets the z position of the x axis. If axis_origin[0][1] = 0, then the x axis will be located at the min of the values of the z axis. If axis_origin[0][1] = 1, then the x axis will be located at the max of the values of the z axis.
         - ...
+        - 'colorbar_axis', 'colorbar_axis_offset': this positions a colorbar relative to the axes plotted by this method.  If 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the[width, height] of the axes box width and height, respectively
 '''
 
 
@@ -338,7 +339,9 @@ def plot_3d_axes(ax, origin, length,
                  plot_label=None,
                  plot_label_position=[0] * 2,
                  plot_label_font_size=const.default_font_size,
-                 z_order=const.default_z_order):
+                 z_order=const.default_z_order,
+                 colorbar_axis=None,
+                 colorbar_axis_offset=[0]*2):
 
     # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
@@ -410,6 +413,27 @@ def plot_3d_axes(ax, origin, length,
                   ha='center',
                   va='center',
                   zorder=z_order)
+
+    if colorbar_axis is not None:
+
+        # Get axes position in figure coordinates
+        ax_position_size = ax.get_position()
+
+        # Get current colorbar size to preserve it
+        colorbar_position_size = colorbar_axis.get_position()
+
+        # Calculate position relative to axes bbox (not data coordinates)
+        # For 3D plots, we use the 2D projection of the 3D axes
+        colorbar_position = [
+            ax_position_size.x0 +
+            colorbar_axis_offset[0] * ax_position_size.width,
+            ax_position_size.y0 +
+            colorbar_axis_offset[1] * ax_position_size.height
+        ]
+
+        colorbar_axis.set_position(
+            [colorbar_position[0], colorbar_position[1],
+             colorbar_position_size.width, colorbar_position_size.height])
 
 
 def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axis_labels, axis_label_offsets,
@@ -1334,7 +1358,7 @@ Input values:
         - 'plot_label_font_size' = font size of the plot label
         - 'plot_label': the label of the plot
         - 'minor_tick_length': the lengths of minor ticks
-        - 'colorbar_axis', 'colorbar_axis_offset': if 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the[width, height] of the axes box width and height, respectively
+        - 'colorbar_axis', 'colorbar_axis_offset': this positions a colorbar relative to the axes plotted by this method. If 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the[width, height] of the axes box width and height, respectively
 '''
 
 
