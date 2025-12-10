@@ -600,28 +600,7 @@ def plot_2d_axis(
                 text.float_to_latex(log_base**tick, tick_label_format)
             ])
 
-        # compute x and y ticks
-        # x_ticks = ti.generate_ticks(
-        #     origin[0], origin[0]+length[0], scale='log', log_base=log_base)
-        # y_ticks = ti.generate_ticks(
-        #     origin[1], origin[1]+length[1], scale='log', log_base=log_base)
-
         if direction_id == 0:
-
-            # plot the axis
-            ax.plot([np.emath.logn(log_base, origin[0]), np.emath.logn(log_base,  origin[0]+length[0])], [np.emath.logn(
-                log_base, origin[1] + length[1] * axis_origin[0])] * 2, color=color, linewidth=line_width, zorder=0)
-
-            # plot the axis label
-            if axis_label is not None:
-
-                ax.text(
-                    (np.emath.logn(
-                        log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0,
-                    np.emath.logn(
-                        log_base, origin[1] + length[1] * axis_origin[0]) - np.emath.logn(
-                        log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
-                    rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
             # this counter is used to count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
             n_plotted_ticks = 0
@@ -664,22 +643,61 @@ def plot_2d_axis(
                             color=color, linewidth=line_width,
                             zorder=0)
 
-        elif direction_id == 1:
+            if n_plotted_ticks == 0:
+                # no ticks have been plotted: plot an extra tick that is the closest, among the ticks in  ticks_list, to the mid value of the axis values to plot at least one tick
+
+                extra_tick = lis.closest_element([tick_list[i][0] for i in range(len(tick_list))],
+                                                 (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
+                tick_list.append([extra_tick,
+                                  text.float_to_latex(
+                                      log_base**extra_tick, tick_label_format)
+                                  ])
+
+                ti.plot_2d_tick(ax, direction_id, tick_list[-1][0], tick_list[-1][1], tick_length, tick_label_offset, tick_label_format,
+                                origin, length,
+                                axis_origin=axis_origin,
+                                log_base=log_base,
+                                font_size=font_size,
+                                z_order=z_order,
+                                color=color,
+                                line_width=line_width,
+                                scale='log'
+                                )
+
+                if (tick_list[-1][0] < (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2):
+                    # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[0] + length[0])
+
+                    axis_min = tick_list[-1][0]
+                    axis_max = np.emath.logn(log_base, origin[0] + length[0])
+
+                else:
+                    # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[0])
+
+                    axis_min = np.emath.logn(log_base, origin[0])
+                    axis_max = tick_list[-1][0]
+
+            else:
+                # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])
+
+                axis_min = np.emath.logn(log_base, origin[0])
+                axis_max = np.emath.logn(log_base, origin[0] + length[0])
 
             # plot the axis
-            ax.plot([np.emath.logn(
-                log_base, origin[0] + length[0] * axis_origin[1])] * 2,
-                [np.emath.logn(log_base, origin[1]), np.emath.logn(log_base,  origin[1]+length[1])], color=color, linewidth=line_width, zorder=0)
+            ax.plot([axis_min, axis_max], [np.emath.logn(
+                log_base, origin[1] + length[1] * axis_origin[0])] * 2, color=color, linewidth=line_width, zorder=0)
 
-            # plot the  axis label
+            # plot the axis label
             if axis_label is not None:
 
-                ax.text(np.emath.logn(
-                        log_base, origin[0] + length[0] * axis_origin[1]) - np.emath.logn(
-                        log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
-                        (np.emath.logn(
-                            log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2.0,
-                        rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+                ax.text(
+                    (np.emath.logn(
+                        log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0,
+                    np.emath.logn(
+                        log_base, origin[1] + length[1] * axis_origin[0]) - np.emath.logn(
+                        log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
+                    rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
+
+        elif direction_id == 1:
 
             # this counter is used to count the number of ticks which will fall within the boundaries of the axis, and that thus will be plotted
             n_plotted_ticks = 0
@@ -720,6 +738,60 @@ def plot_2d_axis(
                             [minor_tick] * 2,
                             color=color, linewidth=line_width,
                             zorder=0)
+
+            if n_plotted_ticks == 0:
+                # no ticks have been plotted: plot an extra tick that is the closest, among the ticks in  ticks_list, to the mid value of the axis values to plot at least one tick
+
+                extra_tick = lis.closest_element([tick_list[i][0] for i in range(len(tick_list))],
+                                                 (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
+                tick_list.append([extra_tick,
+                                  text.float_to_latex(
+                                      log_base**extra_tick, tick_label_format)
+                                  ])
+
+                ti.plot_2d_tick(ax, direction_id, tick_list[-1][0], tick_list[-1][1], tick_length, tick_label_offset, tick_label_format,
+                                origin, length,
+                                axis_origin=axis_origin,
+                                log_base=log_base,
+                                font_size=font_size,
+                                z_order=z_order,
+                                color=color,
+                                line_width=line_width,
+                                scale='log'
+                                )
+
+                if (tick_list[-1][0] < (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2):
+                    # the added extra tick is at the lower end of the axis -> set the min of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the max of the axis is the ordinary np.emath.logn(log_base, origin[0] + length[0])
+
+                    axis_min = tick_list[-1][0]
+                    axis_max = np.emath.logn(log_base, origin[1] + length[1])
+
+                else:
+                    # the added extra tick is at the upper end of the axis -> set the max of the axis equal to the extra tick so that the extra tick will be shown on the plot, and the min of the axis is the ordinary np.emath.logn(log_base, origin[0])
+
+                    axis_min = np.emath.logn(log_base, origin[1])
+                    axis_max = tick_list[-1][0]
+
+            else:
+                # some ticks have been plotted -> set the boundaries of the axis equal to the ordinary boundaries np.emath.logn(log_base, origin[0]), np.emath.logn(log_base, origin[0] + length[0])
+
+                axis_min = np.emath.logn(log_base, origin[1])
+                axis_max = np.emath.logn(log_base, origin[1] + length[1])
+
+            # plot the axis
+            ax.plot([np.emath.logn(
+                log_base, origin[0] + length[0] * axis_origin[1])] * 2,
+                [axis_min, axis_max], color=color, linewidth=line_width, zorder=0)
+
+            # plot the  axis label
+            if axis_label is not None:
+
+                ax.text(np.emath.logn(
+                        log_base, origin[0] + length[0] * axis_origin[1]) - np.emath.logn(
+                        log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
+                        (np.emath.logn(
+                            log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2.0,
+                        rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
 
 def set_inside_disk(X, Y, cr, r, grid, value):
@@ -1267,7 +1339,10 @@ Input values:
 
 
 def plot_2d_axes(ax, origin, length,
-                 tick_length=[const.default_tick_length] * 2, line_width=0.1,
+                 tick_length=[const.default_tick_length] * 2,
+                 scale=[const.default_axis_scale] * 2,
+                 log_base=[const.default_log_base] * 2,
+                 line_width=0.1,
                  axis_label_angle=[0, 0],
                  axis_label_offset=[0, 0],
                  tick_label_offset=[0, 0],
@@ -1275,7 +1350,9 @@ def plot_2d_axes(ax, origin, length,
                      const.default_label_format, const.default_label_format],
                  font_size=[const.default_font_size, const.default_font_size],
                  z_order=0,
-                 axis_origin=None, tick_label_angle=[0, 0], axis_bounds=None,
+                 axis_origin=None,
+                 tick_label_angle=[0, 0],
+                 axis_bounds=None,
                  margin=[0, 0],
                  axis_label=[None, None],
                  plot_label_offset=[0, 0],
@@ -1302,6 +1379,8 @@ def plot_2d_axes(ax, origin, length,
 
         plot_2d_axis(
             ax, origin, length, i,
+            scale=scale[i],
+            log_base=log_base[i],
             tick_length=tick_length,
             line_width=line_width,
             axis_label=axis_label[i],

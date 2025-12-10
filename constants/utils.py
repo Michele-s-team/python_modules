@@ -7,6 +7,7 @@ conversion from degree to radians:
 deg_to_rad = 2 * np.pi / 360
 rad_to_deg = 1/deg_to_rad
 default_log_base = 10
+default_axis_scale = 'lin'
 
 default_font_size = 8
 default_label_format = 'f'
@@ -42,4 +43,5 @@ default_legend_position = [0.5] * 2
 
 default_axis_position = [0]*2
 default_axis_size = [1]*2
-default_axis_position_size = [default_axis_position[0], default_axis_position[1], default_axis_size[0], default_axis_size[1]]
+default_axis_position_size = [default_axis_position[0],
+                              default_axis_position[1], default_axis_size[0], default_axis_size[1]]
