@@ -156,11 +156,14 @@ def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_of
 
         if axis_direction_id == 0:
 
+            a = np.emath.logn(
+                log_base, abs(origin[1] + length[1] * axis_origin[0]))
+
             ax.plot([value] * 2,
                     [np.emath.logn(
-                        log_base, origin[1] + length[1] * axis_origin[0]),
+                        log_base, abs(origin[1] + length[1] * axis_origin[0])),
                      np.emath.logn(
-                        log_base, origin[1] + length[1] * axis_origin[0]) + tick_length[axis_direction_id] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])],
+                        log_base, abs(origin[1] + length[1] * axis_origin[0])) + tick_length[axis_direction_id] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])],
                     color=color,
                     linewidth=line_width,
                     zorder=z_order
@@ -168,7 +171,7 @@ def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_of
 
             ax.text(value,
                     np.emath.logn(
-                        log_base, origin[1] + length[1] * axis_origin[0]) - np.emath.logn(log_base, (origin[1]+length[1])/origin[1]) * tick_label_offset[1],
+                        log_base, abs(origin[1] + length[1] * axis_origin[0])) - np.emath.logn(log_base, (origin[1]+length[1])/origin[1]) * tick_label_offset[1],
                     label,
                     fontsize=font_size,
                     ha='center',
@@ -179,9 +182,9 @@ def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_of
 
             ax.plot(
                 [np.emath.logn(
-                    log_base, origin[0] + length[0] * axis_origin[1]),
+                    log_base, abs(origin[0] + length[0] * axis_origin[1])),
                  np.emath.logn(
-                    log_base, origin[0] + length[0] * axis_origin[1]) + tick_length[axis_direction_id] * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
+                    log_base, abs(origin[0] + length[0] * axis_origin[1])) + tick_length[axis_direction_id] * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
                 [value] * 2,
                 color=color,
                 linewidth=line_width,
@@ -189,7 +192,7 @@ def plot_2d_tick(ax, axis_direction_id, value, label, tick_length, tick_label_of
             )
 
             ax.text(np.emath.logn(
-                    log_base, origin[0] + length[0] * axis_origin[1]) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value,
+                    log_base, abs(origin[0] + length[0] * axis_origin[1])) - np.emath.logn(log_base, (origin[0]+length[0])/origin[0]) * tick_label_offset[0], value,
                     label,
                     fontsize=font_size,
                     ha='center',

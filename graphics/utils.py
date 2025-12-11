@@ -503,7 +503,6 @@ def plot_2d_axis(
     n_minor_ticks=None,
     tick_label_format=const.default_label_format,
     minor_tick_length=[const.default_minor_tick_length] * 2,
-    custom_ticks=[[], []],
     clip_on=False,
     axis_label_angle=0,
     tick_length=const.default_tick_length,
@@ -661,9 +660,9 @@ def plot_2d_axis(
                         ax.plot(
                             [minor_tick] * 2,
                             [np.emath.logn(
-                                log_base, origin[1] + length[1] * axis_origin[0]),
+                                log_base, abs(origin[1] + length[1] * axis_origin[0])),
                                 np.emath.logn(
-                                log_base, origin[1] + length[1] * axis_origin[0]) + minor_tick_length[direction_id] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])],
+                                log_base, abs(origin[1] + length[1] * axis_origin[0])) + minor_tick_length[direction_id] * np.emath.logn(log_base, (origin[1] + length[1])/origin[1])],
                             color=color, linewidth=line_width,
                             zorder=0)
 
@@ -708,7 +707,7 @@ def plot_2d_axis(
 
             # plot the axis
             ax.plot([axis_min, axis_max], [np.emath.logn(
-                log_base, origin[1] + length[1] * axis_origin[0])] * 2, color=color, linewidth=line_width, zorder=0)
+                log_base, abs(origin[1] + length[1] * axis_origin[0]))] * 2, color=color, linewidth=line_width, zorder=0)
 
             # plot the axis label
             if axis_label is not None:
@@ -717,7 +716,7 @@ def plot_2d_axis(
                     (np.emath.logn(
                         log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0,
                     np.emath.logn(
-                        log_base, origin[1] + length[1] * axis_origin[0]) - np.emath.logn(
+                        log_base, abs(origin[1] + length[1] * axis_origin[0])) - np.emath.logn(
                         log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
@@ -756,9 +755,9 @@ def plot_2d_axis(
 
                         ax.plot(
                             [np.emath.logn(
-                                log_base, origin[0] + length[0] * axis_origin[1]),
+                                log_base, abs(origin[0] + length[0] * axis_origin[1])),
                                 np.emath.logn(
-                                log_base, origin[0] + length[0] * axis_origin[1]) + minor_tick_length[direction_id] * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
+                                log_base, abs(origin[0] + length[0] * axis_origin[1])) + minor_tick_length[direction_id] * np.emath.logn(log_base, (origin[0] + length[0])/origin[0])],
                             [minor_tick] * 2,
                             color=color, linewidth=line_width,
                             zorder=0)
@@ -804,14 +803,14 @@ def plot_2d_axis(
 
             # plot the axis
             ax.plot([np.emath.logn(
-                log_base, origin[0] + length[0] * axis_origin[1])] * 2,
+                log_base, abs(origin[0] + length[0] * axis_origin[1]))] * 2,
                 [axis_min, axis_max], color=color, linewidth=line_width, zorder=0)
 
             # plot the  axis label
             if axis_label is not None:
 
                 ax.text(np.emath.logn(
-                        log_base, origin[0] + length[0] * axis_origin[1]) - np.emath.logn(
+                        log_base, abs(origin[0] + length[0] * axis_origin[1])) - np.emath.logn(
                         log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
                         (np.emath.logn(
                             log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2.0,
