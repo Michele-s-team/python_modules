@@ -321,14 +321,14 @@ Input values:
 
 
 def plot_3d_axes(ax, origin, length,
-                 scale_factor=[1, 1, 1],
+                 scale_factor=[1] * 3,
                  axis_origin=None,
-                 axis_label=['', '', ''],
-                 axis_label_offset=[0, 0, 0],
+                 axis_label=[''] * 3,
+                 axis_label_offset=[0] * 3,
                  tick_length=[const.default_tick_length] * 3,
-                 tick_label_offset=[0, 0, 0],
+                 tick_label_offset=[0] * 3,
                  tick_label_angle=[const.default_tick_label_angle] * 3,
-                 margin=[0, 0, 0],
+                 margin=[0] * 3,
                  tick_label_format=[const.default_label_format,
                                     const.default_label_format, const.default_label_format],
                  font_size=[const.default_font_size] * 3,
@@ -341,7 +341,7 @@ def plot_3d_axes(ax, origin, length,
                  plot_label_font_size=const.default_font_size,
                  z_order=const.default_z_order,
                  colorbar_axis=None,
-                 colorbar_axis_offset=[0]*2):
+                 colorbar_axis_offset=[0] * 2):
 
     # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
     if axis_origin is None:
