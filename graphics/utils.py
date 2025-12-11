@@ -1373,9 +1373,9 @@ def plot_2d_axes(ax, origin, length,
                      const.default_label_format, const.default_label_format],
                  font_size=[const.default_font_size, const.default_font_size],
                  z_order=0,
-                 axis_origin=None,
+                 axis_origin=[None] * 2,
                  tick_label_angle=[0, 0],
-                 axis_bounds=None,
+                 axis_bound=[None] * 2,
                  margin=[0, 0],
                  axis_label=[None, None],
                  plot_label_offset=[0, 0],
@@ -1388,18 +1388,19 @@ def plot_2d_axes(ax, origin, length,
 
     dim = 2
 
-    # if axis_origin has not been specified, set it equal to origin, the origin of the axes' values
-    if axis_origin is None:
+    if axis_origin is ([None] * 2):
         axis_origin = [0] * dim
-
-    set_2d_axes_limits(ax, origin, length,
-                       axis_origin=axis_origin,
-                       axis_bounds=axis_bounds,
-                       margin=margin)
 
     # plot the axes
     for i in range(2):
 
+        # set the limits of the axis
+        set_2d_axis_limits(ax, origin, length, i,
+                           axis_origin=axis_origin,
+                           axis_bound=axis_bound,
+                           margin=margin)
+
+        # plot the axis
         plot_2d_axis(
             ax, origin, length, i,
             scale=scale[i],
@@ -1859,48 +1860,88 @@ Input values:
 '''
 
 
-def set_2d_axes_limits(ax, origin, length,
-                       axis_origin=None,
-                       axis_bounds=None,
-                       margin=[0]*2
+def set_2d_axis_limits(ax, origin, length, direction_id,
+                       axis_origin=[None] * 2,
+                       axis_bound=[None] * 2,
+                       margin=[0] * 2
                        ):
 
-    if axis_bounds is None:
+    if axis_bound == ([None] * 2):
         # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
 
-        # gr.set_2d_axes_limits(ax, [0, 0], [parameters['L'], parameters['h']], [0, 0])
+        if direction_id == 0:
 
-        ax.set(
-            xlim=[
-                min(
-                    origin[0],
-                    (origin[0] + length[0] * axis_origin[1])
-                ),
-                max(
-                    origin[0] + length[0] * (1 + margin[0]),
-                    (origin[0] + length[0] * axis_origin[1])
-                )
-            ],
-            ylim=[
-                min(
-                    origin[1],
-                    (origin[1] + length[1] * axis_origin[0]),
-                ),
-                max(
-                    origin[1] + length[1]*(1 + margin[1]),
-                    (origin[1] + length[1] * axis_origin[0])
-                )
-            ]
-        )
+            set_axis_limit(
+                ax,
+                [
+                    min(
+                        origin[0],
+                        origin[0] + length[0] * axis_origin[1]
+                    ),
+                    max(
+                        origin[0] + length[0] * (1 + margin[0]),
+                        origin[0] + length[0] * axis_origin[1]
+                    )
+                ],
+                direction_id
+            )
+
+        elif direction_id == 1:
+
+            set_axis_limit(
+                ax,
+                [
+                    min(
+                        origin[1],
+                        origin[1] + length[1] * axis_origin[0],
+                    ),
+                    max(
+                        origin[1] + length[1]*(1 + margin[1]),
+                        origin[1] + length[1] * axis_origin[0]
+                    )
+                ],
+                direction_id
+            )
 
     else:
         # axis_bounds have been specified -> set the axis bounds according to them
-        ax.set(
-            xlim=[axis_bounds[0][0] - length[0] * margin[0],
-                  axis_bounds[0][1] + length[0] * margin[0]],
-            ylim=[axis_bounds[1][0] - length[1] * margin[1],
-                  axis_bounds[1][1] + length[1] * margin[1]]
-        )
+
+        if direction_id == 0:
+
+            set_axis_limit(
+                ax,
+                [axis_bound[0][0] - length[0] * margin[0],
+                 axis_bound[0][1] + length[0] * margin[0]],
+                direction_id
+            )
+
+        elif direction_id == 1:
+
+            set_axis_limit(
+                ax,
+                [axis_bound[1][0] - length[1] * margin[1],
+                 axis_bound[1][1] + length[1] * margin[1]],
+                direction_id
+            )
+
+
+'''
+set the limits of a set of axes (2d or 3d)
+Input values: 
+    - 'ax': the set of axes
+    - 'min_max' : [min, max], the min and max values to be set
+    - 'direction_id': the direction of the axis in the set of axes for which the direction will be set
+'''
+
+
+def set_axis_limit(ax, min_max, direction_id):
+
+    if direction_id == 0:
+        ax.set_xlim(min_max)
+    elif direction_id == 1:
+        ax.set_ylim(min_max)
+    elif direction_id == 2:
+        ax.set_ylim(min_max)
 
 
 '''
