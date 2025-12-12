@@ -717,7 +717,7 @@ def plot_2d_axis(
                         log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2.0,
                     np.emath.logn(
                         log_base, abs(origin[1] + length[1] * axis_origin[0])) - np.emath.logn(
-                        log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[1],
+                        log_base, (origin[1] + length[1])/origin[1]) * axis_label_offset[0],
                     rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
 
         elif direction_id == 1:
@@ -811,7 +811,7 @@ def plot_2d_axis(
 
                 ax.text(np.emath.logn(
                         log_base, abs(origin[0] + length[0] * axis_origin[1])) - np.emath.logn(
-                        log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[0],
+                        log_base, (origin[0] + length[0])/origin[0]) * axis_label_offset[1],
                         (np.emath.logn(
                             log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2.0,
                         rf'${axis_label}$', fontsize=font_size, ha='center', va='center', rotation=axis_label_angle, zorder=0)
@@ -1925,6 +1925,21 @@ def set_2d_axis_limits(ax, origin, length, direction_id,
             )
 
 
+'''
+Set axis limits for a 2D plot with margins in logarithmic space. Margins are applied proportionally to the logarithmic span of each axis.
+For example, a margin of 0.1 adds 10% of the log-space range on each side.
+
+Input values:
+    * Mandatory: 
+        - ax : matplotlib.axes.Axes
+            The axes object to modify.
+        - min_max : list of lists: Minimum and maximum values for each axis: [[x_min, x_max], [y_min, y_max]].
+    * Optional
+        -  margin : list of lists, margin fractions in log space for each axis: [[x_left, x_right], [y_bottom, y_top]].
+        -  log_base : float, base for logarithmic calculations.
+'''
+
+
 def set_2d_axis_limits_margin(ax, min_max,
                               margin=[[0] * 2]*2,
                               log_base=const.default_log_base):
@@ -1944,10 +1959,10 @@ def set_2d_axis_limits_margin(ax, min_max,
 
 
 '''
-set the limits of a set of axes (2d or 3d)
-Input values: 
+set the limits of a set of axes(2d or 3d)
+Input values:
     - 'ax': the set of axes
-    - 'min_max' : [min, max], the min and max values to be set
+    - 'min_max': [min, max], the min and max values to be set
     - 'direction_id': the direction of the axis in the set of axes for which the direction will be set
 '''
 
