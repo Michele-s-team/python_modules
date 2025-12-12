@@ -1421,13 +1421,34 @@ def plot_2d_axes(ax, origin, length,
         )
 
     if plot_label != None:
-        # draw the panel label
-        ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
+        # draw the plot label
+
+        if scale == (['lin'] * 2):
+
+            ax.text(origin[0] + plot_label_offset[0] * length[0], origin[1] + plot_label_offset[1] * length[1],
+                    rf'${plot_label}$',
+                    fontsize=plot_label_font_size,
+                    ha='center',
+                    va='center',
+                    zorder=z_order)
+
+        elif scale == (['log'] * 2):
+
+            pass
+
+            ax.text(
+                np.emath.logn(log_base[0], origin[0]) + np.emath.logn(
+                    log_base[0], (origin[0] + length[0])/origin[0]) * plot_label_offset[0],
+                np.emath.logn(log_base[1], origin[1]) + np.emath.logn(
+                    log_base[1], (origin[1] + length[1])/origin[1]) * plot_label_offset[1],
                 rf'${plot_label}$',
                 fontsize=plot_label_font_size,
                 ha='center',
                 va='center',
                 zorder=z_order)
+
+        else:
+            print('Error: scale does not allow to position axis label!')
 
     if colorbar_axis is not None:
 
@@ -1930,7 +1951,7 @@ Set axis limits for a 2D plot with margins in logarithmic space. Margins are app
 For example, a margin of 0.1 adds 10% of the log-space range on each side.
 
 Input values:
-    * Mandatory: 
+    * Mandatory:
         - ax : matplotlib.axes.Axes
             The axes object to modify.
         - min_max : list of lists: Minimum and maximum values for each axis: [[x_min, x_max], [y_min, y_max]].
