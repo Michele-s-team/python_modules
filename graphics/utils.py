@@ -1925,6 +1925,24 @@ def set_2d_axis_limits(ax, origin, length, direction_id,
             )
 
 
+def set_2d_axis_limits_margin(ax, min_max,
+                              margin=[[0] * 2]*2,
+                              log_base=const.default_log_base):
+
+    ax.set_xlim(
+        np.emath.logn(log_base, min_max[0][0]) - margin[0][0] * (
+            np.emath.logn(log_base, min_max[0][1]/min_max[0][0])),
+        np.emath.logn(log_base, min_max[0][1]) + margin[0][1] * (
+            np.emath.logn(log_base, min_max[0][1]/min_max[0][0]))
+    )
+    ax.set_ylim(
+        np.emath.logn(log_base, min_max[1][0]) - margin[1][0] * (
+            np.emath.logn(log_base, min_max[1][1]/min_max[1][0])),
+        np.emath.logn(log_base, min_max[1][1]) + margin[1][1] * (
+            np.emath.logn(log_base, min_max[1][1]/min_max[1][0]))
+    )
+
+
 '''
 set the limits of a set of axes (2d or 3d)
 Input values: 
