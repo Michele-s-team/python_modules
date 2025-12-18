@@ -1,3 +1,4 @@
+import system.paths as paths
 import ast
 import csv
 import os
@@ -9,7 +10,6 @@ module_path = '/Users/michelecastellana/Documents/paper-membrane/figures/modules
 sys.path.append(module_path)
 sys.path.append(module_path)
 
-import system.paths as paths
 
 number_of_decimals = 2
 
@@ -32,6 +32,8 @@ convert time to a sting
     * 'min_s': the output will be min minutes + seconds
     * 'hr_min_s': the output will be min hours + minutes + seconds
 '''
+
+
 def time_to_string(t, format, number_of_decimals):
 
     if format == 's':
@@ -43,7 +45,10 @@ def time_to_string(t, format, number_of_decimals):
     elif format == 'min_s':
         minutes = int(t/60.0)
         seconds = t - minutes*60
-        result = rf'${minutes} \, \minute \, {seconds:.{number_of_decimals}f}\, \second$'
+        if minutes != 0:
+            result = rf'${minutes} \, \minute \, {seconds:.{number_of_decimals}f}\, \second$'
+        else:
+            result = rf'${seconds:.{number_of_decimals}f}\, \second$'
 
     elif format == 'hr_min_s':
         hours = int(t/(60.0*60.0))
@@ -51,22 +56,23 @@ def time_to_string(t, format, number_of_decimals):
         seconds = t - hours*60*60 - minutes*60
         result = rf'${hours} \hour \, {minutes} \, \minute \, {seconds:.{number_of_decimals}f}\, \second$'
 
-
-
     return result
+
 
 '''
 print the type of a variable
 Input values: 
 - x <any>: the variable
 '''
+
+
 def print_type(x, var_name=None):
     if var_name is None:
         print(f'type of variable is {type(x)}')
     else:
         print(f'type of {var_name} is {type(x)}')
-        
-        
+
+
 '''
 Read a set of parameters from a csv file
 Input values:
@@ -74,11 +80,13 @@ Input values:
 Return value:
 - the list of parameter names and values, e.g., [('L', 0.4334), ('x_p', 2.23), ('resolution', 0.01)]
 '''
-def read_parameters_from_csv_file(file_path):
-    
-    print_type(file_path,'file_path')
 
-    print(f'Reading parameters from {file_path}...',flush=True)
+
+def read_parameters_from_csv_file(file_path):
+
+    print_type(file_path, 'file_path')
+
+    print(f'Reading parameters from {file_path}...', flush=True)
 
     file = open(file_path, newline='')
 
@@ -91,10 +99,11 @@ def read_parameters_from_csv_file(file_path):
     # print(f'parameter_values: {[string_to_value(parameter_value) for parameter_value in parameter_values]}')
 
     file.close()
-    print('... close.',flush=True)
+    print('... close.', flush=True)
 
-    result = dict([(parameter_name, string_to_value(parameter_value)) for parameter_name, parameter_value in zip(parameter_names, parameter_values)])
-    print(f'Read parameters : {result}.',flush=True)
+    result = dict([(parameter_name, string_to_value(parameter_value))
+                  for parameter_name, parameter_value in zip(parameter_names, parameter_values)])
+    print(f'Read parameters : {result}.', flush=True)
 
     return result
 
@@ -109,6 +118,8 @@ Example of usage:
     string_to_value('2.43')
     string_to_value('[1,2]')
 '''
+
+
 def string_to_value(value):
     value = value.strip()
 

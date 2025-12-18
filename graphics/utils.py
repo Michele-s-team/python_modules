@@ -496,7 +496,7 @@ def plot_2d_axis(
     z_order=0,
     scale='lin',
     log_base=10.0,
-    axis_origin=None,
+    axis_origin=[None]*2,
     color='black',
     axis_label_offset=[0]*2,
     tick_label_offset=[0]*2,
@@ -517,7 +517,7 @@ def plot_2d_axis(
         # plot the axis in linear scale
 
         # if axis_origin has not been specified, set it equal to the origin of the interval of the axis
-        if axis_origin is None:
+        if axis_origin == [None]*2:
             axis_origin = [0] * dim
 
         # compute ticks
@@ -1406,7 +1406,7 @@ def plot_2d_axes(ax, origin, length,
             scale=scale[i],
             log_base=log_base[i],
             tick_length=tick_length,
-            line_width=line_width,
+            line_width=line_width[i],
             axis_label=axis_label[i],
             axis_label_offset=axis_label_offset,
             axis_label_angle=axis_label_angle[i],
@@ -1889,6 +1889,10 @@ def set_2d_axis_limits(ax, origin, length, direction_id,
 
     if axis_bound == ([None] * 2):
         # axis_bounds has not been specified -> set the axis bounds accoding to axis_origin, origin and length, in such a way that the axes will be visible
+
+        if axis_origin == ([None] * 2):
+            # axis_origin has not been specified -> set it to [0]*2
+            axis_origin = [0] * 2
 
         if direction_id == 0:
 
