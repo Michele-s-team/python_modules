@@ -1089,6 +1089,35 @@ def tabulate_analytical_curve(f, t_min, t_max, n_bins, mask=None):
 
 
 '''
+tabulate a two-dimensional curve
+Input values: 
+    - 'f': the analytical function desccribing the curve: f(t) = (x(t), y(t))
+    - 't_min', 't_max', the minimum and maximum values of the curve parameter t
+    - 'n_bins': the nunber of bins in which the interval[t_min, t_max] will be divided
+
+Return values:
+    - the tables of the coordinates [x, y] of the curve, and of the curvilinear coordinate t
+
+'''
+
+
+def tabulate_analytical_curve_2d(f, t_min, t_max, n_bins):
+
+    t = np.mgrid[t_min:t_max:n_bins * 1j]
+
+    X, Y = [], []
+
+    for tau in t:
+        X.append(f(tau)[0])
+        Y.append(f(tau)[1])
+
+    X = np.array(X)
+    Y = np.array(Y)
+
+    return X, Y, t
+
+
+'''
 plot a curve defined by an analytical function
 - 'ax': the axes where the plot will be made
 - 'f': the parametric function f(t) = (x(t), y(t), z(t)) of the curve
@@ -1112,6 +1141,63 @@ def plot_analytical_curve(ax, f, t_min, t_max, n_bins, color, legend, z_order, l
     else:
         curve = ax.plot(X, Y, Z, color=color, zorder=z_order,
                         linewidth=line_width, label=legend, linestyle=style, alpha=alpha)
+
+    return curve
+
+
+'''
+plot a two-dimensional curve defined by an analytical function
+Input values: 
+    * Mandatory:
+        - 'ax': the axes where the plot will be made
+        - 'f': the parametric function f(t) = (x(t), y(t), z(t)) of the curve
+        - 't_min', 't_max', the minimum and maximum values of the curve parameter t
+        - 'n_bins': the nunber of bins in which the interval will be divided
+    * Optional: 
+        - 'color': the color of the curve
+        - 'z_order': the z-order of the curve
+        - 'line_width': the linewidth of the curve
+        - 'style': the linestyle of the curve
+        - 'alpha': the transparency of the curve
+        - 'clip_on': whether the curve should be clipped if it falls outside the domain defined by the axes
+
+Return values:
+    - the plotted curve
+'''
+
+
+def plot_analytical_curve_2d(ax, f, t_min, t_max, n_bins,
+                             color=const.default_color,
+                             legend='',
+                             z_order=const.default_z_order,
+                             line_width=const.default_line_width,
+                             style=None,
+                             alpha=const.default_alpha,
+                             clip_on=False
+                             ):
+
+    X, Y, _ = tabulate_analytical_curve_2d(f, t_min, t_max, n_bins)
+
+    if style is None:
+
+        curve = ax.plot(X, Y,
+                        color=color,
+                        zorder=z_order,
+                        linewidth=line_width,
+                        label=legend,
+                        alpha=alpha,
+                        clip_on=clip_on)
+
+    else:
+
+        curve = ax.plot(X, Y,
+                        color=color,
+                        zorder=z_order,
+                        linewidth=line_width,
+                        label=legend,
+                        linestyle=style,
+                        alpha=alpha,
+                        clip_on=clip_on)
 
     return curve
 
