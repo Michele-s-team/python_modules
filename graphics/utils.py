@@ -1579,6 +1579,7 @@ Input values
         - 'plot_label': the plot label of the curve
         - 'alpha': the transparency
         - 'z_order': the z order with which the curve will be drawn
+        - 'legend': the text of the legend of the curve
 '''
 
 
@@ -1587,11 +1588,6 @@ def plot_curve_grid(ax, X,
                     line_color=const.default_color,
                     line_width=const.default_line_width,
                     legend='',
-                    legend_position=const.default_legend_position,
-                    legend_inner_location=const.default_legend_location,
-                    legend_font_size=const.default_font_size,
-                    legend_alpha=const.default_alpha,
-                    legend_frame=False,
                     alpha=const.default_alpha,
                     clip_on=False,
                     z_order=const.default_z_order):
@@ -1623,29 +1619,6 @@ def plot_curve_grid(ax, X,
                             clip_on=clip_on)
         ax.add_collection(lc)
         ax.autoscale()
-
-    if legend != '':
-        # Get axis bounds to convert normalized position to data coordinates
-        axis_min_max = [np.sort(ax.get_xlim()), np.sort(ax.get_ylim())]
-
-        # Convert normalized legend_position (0-1) to data coordinates
-        legend_data_position = [
-            axis_min_max[0][0] + (axis_min_max[0][1] -
-                                  axis_min_max[0][0]) * legend_position[0],
-            axis_min_max[1][0] + (axis_min_max[1][1] -
-                                  axis_min_max[1][0]) * legend_position[1]
-        ]
-
-        # Create a new legend with data coordinates
-        legend_object = Legend(ax, [line], [text.to_latex_equation(legend)],
-                               bbox_to_anchor=legend_data_position,
-                               bbox_transform=ax.transData,  # use data coordinates
-                               loc=legend_inner_location,
-                               frameon=legend_frame,
-                               fontsize=legend_font_size,
-                               framealpha=legend_alpha)
-
-        ax.add_artist(legend_object)
 
 
 '''
