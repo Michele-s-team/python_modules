@@ -24,17 +24,21 @@ def empty_texts(figure):
     for text in figure.findobj(mpl.text.Text):
         text.set_text('')
 
+
 '''
 print a text in a given color
 Input values: 
 - 'text': a string
 - 'color': a colorama color, such as RED
 '''
+
+
 def print_text_color(text, color):
-        
+
     colorama_color = color_utils.color_map.get(color)
-    
+
     print(f'{colorama_color}{text}{col.Style.RESET_ALL}')
+
 
 '''
 convert the floating-point number 'x' to latex in format 'format'
@@ -45,26 +49,41 @@ Input values:
 Return values: 
     - 'latex_string': the latex string containing 'x' converted. If 'x' is so large/small that it is in scientific format, it will be converted to string by using the scientific format even if 'format' = 'f'
 '''
+
+
 def float_to_latex(x, format):
-    
+
     if (format == 'f'):
         #  the chosen format is floating point
-         
+
         if 'e' in str(x):
             # when the value 'x' is converted to string, it contains an 'e' -> 'x' is so small / large that it is written in scientific format -> convert it by using scientific format
             latex_string = cal.to_latex_scientific(x)
-        else:   
+        else:
             # convert 'x' by using floating-point format
-             
+
             latex_string = fr'${x:.3g}$'
-            
+
     elif (format == 'e'):
-        # the chosen format is scientific 
-        
+        # the chosen format is scientific
+
         latex_string = cal.to_latex_scientific(x)
     else:
-        
+
         print_text_color('Error: format is not valid!', 'red')
         latex_string = ''
 
     return latex_string
+
+
+'''
+wrap a string with delimiters so it becomes a valid latex equation
+Input values: 
+    - 'string': the string to be wrapped
+Return values
+    - the wrapped string 
+'''
+
+
+def to_latex_equation(string):
+    return f'${string}$'

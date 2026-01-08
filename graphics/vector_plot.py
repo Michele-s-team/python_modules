@@ -8,9 +8,9 @@ from scipy.interpolate import griddata
 import calculus.geometry as geo
 import constants.utils as const
 import graphics.arrow as arr
-import list.column_labels as clab
 import graphics.utils as gr
-
+import list.column_labels as clab
+import text.utils as txt
 
 '''
 tabulate a vector field given by an analytical expression
@@ -228,7 +228,7 @@ def plot_1d_vector_field(ax, grid_r, grid_v,
             arrow_position[0] + legend_text_arrow_space *
             (axis_min_max[0][1] - axis_min_max[0][0]),
             arrow_position[1],
-            legend,
+            txt.to_latex_equation(legend),
             fontsize=legend_font_size,
             ha='center',
             va='center',
