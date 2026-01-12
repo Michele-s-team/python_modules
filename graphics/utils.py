@@ -1160,6 +1160,7 @@ Input values:
         - 'style': the linestyle of the curve
         - 'alpha': the transparency of the curve
         - 'clip_on': whether the curve should be clipped if it falls outside the domain defined by the axes
+        - 'dashes': the type of dah with which the curve will be plotted
 
 Return values:
     - the plotted curve
@@ -1173,7 +1174,8 @@ def plot_analytical_curve_2d(ax, f, t_min, t_max, n_bins,
                              line_width=const.default_line_width,
                              style=None,
                              alpha=const.default_alpha,
-                             clip_on=False
+                             clip_on=False,
+                             dashes=None
                              ):
 
     X, Y, _ = tabulate_analytical_curve_2d(f, t_min, t_max, n_bins)
@@ -1198,6 +1200,10 @@ def plot_analytical_curve_2d(ax, f, t_min, t_max, n_bins,
                         linestyle=style,
                         alpha=alpha,
                         clip_on=clip_on)
+
+    # Apply custom dashes if provided
+    if dashes is not None:
+        curve[0].set_dashes(dashes)
 
     return curve
 
