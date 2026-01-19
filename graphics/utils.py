@@ -1600,7 +1600,7 @@ def plot_curve_grid(ax, X,
 
     if color_map is None:
 
-        line = ax.plot(X[:, 0], X[:, 1], '-',
+        ax.plot(X[:, 0], X[:, 1], '-',
                        color=line_color,
                        linewidth=line_width,
                        label=f'${legend}$',
@@ -1612,9 +1612,6 @@ def plot_curve_grid(ax, X,
         # Create line segments
         points = X.reshape(-1, 1, 2)
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
-
-        # print(f'segments = {segments}')
-        # print(f'points = {points}')
 
         # Create line collection with colors
         lc = LineCollection(segments,
