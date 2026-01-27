@@ -5,6 +5,7 @@ import pandas as pd
 from scipy.interpolate import CloughTocher2DInterpolator
 from scipy.interpolate import RBFInterpolator
 from scipy.interpolate import griddata
+from scipy.interpolate import interp1d
 
 import calculus.geometry as geo
 import constants.utils as const
@@ -507,15 +508,155 @@ def interpolating_function_2d_vector_field(data_v,
 
 
 '''
-interpolate a two-dimensional vector field living on a plane
+interpolate a two-dimensional vector field living on a square region, by treating separately the interpolation on the bottom edge of the square. On this edge, the vector field is interpolated with a one-dimensional interpolation, while on the rest of the square a two-dimensional RBF interpolation is used.
 Input values:
-- 'data_v': data where the values of the vector field, on an arbitrary set of points, xy, are stored
-- 'min', 'maxs': limits of the rectangular region where to interpolate
-- 'n_bins_v': number of bins along each axis of the rectangular region where to interpolate
-- 'label_x_column': label of the x axis in data_v
-- 'label_y_column': label of the y axis in data_v
-- 'label_v_column': label of the vector field in data_v
+    * Mandatory: 
+        - 'data_v': data where the values of the vector field, on an arbitrary set of points, xy, are stored
+        - 'min', 'maxs': limits of the rectangular region where to interpolate
+        - 'n_bins_v': number of bins along each axis of the rectangular region where to interpolate
+    * Optional:
+        - 'right_edge_x': x value around which points are considered to be on the right edge of the square
+        - 'bottom_edge_epsilon': y value below which points are considered to be on the bottom edge of the square
+        - 'right_edge_epsilon': y value below which points are considered to be on the right edge of the square
+        - 'label_x_column': label of the x axis in data_v
+        - 'label_y_column': label of the y axis in data_v
+        - 'label_v_column': label of the vector field in data_v
 
+Return values:
+    - 'X' the table of the x coordinates of interpolated points
+    - 'Y' the table of the y coordinates of interpolated points
+    - 'v_x' the table of the x components of the interpolated vector field
+    - 'v_y' the table of the y components of the interpolated vector field
+    - 'grid_norm_v' the table of the norm of the interpolated vector field
+    - 'norm_v_min' the minimum of the norm of the interpolated vector field
+    - 'norm_v_max' the maximum of the norm of the interpolated vector field
+    - 'norm_v' the normalization function for color maps, with respect to the norm of the
+'''
+
+def interpolate_2d_vector_field_layer(data_v, mins, maxs, n_bins_v,
+                                      right_edge_x=None,
+                                      bottom_edge_epsilon=const.default_interpolation_layer_threshold,
+                                      right_edge_epsilon=const.default_interpolation_layer_threshold,
+                                      label_x_column=':0',
+                                      label_y_column=':1', 
+                                      label_v_column='f'):
+
+    
+    X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins_v[0]), 
+                       np.linspace(mins[1], maxs[1], n_bins_v[1]),
+                       indexing='ij')
+    
+    # Build empty arrays of v_x and v_y
+    v_x = np.zeros_like(X)
+    v_y = np.zeros_like(Y)
+    
+    # Mask to track which grid points have been filled
+    filled_mask = np.zeros(X.shape, dtype=bool)
+    
+    # ==========================================
+    # 1. BOTTOM EDGE: 1D interpolation along x
+    # ==========================================
+    bottom_data = data_v[data_v[label_y_column] < bottom_edge_epsilon]
+    
+    if len(bottom_data) > 0:
+        # Extract bottom layer data
+        x_bottom = bottom_data[label_x_column].values
+        v_x_bottom = bottom_data[label_v_column + label_x_column].values
+        v_y_bottom = bottom_data[label_v_column + label_y_column].values
+        
+        # Sort by x
+        sort_idx = np.argsort(x_bottom)
+        x_bottom = x_bottom[sort_idx]
+        v_x_bottom = v_x_bottom[sort_idx]
+        v_y_bottom = v_y_bottom[sort_idx]
+        
+        # Create 1D interpolation functions
+        interp_v_x = interp1d(x_bottom, v_x_bottom, kind='linear', 
+                             fill_value='extrapolate')
+        interp_v_y = interp1d(x_bottom, v_y_bottom, kind='linear',
+                             fill_value='extrapolate')
+        
+        # Fill bottom row (first column in second index, all rows in first index)
+        v_x[:, 0] = interp_v_x(X[:, 0])
+        v_y[:, 0] = interp_v_y(X[:, 0])
+        filled_mask[:, 0] = True
+    
+    # ==========================================
+    # 2. RIGHT EDGE: 1D interpolation along y
+    # ==========================================
+    if right_edge_x is not None and right_edge_epsilon is not None:
+        # Filter data near right edge
+        right_data = data_v[np.abs(data_v[label_x_column] - right_edge_x) < right_edge_epsilon]
+        
+        if len(right_data) > 0:
+            # Extract right edge data
+            y_right = right_data[label_y_column].values
+            v_x_right = right_data[label_v_column + label_x_column].values
+            v_y_right = right_data[label_v_column + label_y_column].values
+            
+            # Sort by y
+            sort_idx = np.argsort(y_right)
+            y_right = y_right[sort_idx]
+            v_x_right = v_x_right[sort_idx]
+            v_y_right = v_y_right[sort_idx]
+            
+            # Create 1D interpolation functions along y
+            interp_v_x = interp1d(y_right, v_x_right, kind='linear',
+                                 fill_value='extrapolate')
+            interp_v_y = interp1d(y_right, v_y_right, kind='linear',
+                                 fill_value='extrapolate')
+            
+            # Fill right column (last row in first index, all columns in second index)
+            v_x[-1, :] = interp_v_x(Y[-1, :])
+            v_y[-1, :] = interp_v_y(Y[-1, :])
+            filled_mask[-1, :] = True
+    
+    # ==========================================
+    # 3. INTERIOR: 2D RBF interpolation
+    # ==========================================
+
+    # Build points array for RBF
+    points = []
+    points.extend([list(element) for element in zip(
+        data_v[label_x_column], data_v[label_y_column])])
+
+    rbf_x = RBFInterpolator(points, data_v[label_v_column + label_x_column].values,
+                            kernel='thin_plate_spline')
+    rbf_y = RBFInterpolator(points, data_v[label_v_column + label_y_column].values,
+                            kernel='thin_plate_spline')
+    
+    # Interpolate interior points (those not already filled)
+    interior_mask = ~filled_mask
+    if np.any(interior_mask):
+        interior_points = np.column_stack([X[interior_mask], Y[interior_mask]])
+        v_x[interior_mask] = rbf_x(interior_points)
+        v_y[interior_mask] = rbf_y(interior_points)
+
+    # Compute norms
+    grid_norm_v, norm_v_min, norm_v_max, norm_v = norm_vector_field([v_x, v_y])
+
+    return X, Y, v_x, v_y, grid_norm_v, norm_v_min, norm_v_max, norm_v
+
+'''
+interpolate a two-dimensional vector field living on a plane
+
+Input values:
+    - 'data_v': data where the values of the vector field, on an arbitrary set of points, xy, are stored
+    - 'min', 'maxs': limits of the rectangular region where to interpolate
+    - 'n_bins_v': number of bins along each axis of the rectangular region where to interpolate
+    - 'label_x_column': label of the x axis in data_v
+    - 'label_y_column': label of the y axis in data_v
+    - 'label_v_column': label of the vector field in data_v
+
+Return values: 
+    - 'X' the table of the x coordinates of interpolated points
+    - 'Y' the table of the y coordinates of interpolated points
+    - 'v_x' the table of the x components of the interpolated vector field
+    - 'v_y' the table of the y components of the interpolated vector field
+    - 'grid_norm_v' the table of the norm of the interpolated vector field
+    - 'norm_v_min' the minimum of the norm of the interpolated vector field
+    - 'norm_v_max' the maximum of the norm of the interpolated vector field
+    - 'norm_v' the normalization function for color maps, with respect to the norm of the
 '''
 
 

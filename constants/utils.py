@@ -45,3 +45,5 @@ default_axis_position = [0]*2
 default_axis_size = [1]*2
 default_axis_position_size = [default_axis_position[0],
                               default_axis_position[1], default_axis_size[0], default_axis_size[1]]
+
+default_interpolation_layer_threshold = 1e-3
