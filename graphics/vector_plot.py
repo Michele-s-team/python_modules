@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.colors as mcolors
+from matplotlib.path import Path
 import pandas as pd
 from scipy.interpolate import CloughTocher2DInterpolator
 from scipy.interpolate import RBFInterpolator
@@ -714,3 +715,35 @@ def plot_analytical_vector_field_on_curve(ax, v, gamma, min, max, n_bins, scale_
                            0, 0, z_min],
                        [1, 1, scale_factor_z], threshold_arrow_length,
                        line_width, color, alpha, z_order)
+
+'''
+set both components of a vector field to a value inside a polygonal region
+Input values: 
+    * Mandatory:
+        - 'polygon_points': list of the vertices of the polygon
+        - 'R': [X, Y] grid where the vector field is defined
+        - 'V': [V_x, V_y] vector field defined on the grid R
+    * Optional:
+        - 'value': value to set inside the polygon (default: np.nan)
+'''
+def set_in_polygon(polygon_points, R, V, 
+                   value=np.nan):
+
+    # Create a Path object from the polygon vertices
+    polygon_path = Path(polygon_points)
+
+    # Create a 2D array of all (x, y) points from your grid
+    # Flatten X and Y to 1D arrays, then stack them
+    points = np.column_stack((R[0].flatten(), R[1].flatten()))
+
+    # Check which points are inside the polygon
+    inside_mask = polygon_path.contains_points(points)
+
+    # Reshape the mask back to the grid shape
+    inside_mask = inside_mask.reshape(R[0].shape)
+
+    # Set V_x and V_y to NaN where points are inside the polygon
+    V[0][inside_mask] = value
+    V[0][inside_mask] = value
+
+
