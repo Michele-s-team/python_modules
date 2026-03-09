@@ -922,15 +922,11 @@ def set_between_polygons(polygon_points_a, polygon_points_b, R, V,
     '''
     points = np.column_stack((R[0].flatten(), R[1].flatten()))
 
-    print(f'points = {points}')
-
     inside_a = Path(polygon_points_a).contains_points(points).reshape(R[0].shape)
     inside_b = Path(polygon_points_b).contains_points(points).reshape(R[0].shape)
 
     # Region between polygons a and b: inside one but not the other
     between_a_and_b = inside_a ^ inside_b
-
-    print(f'V[0] = {V[0]}')
 
     V[0][between_a_and_b] = value
     V[1][between_a_and_b] = value 
