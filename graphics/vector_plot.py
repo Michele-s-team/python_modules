@@ -888,3 +888,51 @@ def set_in_polygon(polygon_points, R, V,
     V[1][inside_mask] = value
 
 
+'''
+set componenta of a vector field equal to a value in a region delimited by two polygons
+Input values: 
+    * Mandatory:
+        - 'polygon_points_a', 'polygon_points_b': list of the vertices of  polygon_a and polygon_b, respectively
+        - 'R': [X, Y] grid where the vector field is defined
+        - 'V': [V_x, V_y] vector field defined on the grid R
+    * Optional:
+        - 'value': value to set inside the polygon (default: np.nan)
+'''
+def set_between_polygons(polygon_points_a, polygon_points_b, R, V,
+                         value=np.nan):
+
+
+    '''
+    R[0] and R[1] are in this format
+        R[0] (X):          R[1] (Y):
+        [[0, 1, 2],        [[0, 0, 0],
+        [0, 1, 2],         [1, 1, 1],
+        [0, 1, 2]]         [2, 2, 2]]
+
+    and here they are reshaped as follows and written into points
+
+        points = [
+            [0, 0],
+            [0, 1],
+            [0, 2],
+            [1, 0],
+            [1, 1],
+            ...
+        ]
+    '''
+    points = np.column_stack((R[0].flatten(), R[1].flatten()))
+
+    print(f'points = {points}')
+
+    inside_a = Path(polygon_points_a).contains_points(points).reshape(R[0].shape)
+    inside_b = Path(polygon_points_b).contains_points(points).reshape(R[0].shape)
+
+    # Region between polygons a and b: inside one but not the other
+    between_a_and_b = inside_a ^ inside_b
+
+    print(f'V[0] = {V[0]}')
+
+    V[0][between_a_and_b] = value
+    V[1][between_a_and_b] = value 
+
+
