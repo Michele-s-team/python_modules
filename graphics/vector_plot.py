@@ -883,8 +883,8 @@ def set_in_polygon(polygon_points, R, V,
     # Reshape the mask back to the grid shape
     inside_mask = inside_mask.reshape(R[0].shape)
 
-    # Set V_x and V_y to NaN where points are inside the polygon
+    # Set V_x and V_y to value where points are inside the polygon
     V[0][inside_mask] = value
-    V[0][inside_mask] = value
+    V[1][inside_mask] = value
 
 
