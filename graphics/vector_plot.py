@@ -287,9 +287,11 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                          clip_on=True,
                          threshold_arrow_length= const.default_threshold_arrow_length):
 
-    # grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
+    grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
+    
     start_end_segments = []
+    norm_values = [] 
 
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
@@ -301,18 +303,35 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                 dr_shaft = dr_shaft * shaft_length / np.linalg.norm(dr_shaft)
 
                 start_end_segments.append(
-                [
-                    [grid_r[0][i, j], grid_r[1][i, j]],
-                    np.add([grid_r[0][i, j], grid_r[1][i, j]], dr_shaft)
-                ]
-            )
+                    [
+                        [grid_r[0][i, j], grid_r[1][i, j]],
+                        np.add([grid_r[0][i, j], grid_r[1][i, j]], dr_shaft)
+                    ]
+                )
 
-    lc = LineCollection(start_end_segments,
-                        linewidths=line_width,
-                        colors=color,
-                        alpha=alpha,
-                        zorder=z_order,
-                        clip_on=clip_on)
+                norm_values.append(norm_v(grid_norm_v[i, j]))
+
+
+    if color == 'color_from_map':
+
+        lc = LineCollection(start_end_segments,
+                    linewidths=line_width,
+                    cmap=gr.cb.color_map_type,
+                    alpha=alpha,
+                    zorder=z_order,
+                    clip_on=clip_on)
+        
+        lc.set_array(np.array(norm_values))  # values in [0, 1] drive the colormap
+    
+    else:
+
+        lc = LineCollection(start_end_segments,
+            linewidths=line_width,
+            colors=color,
+            alpha=alpha,
+            zorder=z_order,
+            clip_on=clip_on)
+
     ax.add_collection(lc)
 
     '''
@@ -400,11 +419,12 @@ def min_max_vector_field(grid_v):
 compute the norm of a vector field
 
 Input values:
-- 'grid_v': the vector field on a grid, given as a list of three tables, of the form [V_x, V_y, V_z]
+    - 'grid_v': the vector field on a grid, given as a list of three tables, of the form [V_x, V_y, V_z]
+
 Return values:
-- 'grid_norm_v': the table of the norm of the vector field on the grid
-- 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field
-- 'norm_v': the normalization function for color maps, with respect to the norm of the vector field
+    - 'grid_norm_v': the table of the norm of the vector field on the grid
+    - 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field
+    - 'norm_v': the normalization function for color maps, with respect to the norm of the vector field
 '''
 
 
