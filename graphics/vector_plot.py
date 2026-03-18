@@ -283,21 +283,29 @@ Input values:
 
 
 def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order,
-                         clip_on=True):
+                         clip_on=True,
+                         threshold_arrow_length= const.default_threshold_arrow_length):
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
     start_end_segments = []
-    
+
     for i in range(len(grid_r[0])):
         for j in range(len(grid_r[1][i])):
 
-            start_end_segments.append(
+            dr_shaft = np.array([grid_v[0][i, j], grid_v[1][i, j]])
+            
+            if ((np.linalg.norm(dr_shaft) > threshold_arrow_length)):
+                
+                dr_shaft = dr_shaft * shaft_length / np.linalg.norm(dr_shaft)
+
+                start_end_segments.append(
                 [
                     [grid_r[0][i, j], grid_r[1][i, j]],
-                    np.add([grid_r[0][i, j], grid_r[1][i, j]], [grid_v[0][i, j], grid_v[1][i, j]])
+                    np.add([grid_r[0][i, j], grid_r[1][i, j]], dr_shaft)
                 ]
             )
+
 
     '''
     for i in range(len(grid_r[0])):
