@@ -308,6 +308,9 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                 dr_shaft = dr_shaft * shaft_length / np.linalg.norm(dr_shaft)
                 theta_shaft = -np.pi / 2 + math.atan2(dr_shaft[1], dr_shaft[0])
 
+                norm = norm_v(grid_norm_v[i, j])  # compute once
+
+
                 #add to start_end_segments the segment of the arrow shaft
                 start_end_segments.append(
                     [
@@ -316,7 +319,7 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                     ]
                 )
 
-                norm_values.append(norm_v(grid_norm_v[i, j]))
+                norm_values.append(norm)
 
                 # plot the heads
                 # consider heads related to a fictitious arrow pointing up
@@ -334,9 +337,14 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                 start_end_segments.append(
                     [head_start_position, np.add(head_start_position, up_head)]
                 )
+                norm_values.append(norm)
+
+
                 start_end_segments.append(
                     [head_start_position, np.add(head_start_position, down_head)]
                 )
+                norm_values.append(norm)
+
 
     if color == 'color_from_map':
 
@@ -359,25 +367,6 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
             clip_on=clip_on)
 
     ax.add_collection(lc)
-
-    '''
-    for i in range(len(grid_r[0])):
-        for j in range(len(grid_r[1][i])):
-
-            vector_norm = grid_norm_v[i, j]
-
-            if color == 'color_from_map':
-                # Get corresponding arrow_color from colormap
-                arrow_color = gr.cb.color_map_type(norm_v(vector_norm))
-            else:
-                arrow_color = color
-
-            arr.plot_2d_arrow(ax, [grid_r[0][i, j], grid_r[1][i, j]],
-                              np.add([grid_r[0][i, j], grid_r[1][i, j]],
-                                     [grid_v[0][i, j], grid_v[1][i, j]]),
-                              shaft_length, head_over_shaft_length, head_angle, line_width, arrow_color, alpha, z_order,
-                              clip_on=clip_on)
-    '''
 
 
 def plot_2d_vector_field_scaled_length(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order):
