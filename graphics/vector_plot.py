@@ -287,7 +287,7 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                          clip_on=True,
                          threshold_arrow_length= const.default_threshold_arrow_length):
 
-    grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
+    # grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
     start_end_segments = []
 
