@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib.collections import LineCollection
 import matplotlib.colors as mcolors
 from matplotlib.path import Path
 import pandas as pd
@@ -306,6 +307,13 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                 ]
             )
 
+    lc = LineCollection(start_end_segments,
+                        linewidths=line_width,
+                        colors=color,
+                        alpha=alpha,
+                        zorder=z_order,
+                        clip_on=clip_on)
+    ax.add_collection(lc)
 
     '''
     for i in range(len(grid_r[0])):
