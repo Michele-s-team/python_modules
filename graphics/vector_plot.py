@@ -292,6 +292,8 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
+    head_length = head_over_shaft_length * shaft_length
+
     
     start_end_segments = []
     norm_values = [] 
@@ -306,7 +308,7 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
                 dr_shaft = dr_shaft * shaft_length / np.linalg.norm(dr_shaft)
                 theta_shaft = -np.pi / 2 + math.atan2(dr_shaft[1], dr_shaft[0])
 
-                # add to start_end_segments the segment of the arrow shaft
+                #add to start_end_segments the segment of the arrow shaft
                 start_end_segments.append(
                     [
                         [grid_r[0][i, j], grid_r[1][i, j]],
@@ -316,6 +318,25 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
 
                 norm_values.append(norm_v(grid_norm_v[i, j]))
 
+                # plot the heads
+                # consider heads related to a fictitious arrow pointing up
+                up_head = [-head_length * np.sin(head_angle * const.deg_to_rad), -
+                        head_length * np.cos(head_angle * const.deg_to_rad)]
+                down_head = [+head_length * np.sin(head_angle * const.deg_to_rad), -
+                            head_length * np.cos(head_angle * const.deg_to_rad)]
+
+                # rotate up_head and down_head according to the angle theta_shaft
+                up_head = np.matmul(gr.R_2d(theta_shaft), up_head)
+                down_head = np.matmul(gr.R_2d(theta_shaft), down_head)
+
+                head_start_position = np.add([grid_r[0][i, j], grid_r[1][i, j]], dr_shaft)
+
+                start_end_segments.append(
+                    [head_start_position, np.add(head_start_position, up_head)]
+                )
+                start_end_segments.append(
+                    [head_start_position, np.add(head_start_position, down_head)]
+                )
 
     if color == 'color_from_map':
 
