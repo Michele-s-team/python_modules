@@ -1,6 +1,5 @@
 
 from matplotlib.collections import LineCollection
-from matplotlib.legend import Legend
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import os
@@ -2158,7 +2157,23 @@ def plot_mesh(ax, data_line_vertices, line_width, color, alpha):
         ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i][1]],
                 [points_start[i][2], points_end[i][2]], linewidth=line_width, color=color, alpha=alpha)
 
+'''
+plot the edges of a two-dimensional mesh
+- Input values: 
+    * Mandatory:
+        - 'ax': the axis where the plot will be made
+        - 'data_line_vertices': a dictionary containing the coordinates of the start and end vertices of each mesh edge, of the format
+            data line vertices =        start:0   start:1  start:2     end:0     end:1  end:2
+                                        0     p_start_0_x  p_start_0_y      0.0  p_end_0_x  p_end_0_y    0.0
+                                        1     p_start_1_x  p_start_1_y      0.0  p_end_1_x  p_end_1_y    0.0
+                                        ...
+    * Optional: 
+        - 'color': the color with wihch the edge lines will be plotted
+        - 'alpha': the transparency with wihch the edge lines will be plotted
+        - 'zorder': the z-order with wihch the edge lines will be plotted
+        - 'clip_on': whether the plot should be clipped if it falls ouside the axis area
 
+'''
 def plot_2d_mesh(ax, data_line_vertices,
                  line_width=const.default_line_width,
                  color=const.default_color,
@@ -2166,20 +2181,49 @@ def plot_2d_mesh(ax, data_line_vertices,
                  zorder=const.default_z_order,
                  clip_on=False):
 
-    points_start = []
-    points_end = []
-    points_start.extend([list(a) for a in
-                         zip(data_line_vertices[clab.label_start_x_column], data_line_vertices[clab.label_start_y_column],
-                             data_line_vertices[clab.label_start_z_column])])
-    points_end.extend(
-        [list(a) for a in zip(data_line_vertices[clab.label_end_x_column], data_line_vertices[clab.label_end_y_column],
-                              data_line_vertices[clab.label_end_z_column])])
 
-    for i in range(len(points_start)):
-        ax.plot([points_start[i][0], points_end[i][0]], [points_start[i][1], points_end[i]
-                [1]],
-                linewidth=line_width,
-                color=color,
-                alpha=alpha,
-                zorder=zorder,
-                clip_on=clip_on)
+    '''
+    start_vertices contains a list of vertices of start points of each edge:
+    start_vertices = [[p_start_0_x, p_start_0_y],
+                        [p_start_1_x, p_start_1_y],...
+                        ] 
+    len(start_vertices) = [number of edges in the mesh]
+    '''
+    start_vertices =         np.column_stack([
+            data_line_vertices[clab.label_start_x_column],
+            data_line_vertices[clab.label_start_y_column]
+        ])
+    
+    '''
+    end_vertices contains a list of vertices of end points of each edge:
+    end_vertices = [[p_end_0_x, p_end_0_y],
+                        [p_end_1_x, p_end_1_y],...
+                        ] 
+    len(end_vertices) = [number of edges in the mesh]
+    '''
+    end_vertices =         np.column_stack([
+            data_line_vertices[clab.label_end_x_column],
+            data_line_vertices[clab.label_end_y_column]
+        ])
+
+    '''
+    start_end_segments is a list of length = [number of edges in the mesh] and is of the form
+     start_end_segments = 
+    [
+        [[p_start_0_x, p_start_0_y], [p_end_0_x, p_end_0_y]],
+        [[[p_start_1_x, p_start_1_y], [p_end_1_x, p_end_1_y]],
+        ...                
+    ] 
+    '''
+    start_end_segments = np.stack([
+        start_vertices,
+        end_vertices
+    ], axis=1)  # shape: (n_edges, 2, 2)
+
+    lc = LineCollection(start_end_segments,
+                        linewidths=line_width,
+                        colors=color,
+                        alpha=alpha,
+                        zorder=zorder,
+                        clip_on=clip_on)
+    ax.add_collection(lc)
