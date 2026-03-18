@@ -244,7 +244,19 @@ plot a vector field defined on a 2d manifold
 Input values:
     * Mandatory:
         - 'ax': the axis where to plot
-        - 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector, of the form [X, Y]
+        - 'grid_r': the grid where the vector field is defined, given as a list of two tables, one for each component of the position vector, of the form [X, Y]. 
+            grid_r = [
+                    [
+                        [x_0, x_0, ..., x_0],
+                        [x_1, x_1, ..., x_1],
+                        ....
+                    ],
+                    [
+                    [y_0, y_1, ...],
+                    [y_0, y_1, ...],
+                    ...
+                    ]
+                ]
         - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field, of the form [V_x, V_y]
         - 'shaft_length': length of the shaft of the arrows
         - 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
