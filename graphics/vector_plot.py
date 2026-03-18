@@ -257,7 +257,19 @@ Input values:
                     ...
                     ]
                 ]
-        - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field, of the form [V_x, V_y]
+        - 'grid_v': the vector field on the grid, given as a list of two tables, one for each component of the vector field, of the form [V_x, V_y]. 
+                    grid_v = [
+                    [
+                        [V_x_00, V_x_01, ..., ],
+                        [V_x_10, V_x_11, ..., ],
+                        ....
+                    ],
+                    [
+                        [V_y_00, V_y_01, ...],
+                        [V_y_10, V_y_11, ...],
+                        ...
+                    ]
+                ]
         - 'shaft_length': length of the shaft of the arrows
         - 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
         - 'head_angle': angle of between the head and the shaft of the arrows
