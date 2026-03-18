@@ -1,7 +1,9 @@
-import numpy as np
+
+import math
 from matplotlib.collections import LineCollection
 import matplotlib.colors as mcolors
 from matplotlib.path import Path
+import numpy as np
 import pandas as pd
 from scipy.interpolate import CloughTocher2DInterpolator
 from scipy.interpolate import RBFInterpolator
@@ -280,12 +282,13 @@ Input values:
         -  'z_order': z-order of the arrows
     * Optional:
         - 'clip_on': if False, the arrow will be plotted even if it lies outside the axes' limits
+        - 'threshold_arrow_length': the threshold for arrow length, arrow with length smaller than this threshold will not be plotted 
 '''
 
 
 def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order,
                          clip_on=True,
-                         threshold_arrow_length= const.default_threshold_arrow_length):
+                         threshold_arrow_length=const.default_threshold_arrow_length):
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)
 
@@ -301,7 +304,9 @@ def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_lengt
             if ((np.linalg.norm(dr_shaft) > threshold_arrow_length)):
                 
                 dr_shaft = dr_shaft * shaft_length / np.linalg.norm(dr_shaft)
+                theta_shaft = -np.pi / 2 + math.atan2(dr_shaft[1], dr_shaft[0])
 
+                # add to start_end_segments the segment of the arrow shaft
                 start_end_segments.append(
                     [
                         [grid_r[0][i, j], grid_r[1][i, j]],
