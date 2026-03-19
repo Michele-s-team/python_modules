@@ -830,13 +830,14 @@ def set_inside_disk(X, Y, cr, r, grid, value):
 
 
 set the values of a grid of points on the xy plane to a value for points which lie in an ellipse
+
 Input values:
-- 'X', 'Y': x and y values
-- 'c' center of the ellipse
-- 'a', 'b', semi-major and semi-minor axis of the ellipse
-- 'phi': rotation angle of the ellipse with respect to its left focal point
-- 'values': the values of the grid, it has the same structure as X and Y
-- 'value_to_set': the value to be set in the ellipse
+    - 'X', 'Y': x and y values
+    - 'c' center of the ellipse
+    - 'a', 'b', semi-major and semi-minor axis of the ellipse
+    - 'phi': rotation angle of the ellipse with respect to its left focal point
+    - 'values': the values of the grid, it has the same structure as X and Y
+    - 'value_to_set': the value to be set in the ellipse
 '''
 
 
