@@ -420,10 +420,11 @@ def plot_vector_field_alpha_map(ax, grid_r, grid_v, scale_factor_z, z_min, shaft
 
 '''
 compute the minimum and maximum norm of a vector field
+
 Input values:
-- 'grid_v': the vector field on a grid, given as a list of three tables, one for each component of the vector field
+    - 'grid_v': the vector field on a grid, given as a list of three tables, one for each component of the vector field
 Return values:
-- 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field across the grid
+    - 'norm_v_min', 'norm_v_max': minimum and maximal norm of the vector field across the grid
 '''
 
 
@@ -464,20 +465,21 @@ def norm_vector_field(grid_v):
 
 '''
 interpolate a vector field on the tangent bundle of a 2d manifold parameterized with the arc-length gauge
+
 Input values:
-- 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored.
-- 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored.
-- 'n_bins': number of bins of the grid where to interpolate the vector field
+    - 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored.
+    - 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored.
+    - 'n_bins': number of bins of the grid where to interpolate the vector field
 
 Return values:
-- 'X' the table of the x coordinates of interpolated points of the manifold
-- 'Y' the table of the y coordinates of interpolated points of the manifold
-- 'V_x' the table of the x components of the interpolated vector field
-- 'V_y' the table of the y components of the interpolated vector field
-- 'grid_norm_v' the table of the norm of the interpolated vector field
-- 'norm_v_min' the minimum of the norm of the interpolated vector field
-- 'norm_v_max' the maximum of the norm of the interpolated vector field
-- 'norm_v' the normalization function for color maps, with respect to the norm of the interpolated vector field
+    - 'X' the table of the x coordinates of interpolated points of the manifold
+    - 'Y' the table of the y coordinates of interpolated points of the manifold
+    - 'V_x' the table of the x components of the interpolated vector field
+    - 'V_y' the table of the y components of the interpolated vector field
+    - 'grid_norm_v' the table of the norm of the interpolated vector field
+    - 'norm_v_min' the minimum of the norm of the interpolated vector field
+    - 'norm_v_max' the maximum of the norm of the interpolated vector field
+    - 'norm_v' the normalization function for color maps, with respect to the norm of the interpolated vector field
 '''
 
 
@@ -789,25 +791,25 @@ def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v,
 interpolate a vector field normal to a manifold in the Monge gauge
 
 Input values:
-- 'data_w': table containing the values of the vector field
-- 'data_z': table containing the values of the manifold
-- 'data_omega': table containing the values of the manifold gradient
-- 'mins', 'maxs': the bounds of the rectangular region where to interpolate the surface
-- 'z_min': minimum value of the height of the surface
-- 'N_bins_w': number of bins with which the vector field is interpolated
-- 'label_x_column': label of the x column
-- 'label_y_column': label of the y column
-- 'label_z_column': label of the z column
-- 'label_w_column': label of the column of the vector field
-- 'label_omega_column': label of the column of the manifold gradient
+    - 'data_w': table containing the values of the vector field
+    - 'data_z': table containing the values of the manifold
+    - 'data_omega': table containing the values of the manifold gradient
+    - 'mins', 'maxs': the bounds of the rectangular region where to interpolate the surface
+    - 'z_min': minimum value of the height of the surface
+    - 'N_bins_w': number of bins with which the vector field is interpolated
+    - 'label_x_column': label of the x column
+    - 'label_y_column': label of the y column
+    - 'label_z_column': label of the z column
+    - 'label_w_column': label of the column of the vector field
+    - 'label_omega_column': label of the column of the manifold gradient
 
 Return values:
-- 'X_w', 'Y_w', 'Z_w': table of the interpolated manifold
-- 'w_x', 'w_y', 'w_z': table of the interpolated vector field
-- 'grid_norm_w': table of the norm of the interpolated vector field
-- 'norm_w_min': minimum of the norm of the interpolated vector field
-- 'norm_w_max': maximum of the norm of the interpolated vector field
-- 'norm_w': normalization function for color maps, with respect to the norm of the interpolated vector field
+    - 'X_w', 'Y_w', 'Z_w': table of the interpolated manifold
+    - 'w_x', 'w_y', 'w_z': table of the interpolated vector field
+    - 'grid_norm_w': table of the norm of the interpolated vector field
+    - 'norm_w_min': minimum of the norm of the interpolated vector field
+    - 'norm_w_max': maximum of the norm of the interpolated vector field
+    - 'norm_w': normalization function for color maps, with respect to the norm of the interpolated vector field
 '''
 
 
@@ -846,15 +848,17 @@ def interpolate_n_vector_field(data_w, data_z, data_omega, mins, maxs, z_min, N_
 
 '''
 return the min/max norm of the vector on a manifold considered as a vector in three-dimensional euclidean space in which the manifold is embedded
-- 'name_file_v' : name of file storing the data for the vector field
-- 'name_file_omega' : name of file storing the data for the manifold gradient
-- 'columns_v' : column labels of the file for the vector field
-- 'label_v_column' : label of the column of the vector field
-- 'columns_omega' : column labels of the file for the omega (manifold gradient) field
+
+Input values: 
+    - 'name_file_v' : name of file storing the data for the vector field
+    - 'name_file_omega' : name of file storing the data for the manifold gradient
+    - 'columns_v' : column labels of the file for the vector field
+    - 'label_v_column' : label of the column of the vector field
+    - 'columns_omega' : column labels of the file for the omega (manifold gradient) field
 
 Return values:
-- 'norm_v_min' : minimal norm of the vector field
-- 'norm_v_max' : maximal norm of the vector field
+    - 'norm_v_min' : minimal norm of the vector field
+    - 'norm_v_max' : maximal norm of the vector field
 '''
 
 
@@ -877,15 +881,17 @@ def norm_v_min_max_file(name_file_v, name_file_omega, columns_v, label_v_column,
 
 '''
 compute the minimum and maximum norm, across multiple snapshots of the field, of a vector field defined on the tangent bundle of a manifold
-- 'file_path' : path where to find both the file for the vector field and the one for the manifold gradient (omega)
-- 'name_file_v' : name of file storing the data for the vector field
-- 'name_file_omega' : name of file storing the data for the manifold gradient
-- 'columns_v' : column labels of the file for the vector field
-- 'label_v_column' : label of the column of the vector field
-- 'columns_omega' : column labels of the file for the omega (manifold gradient) field
-- 'n_file_min' : the snapshot to start with'
-- 'n_file_max' : the snapshot to end with'
-- 'n_file_stride' : the stride across one snapshot and the next
+
+Input values:
+    - 'file_path' : path where to find both the file for the vector field and the one for the manifold gradient (omega)
+    - 'name_file_v' : name of file storing the data for the vector field
+    - 'name_file_omega' : name of file storing the data for the manifold gradient
+    - 'columns_v' : column labels of the file for the vector field
+    - 'label_v_column' : label of the column of the vector field
+    - 'columns_omega' : column labels of the file for the omega (manifold gradient) field
+    - 'n_file_min' : the snapshot to start with'
+    - 'n_file_max' : the snapshot to end with'
+    - 'n_file_stride' : the stride across one snapshot and the next
 '''
 
 
