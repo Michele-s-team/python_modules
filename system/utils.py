@@ -22,7 +22,7 @@ Return values:
 def n_min_max(pattern, path):
 
     # Pattern to match pattern}n.csv files where n is a number
-    pattern = re.compile(fr'^{pattern}(\d+)\.csv$')
+    pattern_new = re.compile(fr'^{pattern}(\d+)\.csv$')
         
     n_min = None
     n_max = None
@@ -30,7 +30,7 @@ def n_min_max(pattern, path):
     # Iterate through all files in the directory
     for file_path in Path(path).iterdir():
         if file_path.is_file():
-            match = pattern.match(file_path.name)
+            match = pattern_new.match(file_path.name)
             if match:
                 n = int(match.group(1))
                 if n_min is None or n < n_min:
@@ -40,7 +40,8 @@ def n_min_max(pattern, path):
     
     if (n_min == None) or (n_max == None):
          
-        print(f"{col.Fore.RED}{'Error: n_min_max could not find the files!'}{col.Style.RESET_ALL}")
+        print(f"{col.Fore.RED}{f'Error: n_min_max could not find the files!'}{col.Style.RESET_ALL}")
+        print(f'File pattern = {pattern}\nFile path = {file_path}')
         sys.exit()
 
     return n_min, n_max
