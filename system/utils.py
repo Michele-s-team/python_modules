@@ -1,7 +1,9 @@
+import colorama as col
 import fnmatch
 import os
 from pathlib import Path
 import re
+import sys
 
 '''
 count the number of files of type string_* in folder 'folder' and returns it 
@@ -35,6 +37,11 @@ def n_min_max(pattern, path):
                        n_min = n
                 if n_max is None or n > n_max:
                        n_max = n
-        
+    
+    if (n_min == None) or (n_max == None):
+         
+        print(f"{col.Fore.RED}{'Error: n_min_max could not find the files!'}{col.Style.RESET_ALL}")
+        sys.exit()
+
     return n_min, n_max
         
