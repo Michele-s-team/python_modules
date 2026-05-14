@@ -1860,6 +1860,7 @@ interpolate a set of discrete data for a surface f(x, y) into agrid  of points. 
         - 'label_x_column' ... the labels for x, y, and f in 'data'
         - 'method': the interpolation method. If it is equal to 'rbf', the RBFInterpolator(which extrapolates in regions where the original data is not defined) is used. If 'griddata', the griddata method is used.
         - 'f_min': the minimal value of the field with recspect to which the rescaling with 'scale_factor' will be made, if f_min != None
+        - 'margin': if set, this margin reduces the rectangle defined by 'mins' 'maxs' on all its sides, in order to avoid issues with data values at the boundary of the rectangle
 '''
 
 
@@ -1867,22 +1868,28 @@ def interpolate_surface(data, mins, maxs, n_bins,
                         scale_factor=1,
                         f_min=None,
                         method='rbf',
-                        label_x_column=':0', label_y_column=':1', label_f_column='f'):
+                        label_x_column=':0', label_y_column=':1', label_f_column='f',
+                        margin=0):
+    
+    # remove duplicates from data which have the same values of :0, :1 and :2. This is needed for DG fields, for which 'data' has duplicate corresponding to the same DOF shared by different cells
 
-    X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins[0]), np.linspace(mins[1], maxs[1], n_bins[1]),
+    data_no_duplicates = data.drop_duplicates(subset=[":0", ":1"])
+
+    X, Y = np.meshgrid(np.linspace(mins[0] + margin, maxs[0] - margin, n_bins[0]), np.linspace(mins[1] + margin, maxs[1] - margin, n_bins[1]),
                        indexing='ij')
 
     # 1. re-arrange the x, y values into a points
     points = []
-    points.extend([list(element) for element in zip(
-        data[label_x_column], data[label_y_column])])
+    points.extend([list(element) for element in zip(data_no_duplicates[label_x_column], data_no_duplicates[label_y_column])])
 
     # 2 re-arrange the function  values into values
     if f_min != None:
-        values = data[label_f_column].apply(
-            lambda x: scale(x, f_min, scale_factor))
+
+        values = data_no_duplicates[label_f_column].apply(lambda x: scale(x, f_min, scale_factor))
+
     else:
-        values = data[label_f_column]
+
+        values = data_no_duplicates[label_f_column]
 
     # 3 interpolate values and points, and write the result of the interpolated function on the lattice (X, Y) into grid
     if method == 'rbf':

@@ -42,7 +42,7 @@ def n_min_max(pattern, path):
          
         print(f"{col.Fore.RED}{f'Error: n_min_max could not find the files!'}{col.Style.RESET_ALL}")
         print(f'File pattern = {pattern}\nFile path = {path}')
-        sys.exit()
+        # sys.exit()
 
     return n_min, n_max
         
