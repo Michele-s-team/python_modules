@@ -736,7 +736,7 @@ def interpolate_2d_vector_field_layer(data_v, mins, maxs, n_bins_v,
 interpolate a two-dimensional vector field living on a plane
 
 Input values:
-    - 'data_v': data where the values of the vector field, on an arbitrary set of points, xy, are stored
+    - 'data': data where the values of the vector field, on an arbitrary set of points, xy, are stored
     - 'min', 'maxs': limits of the rectangular region where to interpolate
     - 'n_bins_v': number of bins along each axis of the rectangular region where to interpolate
     - 'label_x_column': label of the x axis in data_v
@@ -755,21 +755,25 @@ Return values:
 '''
 
 
-def interpolate_2d_vector_field(data_v, mins, maxs, n_bins_v,
+def interpolate_2d_vector_field(data, mins, maxs, n_bins_v,
                                 label_x_column=':0',
                                 label_y_column=':1',
                                 label_v_column='f'):
+    
+    # remove duplicates in data which have the same value of 'x' and 'y'
+    data_no_duplicates = data.drop_duplicates(subset=[":0", ":1"])
+
     # X, Y are the values of x and y coordinated over a mesh composed of tiled rectangles
     X, Y = np.meshgrid(np.linspace(mins[0], maxs[0], n_bins_v[0]), np.linspace(mins[1], maxs[1], n_bins_v[1]),
                        indexing='ij')
-    # points are the values of x,y stored in data_v
+    # points are the values of x,y stored in data
     points = []
     points.extend([list(element) for element in zip(
-        data_v[label_x_column], data_v[label_y_column])])
+        data_no_duplicates[label_x_column], data_no_duplicates[label_y_column])])
 
-    # values_v_* are the values of the vector field stored in data_v, on the points stored in points
-    values_v_x = data_v[label_v_column + label_x_column]
-    values_v_y = data_v[label_v_column + label_y_column]
+    # values_v_* are the values of the vector field stored in data, on the points stored in points
+    values_v_x = data_no_duplicates[label_v_column + label_x_column]
+    values_v_y = data_no_duplicates[label_v_column + label_y_column]
 
     # # interpolate the vector field on the grid X, Y
     # v_x = griddata(points, values_v_x, (X, Y), method='cubic')
