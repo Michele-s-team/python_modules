@@ -8,7 +8,7 @@ import proplot as pplt
 from scipy.interpolate import griddata
 from scipy.interpolate import interp1d
 from scipy.interpolate import RBFInterpolator
-from sympy.polys.benchmarks.bench_solvers import R_165
+import time 
 
 import calculus.utils as cal
 import constants.utils as const
@@ -1323,6 +1323,9 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                        tick_label_format=const.default_label_format,
                        prune=True):
 
+    start_time = time.time()
+
+
     # remove the default colorbar ticks because I will be plotting the custom ones
     colorbar.ax.tick_params(axis='y', length=0, width=0, which='both')
     colorbar.ax.set_yticklabels([])
@@ -1368,19 +1371,25 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                     rotation=tick_label_angle, zorder=z_order)
             )
 
+    stop_time = time.time()
+    print(f"\t\tTime for colorbartick block 1 = {stop_time - start_time:.2f} s", flush=True)
+
+    start_time = time.time()
+
+
     if prune:
         # remove ticks and tick lables for ticks that overlap
 
         fig = colorbar.ax.figure
-        fig.canvas.draw()
+        # fig.canvas.draw()
         renderer = fig.canvas.get_renderer()  # Get the renderer
 
         # run through all ticks
         for i in range(len(tick_labels)):
             for j in range(i + 1, len(tick_labels)):
 
-                tick_label_1 = tick_labels[i].get_window_extent()
-                tick_label_2 = tick_labels[j].get_window_extent()
+                tick_label_1 = tick_labels[i].get_window_extent(renderer)
+                tick_label_2 = tick_labels[j].get_window_extent(renderer)
 
                 if tick_label_1.overlaps(tick_label_2):
                     # if two ticks overlap, remove one of them
@@ -1388,6 +1397,10 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                     tick_labels[j].set_visible(False)
                     if j < len(tick_lines[j]):
                         tick_lines[j][0].remove()
+
+    
+    stop_time = time.time()
+    print(f"\t\tTime for colorbartick block 2 = {stop_time - start_time:.2f} s", flush=True)
 
 
 # create a list of ticks on a 'base 10 ' grid between 'min' and 'max'
