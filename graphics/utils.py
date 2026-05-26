@@ -1357,7 +1357,9 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
             latex_tick_labels.append(cal.to_latex_scientific(
                 min + (ticks[i] - min) / scale_factor))
 
+
             # plot the tick labels
+            # bottleneck - start
             tick_labels.append(
                 colorbar.ax.text(
                     colorbar.ax.get_xlim()[
@@ -1370,6 +1372,8 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                     ha='center', va='center',
                     rotation=tick_label_angle, zorder=z_order)
             )
+            # bottleneck - end
+
 
     stop_time = time.time()
     print(f"\t\tTime for colorbartick block 1 = {stop_time - start_time:.2f} s", flush=True)
