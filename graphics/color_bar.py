@@ -12,7 +12,7 @@ color_map_type = plt.cm.get_cmap(
 
 '''
 make a color bar and return the relative color map. 
-Arguments:
+Input:
     * Mandatory
         - 'figure' : the figure where the colorbar is made
         - 'grid_values' the grid values of the field over which the color bar is made
@@ -30,6 +30,9 @@ Arguments:
         - 'tick_label_angle' : the rotation angle of the tick labels
         - 'custom_ticks': a list of custom ticks for the colorbar
         - 'tick_label_format': the format in which the tick labels will be displayed, e.g., 'e' or 'f'
+Return values; 
+    - 'colorbar': the newly created colorbar
+    - 'color_map': the color map accociated to `colorbar`
 '''
 
 
@@ -136,8 +139,34 @@ def make_colorbar(figure, grid_values, min_value, max_value,
     # Tag this axis for future deletion, if needed
     colorbar.ax.set_label("colorbar")
 
-    return color_map
+    return colorbar, color_map
 
+
+def update_colorbar(colorbar, min_value, max_value,
+                    scale_factor=1,
+                    custom_ticks=None,
+                    prune_ticks=True,
+                    tick_label_format=const.default_label_format,
+                    font_size=const.default_font_size,
+                    tick_label_angle=0,
+                    tick_length=const.default_tick_length,
+                    tick_label_offset=[0, 0],
+                    line_width=const.default_line_width):
+
+    scaled_max = gr.scale(max_value, min_value, scale_factor)
+
+    colorbar.mappable.set_clim(min_value, max_value)
+    colorbar.update_normal(colorbar.mappable)
+
+    if custom_ticks is None:
+        colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max))
+    else:
+        colorbar_ticks = custom_ticks
+
+    # gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size,
+    #                       tick_label_angle, tick_length=tick_length,
+    #                       tick_label_offset=tick_label_offset, line_width=line_width,
+    #                       tick_label_format=tick_label_format, prune=prune_ticks)
 
 '''
 create a colorbar for a curve, by plotting the value of a field along the curve in terms of a color map
@@ -247,6 +276,9 @@ def make_curve_colorbar(figure, t_values, f_values,
     colorbar.ax.set_label("colorbar")
 
     return color_map
+
+
+
 
 '''
 set the position of a an axis
