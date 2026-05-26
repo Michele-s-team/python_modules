@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 import constants.utils as const
 import graphics.color_bar as cb
@@ -163,10 +164,16 @@ def update_colorbar(colorbar, min_value, max_value,
     else:
         colorbar_ticks = custom_ticks
 
-    # gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size,
-    #                       tick_label_angle, tick_length=tick_length,
-    #                       tick_label_offset=tick_label_offset, line_width=line_width,
-    #                       tick_label_format=tick_label_format, prune=prune_ticks)
+    start_time = time.time()
+
+    gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size,
+                          tick_label_angle, tick_length=tick_length,
+                          tick_label_offset=tick_label_offset, line_width=line_width,
+                          tick_label_format=tick_label_format, prune=prune_ticks)
+    
+    stop_time = time.time()
+    print(f"Time for set_colorbar_tick = {stop_time - start_time:.2f} s", flush=True)
+
 
 '''
 create a colorbar for a curve, by plotting the value of a field along the curve in terms of a color map
