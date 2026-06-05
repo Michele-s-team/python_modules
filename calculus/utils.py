@@ -178,13 +178,20 @@ Input values:
         - 'file_name': the path + name + extension of the file
     * Optional:
         - 'column_name': the name of the column where the values of the field are stored
+        - 'tag':  `None` by default. If specified, only rows in the csv file with column `tag` equal to this value will be considered to compute the min and max
 Return values; 
     - 'min', 'max': the minimum and maximum of the field
 '''
 
 def min_max_file(file_name, 
-                 column_name=const.default_column_name):
-    data = pd.read_csv(file_name, usecols=[column_name])
+                 column_name=const.default_column_name,
+                 tag=None):
+    
+    data = pd.read_csv(file_name)
+
+    # Filter by tag if tag is specified
+    if tag is not None:
+        data = data[data['tag'] == tag]
 
     min = np.min(data[column_name])
     max = np.max(data[column_name])
@@ -204,20 +211,22 @@ Input values:
         - 'n_file_stride': the stride with which the files will be read
     * Optional:
         - 'field_column_name': the name of the column containing the values of the field
+        - 'tag':  `None` by default. If specified, only rows in the csv file with column `tag` equal to this value will be considered to compute the min and max
 
 Return values: 
 - 'abs_min', 'abs_max': the minimal and maximal values of the field across the snapshots
 '''
 
 def min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
-                  field_column_name='f'):
+                  field_column_name='f',
+                  tag=None):
     
     abs_min = None
     abs_max = None
 
     for i in range(n_file_min , n_file_max+1, n_file_stride):
 
-        min, max = min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
+        min, max = min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name, tag=tag)
 
         if abs_min is None:
             abs_min = min
@@ -310,3 +319,14 @@ def X_curr_min_max_abs(snapshot_min, snapshot_max, snapshot_stride, snapshot_nod
 
     return X_curr_min_max_abs
 # 
+
+'''
+return an estimate of the number of DOFs in a mesh with N nodes for a scalar field defined on a continuous space
+Input values: 
+    - 'N': the number of vertices in the mesh
+    - 'd': the degree of the space
+Return values: 
+    - d^2 N 
+'''
+def N_DOF(N, d):
+    return d**2 * N
