@@ -490,8 +490,8 @@ def interpolate_t_vector_field_2d_arc_length_gauge(data_X,
 
     # transform the value v^1 of the vector field in the tangent manifold into the value v^{2d alpha} of the vector field in the 2d euclidean space where the manifold is embedded, by using data_omega
     values_v_2d = pd.DataFrame({
-        'f:0': data_v['f:0'] * data_omega['f:0'],
-        'f:1': data_v['f:0'] * data_omega['f:1'],
+        'f:0': data_v['f'] * data_omega['f:0'],
+        'f:1': data_v['f'] * data_omega['f:1'],
         'f:2': 0,
         ':0': data_v[':0'],
         ':1': 0,
