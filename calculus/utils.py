@@ -122,9 +122,21 @@ def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min
     
     return norm_v_min_max
 
+'''
+compute the min and max of a field stored in a csv file
+Input values: 
+    * Mandatory: 
+        - 'file_name': the path, name and extension of the file
+    * Optional:
+        - 'column_name': (default 'f'), the name of the column where the field is stored
+        - 'scalar': if True, only one column 'f' is expected, otherwise multiple columns 'f:0', 'f:1', ... are expected
 
+Return values: 
+    - 'min', 'max': the min and max of all components of the field across all values stored in the file
+'''
 def norm_min_max_file(file_name, 
-                 column_name=const.default_column_name):
+                 column_name=const.default_column_name,
+                 scalar=False):
     
     data = pd.read_csv(file_name)
     
@@ -136,7 +148,11 @@ def norm_min_max_file(file_name,
         norm=0.0
         
         for i in range(3): 
-            norm += (row[column_name + f':{i}'])**2
+
+            if scalar:
+                norm += (row[column_name])**2            
+            else:
+                norm += (row[column_name + f':{i}'])**2
             
         norm = np.sqrt(norm)
         
@@ -151,14 +167,15 @@ def norm_min_max_file(file_name,
 
 
 def norm_min_max_files(file_name, file_path, n_file_min, n_file_max, n_file_stride,
-                  field_column_name=const.default_column_name):
+                  field_column_name=const.default_column_name,
+                  scalar=False):
     
     min = np.inf
     max = -np.inf
 
     for i in range(n_file_min , n_file_max+1, n_file_stride):
 
-        [min, max] = norm_min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name)
+        [min, max] = norm_min_max_file(os.path.join(file_path, file_name) + str(i) + '.csv', field_column_name, scalar=scalar)
 
         if min < min:
             min = min
