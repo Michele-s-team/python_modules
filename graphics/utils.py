@@ -2265,8 +2265,8 @@ Input values:
     - `azimuth_min_max`: [minimal azimuth, maximal azimuth]
 
 Return values:
-    - [altitude(n), azimuth(n)]
+    - [azimuth(n), altitude(n)]
 '''
 def azimuth_altitude(n, N, altitude_min_max, azimuth_min_max):
 
-    return altitude_min_max[0] + (altitude_min_max[1] - altitude_min_max[0]) * (1 - np.cos(2 * np.pi * n / N)) / 2, azimuth_min_max[0] + (azimuth_min_max[1] - azimuth_min_max[0]) * n / N
+    return azimuth_min_max[0] + (azimuth_min_max[1] - azimuth_min_max[0]) * n / N, altitude_min_max[0] + (altitude_min_max[1] - altitude_min_max[0]) * (1 - np.cos(2 * np.pi * n / N)) / 2
