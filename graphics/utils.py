@@ -2252,3 +2252,21 @@ def plot_2d_mesh(ax, data_line_vertices,
                         zorder=zorder,
                         clip_on=clip_on)
     ax.add_collection(lc)
+
+
+
+'''
+azimuth and altitude of the plot as a function of the step of the animation, which depend on the animation step in order to make the viewpoint move nicely
+
+Input values: 
+    - `n`: the index of the snapshot of the animaiton, n = 0, ..., N-1
+    - `N`: the total number of snapshots of the animation
+    - `altitude_min_max`: [minimal altitude, maximal altitude]
+    - `azimuth_min_max`: [minimal azimuth, maximal azimuth]
+
+Return values:
+    - [altitude(n), azimuth(n)]
+'''
+def azimuth_altitude(n, N, altitude_min_max, azimuth_min_max):
+
+    return altitude_min_max[0] + (altitude_min_max[1] - altitude_min_max[0]) * (1 - np.cos(2 * np.pi * n / N)) / 2, azimuth_min_max[0] + (azimuth_min_max[1] - azimuth_min_max[0]) * n / N
