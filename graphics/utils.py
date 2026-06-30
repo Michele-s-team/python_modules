@@ -2197,6 +2197,7 @@ plot the edges of a two-dimensional mesh
         - 'alpha': the transparency with wihch the edge lines will be plotted
         - 'zorder': the z-order with wihch the edge lines will be plotted
         - 'clip_on': whether the plot should be clipped if it falls ouside the axis area
+        - 'column_labels': [[label of x component of p start, ..., label of z component of p start], [label of x component of p end, ..., label of z component of p end]]
 
 '''
 def plot_2d_mesh(ax, data_line_vertices,
@@ -2204,7 +2205,9 @@ def plot_2d_mesh(ax, data_line_vertices,
                  color=const.default_color,
                  alpha=const.default_alpha,
                  zorder=const.default_z_order,
-                 clip_on=False):
+                 clip_on=False,
+                 column_labels=[[clab.label_start_x_column, clab.label_start_y_column, clab.label_start_z_column], [clab.label_end_x_column, clab.label_end_y_column, clab.label_end_z_column]]
+                ):
 
 
     '''
@@ -2215,8 +2218,8 @@ def plot_2d_mesh(ax, data_line_vertices,
     len(start_vertices) = [number of edges in the mesh]
     '''
     start_vertices =         np.column_stack([
-            data_line_vertices[clab.label_start_x_column],
-            data_line_vertices[clab.label_start_y_column]
+            data_line_vertices[column_labels[0][0]],
+            data_line_vertices[column_labels[0][1]]
         ])
     
     '''
@@ -2227,8 +2230,8 @@ def plot_2d_mesh(ax, data_line_vertices,
     len(end_vertices) = [number of edges in the mesh]
     '''
     end_vertices =         np.column_stack([
-            data_line_vertices[clab.label_end_x_column],
-            data_line_vertices[clab.label_end_y_column]
+            data_line_vertices[column_labels[1][0]],
+            data_line_vertices[column_labels[1][1]]
         ])
 
     '''
