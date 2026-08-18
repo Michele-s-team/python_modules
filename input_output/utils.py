@@ -15,7 +15,7 @@ number_of_decimals = 2
 
 
 # clean the matplotlib cache to load the correct version of definitions.tex
-os.system(" rm -rf ~/.matplotlib/tex.cache")
+# os.system(" rm -rf ~/.matplotlib/tex.cache")
 
 plt.rcParams.update({
     "text.usetex": True,
