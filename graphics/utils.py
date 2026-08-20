@@ -1323,7 +1323,7 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                        tick_label_format=const.default_label_format,
                        prune=True):
 
-    start_time = time.time()
+    # start_time = time.time()
 
 
     # remove the default colorbar ticks because I will be plotting the custom ones
@@ -1375,10 +1375,10 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
             # bottleneck - end
 
 
-    stop_time = time.time()
-    print(f"\t\tTime for colorbartick block 1 = {stop_time - start_time:.2f} s", flush=True)
+    # stop_time = time.time()
+    # print(f"\t\tTime for colorbartick block 1 = {stop_time - start_time:.2f} s", flush=True)
 
-    start_time = time.time()
+    # start_time = time.time()
 
 
     if prune:
@@ -1403,8 +1403,8 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                         tick_lines[j][0].remove()
 
     
-    stop_time = time.time()
-    print(f"\t\tTime for colorbartick block 2 = {stop_time - start_time:.2f} s", flush=True)
+    # stop_time = time.time()
+    # print(f"\t\tTime for colorbartick block 2 = {stop_time - start_time:.2f} s", flush=True)
 
 
 # create a list of ticks on a 'base 10 ' grid between 'min' and 'max'
