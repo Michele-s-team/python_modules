@@ -23,6 +23,7 @@ default_legend_text_arrow_space = 0.1
 default_head_angle = 30
 # the default value of the arrow length such that arrows with lengths below this value will not be plotted
 default_threshold_arrow_length = 1e-4
+default_small_threshold = 1e-6
 
 default_tick_length = 0.1
 default_minor_tick_length = 0.01
