@@ -1,4 +1,3 @@
-import more_itertools 
 import numpy as np
 import pandas as pd
 
@@ -64,12 +63,10 @@ def add_triangle(triangles_to_plot, data_triangles):
         # match contains no Trues -> the search algorithm is stuch -> look for a new "connected component" by picking a new tetrahedron not in `tetrahedra_to_plot`
 
         remaining_colored_triangles = [i for i in range(len(data_triangles)) if i not in triangles_to_plot]
-        next_triangle = remaining_colored_triangles[-1] if remaining_colored_triangles else None
+        next_triangle = [remaining_colored_triangles[-1]] if remaining_colored_triangles else None
 
     if next_triangle != None:
 
-        triangles_to_plot.append(next_triangle)
-        # flatten `triangles_to_plot`
-        triangles_to_plot[:] = list(more_itertools.collapse(triangles_to_plot))
+        triangles_to_plot.extend(next_triangle)
 
 
