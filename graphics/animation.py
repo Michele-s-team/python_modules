@@ -53,22 +53,22 @@ def add_triangle(triangles_to_plot, data_triangles):
 
     if match.any():
 
-        next_mesh_triangle = []
+        next_triangle = []
         for i in range(len(match)):
 
             if match[i]:
 
-                next_mesh_triangle.append(i)
+                next_triangle.append(i)
 
     else:
         # match contains no Trues -> the search algorithm is stuch -> look for a new "connected component" by picking a new tetrahedron not in `tetrahedra_to_plot`
 
         remaining_colored_triangles = [i for i in range(len(data_triangles)) if i not in triangles_to_plot]
-        next_mesh_triangle = remaining_colored_triangles[-1] if remaining_colored_triangles else None
+        next_triangle = remaining_colored_triangles[-1] if remaining_colored_triangles else None
 
-    if next_mesh_triangle != None:
+    if next_triangle != None:
 
-        triangles_to_plot.append(next_mesh_triangle)
+        triangles_to_plot.append(next_triangle)
         # flatten `triangles_to_plot`
         triangles_to_plot[:] = list(more_itertools.collapse(triangles_to_plot))
 
