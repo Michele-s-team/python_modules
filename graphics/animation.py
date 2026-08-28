@@ -2,48 +2,63 @@ import numpy as np
 import pandas as pd
 
 '''
-add a triangle to an existing list of triangles by looking for triangles that share a vertex with the last triangle in the list
+add an element (edge, triangle, tetrahedron, ....) to an existing list of elements by looking for elements that share a vertex with the last element in the list
 Input values: 
-    - `elements_to_plot`: the list of triangle IDs of triangles that are already plotted
-    - `data_elements`: a dataframe containing all triangles
+    - `elements_to_plot`: the list of  IDs of elements that are already plotted
+    - `data_elements`: a dataframe containing all elements
 
 Return values: 
-    the list `triangles_to_plot` is modified, additional triangles to plot are added
+    the list `elements_to_plot` is modified, additional elements to plot are added
 '''
-def add_triangle(triangles_to_plot, data_triangles):
+def add_element(elements_to_plot, data_elements):
+
+    '''
+    n is the number of vertices contained in an element. 
+    n = 
+     - 2 if element is an edge
+     - 3 if element is a triangle
+     - ....
+    '''
+    n = data_elements.columns.str.match(r"^p_\d+$").sum()
+
+
+    p_vertex = n * [None]
 
       # 
     # update `elements_to_plot`
-    if len(triangles_to_plot) > 1:
+    if len(elements_to_plot) > 1:
 
-        match = pd.Series(False, index=data_triangles.index)
+        match = pd.Series(False, index=data_elements.index)
 
-        for i in range(len(triangles_to_plot)):
+        for i in range(len(elements_to_plot)):
 
-            plotted_triangle = data_triangles.iloc[triangles_to_plot[i]]
+            plotted_element = data_elements.iloc[elements_to_plot[i]]
 
-            p_1_vertex = plotted_triangle[['p_1']].values[0]
-            p_2_vertex = plotted_triangle[['p_2']].values[0]
-            p_3_vertex = plotted_triangle[['p_3']].values[0]
+            for i in range(n):
+                p_vertex[i] = plotted_element[[f'p_{i+1}']].values[0]
 
-            match = match | ( 
+            for i in range(n):
+                for j in range(n):
+                    match = match | data_elements[f'p_{i+1}'].eq(p_vertex[j]) 
 
-                data_triangles['p_1'].eq(p_1_vertex) 
-                | data_triangles['p_1'].eq(p_2_vertex)
-                | data_triangles['p_1'].eq(p_3_vertex)
+            # match = match | ( 
 
-                | data_triangles['p_2'].eq(p_1_vertex)
-                | data_triangles['p_2'].eq(p_2_vertex)
-                | data_triangles['p_2'].eq(p_3_vertex)
+            #     data_elements[f'p_{i+1}'].eq(p_vertex[0]) 
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[1])
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[2])
 
-                | data_triangles['p_3'].eq(p_1_vertex)
-                | data_triangles['p_3'].eq(p_2_vertex)
-                | data_triangles['p_3'].eq(p_3_vertex)
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[0])
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[1])
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[2])
 
-                )
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[0])
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[1])
+            #     | data_elements[f'p_{i+1}'].eq(p_vertex[2])
+
+            #     )
 
         # don't reuse rows already in the path
-        match.iloc[triangles_to_plot] = False
+        match.iloc[elements_to_plot] = False
 
     else: 
 
@@ -62,11 +77,11 @@ def add_triangle(triangles_to_plot, data_triangles):
     else:
         # match contains no Trues -> the search algorithm is stuch -> look for a new "connected component" by picking a new tetrahedron not in `tetrahedra_to_plot`
 
-        remaining_colored_triangles = [i for i in range(len(data_triangles)) if i not in triangles_to_plot]
+        remaining_colored_triangles = [i for i in range(len(data_elements)) if i not in elements_to_plot]
         next_triangle = [remaining_colored_triangles[-1]] if remaining_colored_triangles else None
 
     if next_triangle != None:
 
-        triangles_to_plot.extend(next_triangle)
+        elements_to_plot.extend(next_triangle)
 
 
