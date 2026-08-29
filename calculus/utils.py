@@ -137,22 +137,29 @@ Return values:
 def norm_min_max_file(file_name, 
                  column_name=const.default_column_name,
                  scalar=False):
+
     
     data = pd.read_csv(file_name)
+
+    # determine the list of columnds
+    if scalar: 
+        columns = [column_name]
+    else:
+        columns = [col for col in data.columns if col.startswith(column_name + ':')]
+
     
     min = np.inf
     max = -np.inf
     
-    for index, row in data.iterrows():
+    for _, row in data.iterrows():
         
         norm=0.0
         
         for i in range(3): 
 
-            if scalar:
-                norm += (row[column_name])**2            
-            else:
-                norm += (row[column_name + f':{i}'])**2
+            for column in columns: 
+                norm += (row[column])**2            
+
             
         norm = np.sqrt(norm)
         
