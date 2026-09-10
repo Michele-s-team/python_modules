@@ -1926,12 +1926,13 @@ def interpolate_surface(data, mins, maxs, n_bins,
 '''
 given a set of discrete data for a curve in a two-dimensional planer, interpolate it into a grid of  points
 Input values:
-- 'data'  < class 'pandas.core.frame.DataFrame' >: the array containing the values of the curve
-- 'x_min', 'x_max' < class 'float' >: the bounds of the interval for the parameter t by which the curve is parameterized
-- 'n_bins' < class 'int' >: the number of bins in which the interval [x_min, x_max] is divided
+    - 'data'  < class 'pandas.core.frame.DataFrame' >: the array containing the values of the curve
+    - 'x_min', 'x_max' < class 'float' >: the bounds of the interval for the parameter t by which the curve is parameterized
+    - 'n_bins' < class 'int' >: the number of bins in which the interval [x_min, x_max] is divided
 
 Return values:
-- 'values_grid' < class 'numpy.ndarray' >: the array containing the values of the curve interpolated on the grid of n_bins points, [X_1, X_2]
+    - 'values_grid' < class 'numpy.ndarray' >: the array containing the values of the curve interpolated on the grid of n_bins points, [X_1, X_2]
+    - 'points_grid': array of values of the parameter t by which the curve is parameterized, on which `values_grid` are computed
 '''
 
 

@@ -103,29 +103,28 @@ def point_in_mesh(mesh_file, point):
 
 
 '''
-compute the displacement field of a line
-Input values: 
-    - Mandatory: 
-        * 'data_X': a pandas dataframe containing the columns 'f:0', 'f:1', 'f:2' for the three coordinates of the line, and the columns ':0' for the parametric coordinate x^1, and ':1', ':2' identically zero
-    - Optional:
-        * 'h' the height of the curve in the reference configuration
-'''
+compute the displacement field of a curve
+# Input values: 
+#     - 'data_X_ref': a pandas dataframe containing the columns 'f:0', 'f:1', 'f:2' for the three coordinates of the curve in the reference configuration, and the columns ':0' for the parametric coordinate x^1, and ':1', ':2' identically zero
+#     - 'data_U': a pandas dataframe containing the columns 'f:0', 'f:1', 'f:2' for the three coordinates of the displacement of the curve from reference to current configuration, and the columns ':0' for the parametric coordinate x^1, and ':1', ':2' identically zero
 
-
-def u_1d(data_X,
-         h=0):
+def u_1d(data_X_ref, data_U):
 
     U_x = []
     U_y = []
     X_U = []
     Y_U = []
-    for _, row in data_X.iterrows():
 
-        X_U.append(row[':0'])
-        Y_U.append(h)
+    for _, row in data_X_ref.iterrows():
 
-        U_x.append(row['f:0'] - row[':0'])
-        U_y.append(row['f:1'] - h)
+        X_U.append(row['f:0'])
+        Y_U.append(row['f:1'])
+
+
+    for _, row in data_U.iterrows():
+
+        U_x.append(row['f:0'])
+        U_y.append(row['f:1'])
 
     # Convert to numpy arrays
     X_U = np.array(X_U)
@@ -134,3 +133,4 @@ def u_1d(data_X,
     U_y = np.array(U_y)
 
     return X_U, Y_U, U_x, U_y
+'''

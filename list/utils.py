@@ -233,3 +233,20 @@ def add_value(input_list, value):
             # Subtract value from the list entry
             result.append(item + value)
     return result
+
+'''
+concatenate two dictionaries
+Input values: 
+    - 'a', 'b': the two dictionaries (they need to have the same number of fields)
+Return values: 
+    - a dictionary with this structure
+    {
+        'field_0_of_a_and_b': {entry_0_of_field_0_of_a, entry_1_of_field_0_of_1, ..., entry_0_of_field_0_of_b, entry_1_of_field_0_of_b, ... },
+        'field_1_of_a_and_b': {entry_0_of_field_1_of_a, entry_1_of_field_1_of_1, ..., entry_0_of_field_1_of_b, entry_1_of_field_1_of_b, ... },
+        }
+
+'''
+def concatenate_dictionaries(a, b):
+
+    return {k: list(a[k]) + list(b[k]) for k in a}
+
