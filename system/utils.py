@@ -45,4 +45,27 @@ def n_min_max(pattern, path):
         # sys.exit()
 
     return n_min, n_max
+
         
+'''
+check if two strides are multiple of each other. This method can be used when producing the animation from data from a solution, where the solution prints out snapshots with a solution stride and the animation is saved with an animation stride. 
+
+Input values: 
+    * Mandatory: 
+        - `stride_a`: first stride
+        - `stride_b`: second stride
+    * Optional: 
+        - `name_stide_a` (`animation stride`): name to be printed out for `stride_a`
+        - `name_stide_b` (`solution stride`): name to be printed out for `stride_b`
+
+Return values: 
+    An error is raised if `stride_a` is not a multiple of `stride_b`
+
+'''
+def check_strides(stride_a, stride_b,
+                  name_stride_a='animation stride',
+                  name_stride_b='solution stride'):
+
+    if stride_a % stride_b != 0:
+    
+        raise RuntimeError(f'Error: {name_stride_a} is not a multiple of {name_stride_b} ! \n {name_stride_a} = {stride_a} \n {name_stride_b} = {stride_b} \nAborting...')

@@ -466,9 +466,9 @@ def norm_vector_field(grid_v):
 '''
 interpolate a vector field on the tangent bundle of a 2d manifold parameterized with the arc-length gauge
 
-Input values:
+Input values:    
+    - 'data_X': table where the values of the vector of the manifold (X^1, X^2) on the grid of the coordinate x^1 are stored.
     - 'data_v': table where the values of the vector field on the grid of the coordinate x^1 are stored.
-    - 'data_X': table where the values of the vector of the manifold (X^1, x^2) on the grid of the coordinate x^1 are stored.
     - 'n_bins': number of bins of the grid where to interpolate the vector field
 
 Return values:
