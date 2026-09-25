@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import os
 import pandas as pd
-import proplot as pplt
+import ultraplot as pplt
 from scipy.interpolate import griddata
 from scipy.interpolate import interp1d
 from scipy.interpolate import RBFInterpolator
@@ -1613,17 +1613,19 @@ def plot_curve_grid(ax, X,
                     legend='',
                     alpha=const.default_alpha,
                     clip_on=False,
+                    line_style = const.default_line_style,
                     z_order=const.default_z_order):
 
     if color_map is None:
 
-        ax.plot(X[:, 0], X[:, 1], '-',
-                       color=line_color,
-                       linewidth=line_width,
-                       label=f'${legend}$',
-                       alpha=alpha,
-                       zorder=z_order,
-                       clip_on=clip_on)[0]
+        ax.plot(X[:, 0], X[:, 1], 
+                    color=line_color,
+                    linewidth=line_width,
+                    label=f'${legend}$',
+                    alpha=alpha,
+                    linestyle=line_style,
+                    zorder=z_order,
+                    clip_on=clip_on)[0]
     else:
 
         # Create line segments

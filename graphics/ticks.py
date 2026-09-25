@@ -1,7 +1,7 @@
 from mpl_toolkits.mplot3d import proj3d
 import numpy as np
 import pandas as pd
-import proplot as pplt
+import ultraplot as pplt
 
 import calculus.utils as cal
 import constants.utils as const

@@ -35,6 +35,7 @@ default_z_order = 0
 high_z_order = 100
 
 default_color = 'black'
+default_line_style = '-'
 default_alpha = 1
 
 default_column_name = 'f'
