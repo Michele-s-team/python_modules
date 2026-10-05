@@ -5,14 +5,17 @@ import numpy as np
 import os
 import pandas as pd
 
-import graphics.utils as gr
 import graphics.vector_plot as vp
 import list.utils as lis
 
 # convert a floating-point number 'x' in scientific format and return the related string in latex format
-def to_latex_scientific(x):
-    formatted = "{:.1e}".format(x)  # Convert to scientific notation with 3 significant figures
-    base, exponent = formatted.split("e")  # Split into base and exponent
+def to_latex_scientific(x, n_digits = const.default_n_digits):
+
+    # Convert to scientific notation with `n_digits` significant figures
+    formatted = f"{{:.{n_digits}e}}".format(x)
+    
+    # Split into base and exponent
+    base, exponent = formatted.split("e") 
 
     base = float(base)  # Convert base to float to check if it's an integer
     exponent = int(exponent)  # Convert exponent to integer to remove leading zeros

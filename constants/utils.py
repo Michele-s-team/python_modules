@@ -51,3 +51,6 @@ default_axis_position_size = [default_axis_position[0],
 default_interpolation_layer_threshold = 1e-3
 
 default_date_format = "%Y-%m-%d %H:%M:%S.%f"
+
+# default number of digits used, for example, to print out floating-point numbers
+default_n_digits = 1

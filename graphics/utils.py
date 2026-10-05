@@ -501,6 +501,7 @@ def plot_2d_axis(
     tick_label_offset=[0]*2,
     n_minor_ticks=None,
     tick_label_format=const.default_label_format,
+    tick_label_n_digits=const.default_n_digits,
     minor_tick_length=[const.default_minor_tick_length] * 2,
     clip_on=False,
     axis_label_angle=0,
@@ -529,7 +530,7 @@ def plot_2d_axis(
 
             tick_list.append([
                 tick,
-                text.float_to_latex(tick, tick_label_format)
+                text.float_to_latex(tick, tick_label_format, n_digits=tick_label_n_digits)
             ])
 
         if direction_id == 0:
@@ -619,7 +620,7 @@ def plot_2d_axis(
 
             tick_list.append([
                 tick,
-                text.float_to_latex(log_base**tick, tick_label_format)
+                text.float_to_latex(log_base**tick, tick_label_format, n_digits=tick_label_n_digits)
             ])
 
         if direction_id == 0:
@@ -672,7 +673,7 @@ def plot_2d_axis(
                                                  (np.emath.logn(log_base, origin[0]) + np.emath.logn(log_base, origin[0] + length[0]))/2)
                 tick_list.append([extra_tick,
                                   text.float_to_latex(
-                                      log_base**extra_tick, tick_label_format)
+                                      log_base**extra_tick, tick_label_format, n_digits=tick_label_n_digits)
                                   ])
 
                 ti.plot_2d_tick(ax, direction_id, tick_list[-1][0], tick_list[-1][1], tick_length, tick_label_offset, tick_label_format,
@@ -768,7 +769,7 @@ def plot_2d_axis(
                                                  (np.emath.logn(log_base, origin[1]) + np.emath.logn(log_base, origin[1] + length[1]))/2)
                 tick_list.append([extra_tick,
                                   text.float_to_latex(
-                                      log_base**extra_tick, tick_label_format)
+                                      log_base**extra_tick, tick_label_format, n_digits=tick_label_n_digits)
                                   ])
 
                 ti.plot_2d_tick(ax, direction_id, tick_list[-1][0], tick_list[-1][1], tick_length, tick_label_offset, tick_label_format,
@@ -1481,6 +1482,7 @@ def plot_2d_axes(ax, origin, length,
                  tick_label_offset=[0, 0],
                  tick_label_format=[
                      const.default_label_format, const.default_label_format],
+                 tick_label_n_digits = [const.default_n_digits] * 2, 
                  font_size=[const.default_font_size, const.default_font_size],
                  z_order=0,
                  axis_origin=[None] * 2,
@@ -1521,6 +1523,7 @@ def plot_2d_axes(ax, origin, length,
             axis_label_angle=axis_label_angle[i],
             tick_label_offset=tick_label_offset,
             tick_label_format=tick_label_format[i],
+            tick_label_n_digits=tick_label_n_digits[i], 
             tick_label_angle=tick_label_angle[i],
             n_minor_ticks=n_minor_ticks[i],
             minor_tick_length=minor_tick_length,

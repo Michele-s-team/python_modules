@@ -1,5 +1,6 @@
 import calculus.utils as cal
 import colorama as col
+import constants.utils as const
 import matplotlib as mpl
 import graphics.color.utils as color_utils
 
@@ -43,22 +44,25 @@ def print_text_color(text, color):
 '''
 convert the floating-point number 'x' to latex in format 'format'
 Input values: 
-    - 'x': the floating-point number
-    - 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
+    * Mandatory: 
+        - 'x': the floating-point number
+        - 'format': the format to which 'x' will be converted, it must be 'f' for floating-point format and 'e' for exponential format
+    * Optional: 
+        - 'n_digits' [const.default_n_digits]: number of digits with which floating-point values will be printed
 
 Return values: 
     - 'latex_string': the latex string containing 'x' converted. If 'x' is so large/small that it is in scientific format, it will be converted to string by using the scientific format even if 'format' = 'f'
 '''
 
 
-def float_to_latex(x, format):
+def float_to_latex(x, format, n_digits=const.default_n_digits):
 
     if (format == 'f'):
         #  the chosen format is floating point
 
         if 'e' in str(x):
             # when the value 'x' is converted to string, it contains an 'e' -> 'x' is so small / large that it is written in scientific format -> convert it by using scientific format
-            latex_string = cal.to_latex_scientific(x)
+            latex_string = cal.to_latex_scientific(x, n_digits=n_digits)
         else:
             # convert 'x' by using floating-point format
 
@@ -67,7 +71,7 @@ def float_to_latex(x, format):
     elif (format == 'e'):
         # the chosen format is scientific
 
-        latex_string = cal.to_latex_scientific(x)
+        latex_string = cal.to_latex_scientific(x, n_digits=n_digits)
     else:
 
         print_text_color('Error: format is not valid!', 'red')

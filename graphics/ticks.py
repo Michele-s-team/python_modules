@@ -19,7 +19,7 @@ Input values:
     - 'log_base' [optional]: for 'scale' = 'log', the base of the logarithmic ticks
 
 Return values:
-    - a list of  ticks values
+    - a list of tick values
 '''
 
 
