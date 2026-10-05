@@ -382,7 +382,6 @@ def plot_3d_axes(ax, origin, length,
         ]
     )
 
-    dim = 3
 
     for i in range(3):
 
