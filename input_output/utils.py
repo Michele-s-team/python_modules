@@ -84,10 +84,6 @@ Return value:
 
 def read_parameters_from_csv_file(file_path):
 
-    print_type(file_path, 'file_path')
-
-    print(f'Reading parameters from {file_path}...', flush=True)
-
     file = open(file_path, newline='')
 
     reader = csv.reader(file)
@@ -95,15 +91,10 @@ def read_parameters_from_csv_file(file_path):
     parameter_names = next(reader)
     parameter_values = next(reader)
 
-    # print(f'parameter_names: {parameter_names}')
-    # print(f'parameter_values: {[string_to_value(parameter_value) for parameter_value in parameter_values]}')
-
     file.close()
-    print('... close.', flush=True)
 
     result = dict([(parameter_name, string_to_value(parameter_value))
                   for parameter_name, parameter_value in zip(parameter_names, parameter_values)])
-    print(f'Read parameters : {result}.', flush=True)
 
     return result
 
