@@ -32,7 +32,7 @@ def generate_ticks(min, max,
                    scale=const.default_tick_scale, 
                    log_base=const.default_log_base,
                    n_bins=const.default_n_bins_ticks,
-                   prune='both',
+                   prune=const.default_tick_prune,
                    steps=const.default_tick_steps):
 
     if scale == 'lin':

@@ -1336,9 +1336,8 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                        line_width=const.default_line_width,
                        z_order=const.default_z_order,
                        tick_length=const.default_tick_length,
-                       tick_label_offset=[0, 0],
-                       tick_label_format=const.default_label_format,
-                       prune=True):
+                       tick_label_offset=[0] * 2,
+                       tick_label_format=const.default_label_format):
 
     # start_time = time.time()
 
@@ -1396,8 +1395,7 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
     # print(f"\t\tTime for colorbartick block 1 = {stop_time - start_time:.2f} s", flush=True)
 
     # start_time = time.time()
-
-
+    '''
     if prune:
         # remove ticks and tick lables for ticks that overlap
 
@@ -1418,7 +1416,7 @@ def set_colorbar_ticks(colorbar, ticks, min, scale_factor,
                     tick_labels[j].set_visible(False)
                     if j < len(tick_lines[j]):
                         tick_lines[j][0].remove()
-
+'''
     
     # stop_time = time.time()
     # print(f"\t\tTime for colorbartick block 2 = {stop_time - start_time:.2f} s", flush=True)

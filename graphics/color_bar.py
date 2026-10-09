@@ -134,8 +134,7 @@ def make_colorbar(figure, grid_values, min_value, max_value,
                           tick_length=tick_length,
                           tick_label_offset=tick_label_offset,
                           line_width=line_width,
-                          tick_label_format=tick_label_format,
-                          prune=tick_prune)
+                          tick_label_format=tick_label_format)
 
     if label is not None:
 
@@ -183,7 +182,7 @@ def update_colorbar(colorbar, min_value, max_value,
     gr.set_colorbar_ticks(colorbar, colorbar_ticks, min_value, scale_factor, font_size,
                           tick_label_angle, tick_length=tick_length,
                           tick_label_offset=tick_label_offset, line_width=line_width,
-                          tick_label_format=tick_label_format, prune=prune_ticks)
+                          tick_label_format=tick_label_format)
     
     stop_time = time.time()
     print(f"Time for set_colorbar_tick = {stop_time - start_time:.2f} s", flush=True)
