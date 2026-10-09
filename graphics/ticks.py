@@ -11,10 +11,17 @@ import list.utils as lis
 '''
 generate the ticks for a plot on an axis between a minimum and a maximum value
 Input values: 
-    - 'min', 'max': the minimal and maximal values on the axis
-    - 'custom_ticks' [optional]: a set of custom ticks to add to the list of generated ticks
-    - 'scale' [optional]: the scale of the axis for which ticks will be generated, 'lin' or 'log'
-    - 'log_base' [optional]: for 'scale' = 'log', the base of the logarithmic ticks
+    * Mandatory: 
+        - 'min', 'max': the minimal and maximal values on the axis
+        - 'custom_ticks' [optional]: a set of custom ticks to add to the list of generated ticks
+        - 'scale' [optional]: the scale of the axis for which ticks will be generated, 'lin' or 'log'
+        - 'log_base' [optional]: for 'scale' = 'log', the base of the logarithmic ticks
+    * Optional:
+        - `scale` ("lin"): the scale of the ticks. If "lin" ("log"), ticks will be generated in linear (log) scale
+        - `log_base` (`const.default_log_base`): the base of the log for log-scale ticks 
+        - `n_bins`: maximal number of intervals between ticks
+        - `prune` ("both"): whether to prune smallest and largest generated tick
+        - `staps` (const.default_tick_steps): multiples according to which ticks will be generated
 
 Return values:
     - a list of tick values
@@ -30,15 +37,18 @@ def generate_ticks(min, max,
 
     if scale == 'lin':
 
-        ticks = MaxNLocator(
-                    nbins=n_bins, 
-                    steps=steps,
-                    prune=prune).tick_values(tick_min, tick_max)
+        tick_min = min
+        tick_max = max
       
     elif scale == 'log':
 
-        ticks = [i for i in range(round(np.emath.logn(log_base, min)), round(
-            np.emath.logn(log_base, max))+2)]
+        tick_min = np.emath.logn(log_base, min)
+        tick_max = np.emath.logn(log_base, max)
+
+    ticks = MaxNLocator(
+                    nbins=n_bins, 
+                    steps=steps,
+                    prune=prune).tick_values(tick_min, tick_max)
 
     return ticks
 
