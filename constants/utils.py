@@ -60,3 +60,6 @@ default_n_bins_ticks = 10
 
 # default tick steps 
 default_tick_steps = [1, 5, 10]
+
+# default tick scale
+default_tick_scale = 'lin'

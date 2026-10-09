@@ -41,6 +41,8 @@ def make_colorbar(figure, grid_values, min_value, max_value,
                   position=None, 
                   size=None,
                   scale_factor=1,
+                  tick_scale=const.default_tick_scale,
+                  tick_log_base = const.default_tick_log_base,
                   label=None,
                   font_size=const.default_font_size,
                   label_angle=90,
@@ -49,6 +51,9 @@ def make_colorbar(figure, grid_values, min_value, max_value,
                   aspect_value=const.colorbar_aspect_value,
                   tick_label_angle=0,
                   tick_length=const.default_tick_length,
+                  tick_n_bins=const.default_tick_n_bins,
+                  tick_prune=const.default_tick_prune,
+                  tick_steps=const.default_tick_steps,
                   tick_label_offset=[0, 0],
                   line_width=const.default_line_width,
                   mappable=None,
@@ -98,7 +103,13 @@ def make_colorbar(figure, grid_values, min_value, max_value,
     if custom_ticks == None:
         # the method has not been called with custom ticks -> generate ticks
         
-        colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max))
+        colorbar_ticks = np.asarray(ticks.generate_ticks(min_value, scaled_max,
+                                                         scale=tick_scale,
+                                                         log_base=tick_log_base,
+                                                         n_bins=tick_n_bins,
+                                                         prune=tick_prune,
+                                                         steps=tick_steps))
+
     else:
         # the method has been called with  custom ticks -> draw the custom ticks
         

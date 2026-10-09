@@ -17,11 +17,11 @@ Input values:
         - 'scale' [optional]: the scale of the axis for which ticks will be generated, 'lin' or 'log'
         - 'log_base' [optional]: for 'scale' = 'log', the base of the logarithmic ticks
     * Optional:
-        - `scale` ("lin"): the scale of the ticks. If "lin" ("log"), ticks will be generated in linear (log) scale
+        - `scale` (`const.default_tick_scale`): the scale of the ticks. If "lin" ("log"), ticks will be generated in linear (log) scale
         - `log_base` (`const.default_log_base`): the base of the log for log-scale ticks 
         - `n_bins`: maximal number of intervals between ticks
         - `prune` ("both"): whether to prune smallest and largest generated tick
-        - `staps` (const.default_tick_steps): multiples according to which ticks will be generated
+        - `steps` (const.default_tick_steps): multiples according to which ticks will be generated. For example, if `steps= [1,5]` ticks will be placed at multiples of `1` an `5`
 
 Return values:
     - a list of tick values
@@ -29,7 +29,7 @@ Return values:
 
 
 def generate_ticks(min, max, 
-                   scale='lin', 
+                   scale=const.default_tick_scale, 
                    log_base=const.default_log_base,
                    n_bins=const.default_n_bins_ticks,
                    prune='both',
