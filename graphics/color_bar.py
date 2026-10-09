@@ -32,6 +32,7 @@ Input:
         - 'tick_n_bins' (const.default_tick_n_bins): maimal number of intervals for ticks
         - 'tick_prune' (const.default_tick_prune): whether to prune extremal ticks, it can be 'lower', 'upper', 'both' or `None`
         - 'tick_steps' (const.default_tick_steps): multiples according to which ticks will be generated
+        - 'tick_log_base' (const.default_tick_log_base): logarithmic base to use for ticks
         - 'custom_ticks': a list of custom ticks for the colorbar
         - 'tick_label_format': the format in which the tick labels will be displayed, e.g., 'e' or 'f'
 Return values; 
