@@ -71,4 +71,4 @@ default_tick_log_base = 10
 default_tick_n_bins = 10
 
 # default value for pruning top and botto ticks
-default_tick_prune = 'both'
+default_tick_prune = None
