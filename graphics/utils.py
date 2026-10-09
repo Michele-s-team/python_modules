@@ -468,35 +468,34 @@ def plot_3d_axes_custom_ticks(ax, origin, lengths, scale_factors, tick_list, axi
 '''
 plot an axis for a 2d plot
 Input values:
-    - 'origin': a two-ple containing the x,y coordinates of the origin of the axis
-    - 'length': a two-ple containing the x, y length of the origin of the axis
-    - 'direction_id': 0 or 1: the direction id of the axis to be drawn, 0 for x axis, 1 for y axis
-    - 'axis_label': the label of the axis, e..g, 'x'
-    - 'z_order': the z-order of the axis
-    - 'scale' [optional]: the scale of the axis, 'lin' or 'log'
-    - 'log_base': the basis of the log for logarithmic axes
-    - 'axis_origin' [optional]: the origin of the axis; for an 'y' axis, by varying axis_origin[0]  one shifts the y axis in the left-right direction of the plot, and similarly for axis_origin[1]
-    - 'color': the color with which the axes will be drawn
-    - 'axis_label_offset':  offset of the axis label with respect to the axis
-    - 'tick_label_offset': offset of the ticks labels
-    - 'tick_label_offset':  offset of the tick labels with respect to the axis
-    - 'tick_length': length of ticks
-    - 'tick_n_bins' (const.default_tick_n_bins): maximal number of intervals for ticks
-    - 'tick_prune' (const.default_tick_prune): whether to prune extremal ticks, it can be 'lower', 'upper', 'both' or `None`
-    - 'tick_steps' (const.default_tick_steps): multiples according to which ticks will be generated
-    - 'n_minor_ticks' (None): number of minor ticks to be drawn between major ticks
-    - 'tick_label_format': the format of the ticks label numbers, either floating point ('f') or exponential ('e')
-    - 'tick_label_n_digits': number of digits with which tick labels will be displayed
-    - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
-    - 'clip_on': whether clipping on will be allowed for the axis
-    - 'axis_label_angle': the rotation angle of the axis label
-    - 'line_width': the ligne width of the axis and ticks
-    - 'tick_label_angle': the angle of rotation for the labels of the ticks
-    - 'font_size': the font size
-    
-    - 'custom_ticks' [optional]: a list of custom ticks to be plotted on top of the automated ones, in the form [[custom_tick_x_0, custom_tick_x_1, ...], [custom_tick_y_0, custom_tick_y_1, ...]]
+    * Mandatory:
+        - 'origin': a two-ple containing the x,y coordinates of the origin of the axis
+        - 'length': a two-ple containing the x, y length of the origin of the axis
+        - 'direction_id': 0 or 1: the direction id of the axis to be drawn, 0 for x axis, 1 for y axis
+    * Optional: 
+        - 'axis_label': the label of the axis, e..g, 'x'
+        - 'z_order': the z-order of the axis
+        - 'scale' [optional]: the scale of the axis, 'lin' or 'log'
+        - 'log_base': the basis of the log for logarithmic axes
+        - 'axis_origin' [optional]: the origin of the axis; for an 'y' axis, by varying axis_origin[0]  one shifts the y axis in the left-right direction of the plot, and similarly for axis_origin[1]
+        - 'color': the color with which the axes will be drawn
+        - 'axis_label_offset':  offset of the axis label with respect to the axis
+        - 'tick_label_offset': offset of the ticks labels
+        - 'tick_label_offset':  offset of the tick labels with respect to the axis
+        - 'tick_length': length of ticks
+        - 'tick_n_bins' (const.default_tick_n_bins): maximal number of intervals for ticks
+        - 'tick_prune' (const.default_tick_prune): whether to prune extremal ticks, it can be 'lower', 'upper', 'both' or `None`
+        - 'tick_steps' (const.default_tick_steps): multiples according to which ticks will be generated
+        - 'n_minor_ticks' (None): number of minor ticks to be drawn between major ticks
+        - 'tick_label_format': the format of the ticks label numbers, either floating point ('f') or exponential ('e')
+        - 'tick_label_n_digits': number of digits with which tick labels will be displayed
+        - 'minor_tick_length' [optional]: the lenght of minor ticks for logarithmic axes
+        - 'clip_on': whether clipping on will be allowed for the axis
+        - 'axis_label_angle': the rotation angle of the axis label
+        - 'line_width': the ligne width of the axis and ticks
+        - 'tick_label_angle': the angle of rotation for the labels of the ticks
+        - 'font_size': the font size
 '''
-
 
 def plot_2d_axis(
     ax, origin, length, direction_id,
