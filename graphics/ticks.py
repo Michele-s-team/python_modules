@@ -20,7 +20,7 @@ Input values:
         - `scale` (`const.default_tick_scale`): the scale of the ticks. If "lin" ("log"), ticks will be generated in linear (log) scale
         - `log_base` (`const.default_log_base`): the base of the log for log-scale ticks 
         - `n_bins`: maximal number of intervals between ticks
-        - `prune` ("both"): whether to prune smallest and largest generated tick
+        - `prune` ("both"): whether to prune smallest and largest generated tick, it can be 'lower', 'upper', 'both' or `None`
         - `steps` (const.default_tick_steps): multiples according to which ticks will be generated. For example, if `steps= [1,5]` ticks will be placed at multiples of `1` an `5`
 
 Return values:
