@@ -61,7 +61,6 @@ def make_colorbar(figure, grid_values, min_value, max_value,
                   tick_label_offset=[0, 0],
                   line_width=const.default_line_width,
                   mappable=None,
-                  prune_ticks=True,
                   custom_ticks=None,
                   tick_label_format=const.default_label_format,
                   axis=None):
@@ -136,7 +135,7 @@ def make_colorbar(figure, grid_values, min_value, max_value,
                           tick_label_offset=tick_label_offset,
                           line_width=line_width,
                           tick_label_format=tick_label_format,
-                          prune=prune_ticks)
+                          prune=tick_prune)
 
     if label is not None:
 
