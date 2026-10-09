@@ -63,3 +63,12 @@ default_tick_steps = [1, 5, 10]
 
 # default tick scale
 default_tick_scale = 'lin'
+
+# default logarithmic base to be used for ticks
+default_tick_log_base = 10
+
+# default maximal number of bins to be used for ticks
+default_tick_n_bins = 10
+
+# default value for pruning top and botto ticks
+default_tick_prune = 'both'
