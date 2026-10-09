@@ -54,3 +54,9 @@ default_date_format = "%Y-%m-%d %H:%M:%S.%f"
 
 # default number of digits used, for example, to print out floating-point numbers
 default_n_digits = 1
+
+# default value of `n_bins` for tick generation
+default_n_bins_ticks = 10
+
+# default tick steps 
+default_tick_steps = [1, 5, 10]
