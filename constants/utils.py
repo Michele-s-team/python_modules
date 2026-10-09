@@ -72,3 +72,6 @@ default_tick_n_bins = 10
 
 # default value for pruning top and botto ticks
 default_tick_prune = None
+
+# default axis to be given to graphical modules
+default_axis = None

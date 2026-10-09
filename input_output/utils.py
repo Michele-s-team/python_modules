@@ -103,7 +103,6 @@ def read_parameters_from_csv_file(file_path):
 
     result = dict([(parameter_name, string_to_value(parameter_value))
                   for parameter_name, parameter_value in zip(parameter_names, parameter_values)])
-    print(f'Read parameters : {result}.', flush=True)
 
     return result
 

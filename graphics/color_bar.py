@@ -33,6 +33,7 @@ Input:
         - 'tick_prune' (const.default_tick_prune): whether to prune extremal ticks, it can be 'lower', 'upper', 'both' or `None`
         - 'tick_steps' (const.default_tick_steps): multiples according to which ticks will be generated
         - 'tick_log_base' (const.default_tick_log_base): logarithmic base to use for ticks
+        - 'tick_scale' (const.default_tick_scale): the scale to be used for ticks, 'lin' or 'log' 
         - 'custom_ticks': a list of custom ticks for the colorbar
         - 'tick_label_format': the format in which the tick labels will be displayed, e.g., 'e' or 'f'
 Return values; 
@@ -206,6 +207,11 @@ Input values:
         - 'tick_label_offset': the offset of tick labels
         - 'tick_label_format': the format with which tick labels are displayed, for example, 'e' or 'f'
         - 'tick_label_angle': the rotation angle of tick labels
+        - 'tick_n_bins' (const.default_tick_n_bins): maimal number of intervals for ticks
+        - 'tick_prune' (const.default_tick_prune): whether to prune extremal ticks, it can be 'lower', 'upper', 'both' or `None`
+        - 'tick_steps' (const.default_tick_steps): multiples according to which ticks will be generated
+        - 'tick_log_base' (const.default_tick_log_base): logarithmic base to use for ticks
+        - 'tick_scale' (const.default_tick_scale): the scale to be used for ticks, 'lin' or 'log' 
         - 'tick_length': the length of the ticks
         - 'line_width': the line width for the ticks
 '''
@@ -215,6 +221,11 @@ def make_curve_colorbar(figure, t_values, f_values,
                         position=None,
                         size=None,
                         tick_label_angle=const.default_tick_label_angle,
+                        tick_scale=const.default_tick_scale,
+                        tick_log_base = const.default_tick_log_base,
+                        tick_n_bins=const.default_tick_n_bins,
+                        tick_prune=const.default_tick_prune,
+                        tick_steps=const.default_tick_steps,
                         label_offset=[0, 0],
                         label='',
                         font_size=const.default_font_size,
@@ -224,7 +235,7 @@ def make_curve_colorbar(figure, t_values, f_values,
                         label_angle=0,
                         line_width=const.default_line_width,
                         tick_length=const.default_tick_length,
-                        axis=None):
+                        axis=const.default_axis):
 
     # Use existing axis or create new one
     if axis is None:
@@ -244,7 +255,12 @@ def make_curve_colorbar(figure, t_values, f_values,
     if min_max is None:
         min_max = [np.min(f_values['f']), np.max(f_values['f'])]
 
-    colorbar_ticks = ticks.generate_ticks(min_max[0], min_max[1])
+    colorbar_ticks = ticks.generate_ticks(min_max[0], min_max[1],
+                                        scale=tick_scale,
+                                        log_base=tick_log_base,
+                                        n_bins=tick_n_bins,
+                                        prune=tick_prune,
+                                        steps=tick_steps)
 
     f_interpolated = interp1d(
         f_values[":0"].values, f_values["f"].values, kind='cubic', fill_value='extrapolate')
