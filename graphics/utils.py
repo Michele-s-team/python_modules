@@ -1467,6 +1467,9 @@ Input values:
 
     * Optional:
         - 'tick_length': the length of the ticks on each axis, [tick_length_x, tick_length_y]
+        - 'tick_n_bins' (const.default_tick_n_bins): maximal number of intervals for ticks
+        - 'tick_prune' (const.default_tick_prune): whether to prune extremal ticks, it can be 'lower', 'upper', 'both' or `None`
+        - 'tick_steps' (const.default_tick_steps): multiples according to which ticks will be 
         - 'line_width': the line width of the axes
         - 'axis_label_angle': the rotation angle of the labels of the axes, [axis_label_angle_x, axis_label_angle_y]
         - 'axis_label_offset': the offsets of the axis labels[axis_label_offset_x, axis_label_offset_y]
@@ -1489,6 +1492,9 @@ Input values:
 
 def plot_2d_axes(ax, origin, length,
                  tick_length=[const.default_tick_length] * 2,
+                 tick_n_bins=const.default_tick_n_bins,
+                 tick_prune=const.default_tick_prune,
+                 tick_steps=const.default_tick_steps,
                  scale=[const.default_axis_scale] * 2,
                  log_base=[const.default_log_base] * 2,
                  line_width=[const.default_line_width] * 2,
@@ -1516,10 +1522,11 @@ def plot_2d_axes(ax, origin, length,
     dim = 2
 
     if axis_origin is ([None] * 2):
+
         axis_origin = [0] * dim
 
     # plot the axes
-    for i in range(2):
+    for i in range(dim):
 
         # set the limits of the axis
         set_2d_axis_limits(ax, origin, length, i,
@@ -1533,6 +1540,9 @@ def plot_2d_axes(ax, origin, length,
             scale=scale[i],
             log_base=log_base[i],
             tick_length=tick_length,
+            tick_n_bins=tick_n_bins,
+            tick_prune=tick_prune,
+            tick_steps=tick_steps,
             line_width=line_width[i],
             axis_label=axis_label[i],
             axis_label_offset=axis_label_offset,
