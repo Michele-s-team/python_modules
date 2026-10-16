@@ -31,7 +31,7 @@ Return values:
 def generate_ticks(min, max, 
                    scale=const.default_tick_scale, 
                    log_base=const.default_log_base,
-                   n_bins=const.default_n_bins_ticks,
+                   n_bins=const.default_tick_n_bins,
                    prune=const.default_tick_prune,
                    steps=const.default_tick_steps):
 

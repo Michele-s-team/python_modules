@@ -25,6 +25,8 @@ default_head_angle = 30
 default_threshold_arrow_length = 1e-4
 default_small_threshold = 1e-6
 
+default_n_colorbar_axes = 1
+
 default_tick_length = 0.1
 default_minor_tick_length = 0.01
 default_tick_label_pad = 0.1
@@ -57,11 +59,9 @@ default_date_format = "%Y-%m-%d %H:%M:%S.%f"
 # default number of digits used, for example, to print out floating-point numbers
 default_n_digits = 1
 
-# default value of `n_bins` for tick generation
-default_n_bins_ticks = 10
 
 # default tick steps 
-default_tick_steps = [1, 5, 10]
+default_tick_steps = [1, 5]
 
 # default tick scale
 default_tick_scale = 'lin'
@@ -70,7 +70,7 @@ default_tick_scale = 'lin'
 default_tick_log_base = 10
 
 # default maximal number of bins to be used for ticks
-default_tick_n_bins = 10
+default_tick_n_bins = 3
 
 # default value for pruning top and botto ticks
 default_tick_prune = None

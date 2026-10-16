@@ -1,21 +1,19 @@
-
 from matplotlib.collections import LineCollection
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import os
-import pandas as pd
-import ultraplot as pplt
 from scipy.interpolate import griddata
 from scipy.interpolate import interp1d
 from scipy.interpolate import RBFInterpolator
-import time 
+
 
 import calculus.utils as cal
 import constants.utils as const
-# do not remove these: they are not used by graph.py but they are used by other modules calling graph.py
+# do not remove these: they are not used by graph.py but they are used by other modules calling graph.py - start
 import graphics.color_bar as cb
 import graphics.images as images
 import input_output.utils as io
+# do not remove these: they are not used by graph.py but they are used by other modules calling graph.py - end
 import list.column_labels as clab
 import list.utils as lis
 import graphics.ticks as ti
@@ -1484,7 +1482,11 @@ Input values:
         - 'plot_label_font_size' = font size of the plot label
         - 'plot_label': the label of the plot
         - 'minor_tick_length': the lengths of minor ticks
-        - 'colorbar_axis', 'colorbar_axis_offset': this positions a colorbar relative to the axes plotted by this method. If 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the[width, height] of the axes box width and height, respectively
+        - 'colorbar_axis', 'colorbar_axis_offset': the positions and offsets  of a colorbar relative to the axes plotted by this method. If 'colorbar_axis' is not None, the method will set the position of 'colorbar_axis' equal to the origin of the axes box width + 'colorbar_axis_offset', where 'colobar_axis_offset' is expressed in units of the[width, height] of the axes box width and height, respectively. If a single colorbar is provided, then `colorbar_axis` and `colorbar_axis_offset` are simple objects. If multiple colorbars are prvodied, then 
+            `colorbar_axis = [colocbar_0_axis, colorbar_1_axis, ..., colorbar_[n_colorbar_axes-1] ]`
+            `colorbar_axis_offest = [colorbar_0_axis_offset, colorbar_1_axis_offset, ..., colorbar_axis_offset__[n_colorbar_axes-1] ]`
+        where each entry corresponds to a colorbar. 
+        - `n_colorbar_axes`: number of colorbar axes to be plotted 
 '''
 
 
@@ -1514,7 +1516,8 @@ def plot_2d_axes(ax, origin, length,
                  n_minor_ticks=[None] * 2,
                  minor_tick_length=[const.default_minor_tick_length] * 2,
                  colorbar_axis=None,
-                 colorbar_axis_offset=[0]*2):
+                 colorbar_axis_offset=[0]*2,
+                 n_colorbar_axes=const.default_n_colorbar_axes):
 
     dim = 2
 
@@ -1586,23 +1589,33 @@ def plot_2d_axes(ax, origin, length,
             print('Error: scale does not allow to position axis label!')
 
     if colorbar_axis is not None:
+        # `colorbar_axis` has been provided -> set its position(s) and size(s)
+ 
+        # convert to lists `colorbar_axis` and `colorbar_axis_offset`
+        if n_colorbar_axes == 1:
+            
+            colorbar_axes = [colorbar_axis]
+            colorbar_axes_offset = [colorbar_axis_offset]
 
         # Get axes position in figure coordinates
         ax_position_size = ax.get_position()
 
-        # Get current colorbar size to preserve it
-        colorbar_position_size = colorbar_axis.get_position()
+        for colorbar_axis_dummy, colorbar_axis_offset_dummy in zip(colorbar_axes, colorbar_axes_offset):
+            # loop through the entries of `colorbar_axes` and `colorbar_axes_offset` and set the position and size of each corresponding colorbar
 
-        # Calculate position relative to axes bbox (not data coordinates)
-        colorbar_position = [
-            ax_position_size.x0 +
-            colorbar_axis_offset[0] * ax_position_size.width,
-            ax_position_size.y0 +
-            colorbar_axis_offset[1] * ax_position_size.height
-        ]
+            # Get current colorbar size to preserve it
+            colorbar_position_size = colorbar_axis_dummy.get_position()
 
-        colorbar_axis.set_position(
-            [colorbar_position[0], colorbar_position[1], colorbar_position_size.width, colorbar_position_size.height])
+            # Calculate position relative to axes bbox (not data coordinates)
+            colorbar_position_dummy = [
+                ax_position_size.x0 +
+                colorbar_axis_offset_dummy[0] * ax_position_size.width,
+                ax_position_size.y0 +
+                colorbar_axis_offset_dummy[1] * ax_position_size.height
+            ]
+
+            colorbar_axis_dummy.set_position(
+                [colorbar_position_dummy[0], colorbar_position_dummy[1], colorbar_position_size.width, colorbar_position_size.height])
 
 
 # scale up by 'scale_factor' the scalar 'x' with respect to the reference value 'min'
