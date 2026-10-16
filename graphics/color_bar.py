@@ -45,7 +45,7 @@ Return values;
 def make_colorbar(figure, grid_values, min_value, max_value, 
                   position=None, 
                   size=None,
-                  scale_factor=1,
+                  scale_factor=const.default_scale_factor,
                   tick_scale=const.default_tick_scale,
                   tick_log_base = const.default_tick_log_base,
                   label=None,
