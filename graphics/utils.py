@@ -2343,13 +2343,13 @@ Input values:
         - `mesh_parameters`: pandas dataframe for the mesh parameters
     * Optional: 
         - `margin` ([0]*2): margin to be used for the mask
-        - `z_order` (const.high_z_order): z order of the mask
+        - `zorder` (const.high_z_order): z order of the mask
 
 Return values: 
 '''
 def draw_masking_area(ax, axis_min_max, data_u_msh, data_ref_boundary_vertices_mesh_1, parameters, mesh_parameters,
                     margin=[0]*2,
-                    z_order=const.high_z_order):
+                    zorder=const.high_z_order):
 
     # 1. interpolate the mesh displacement field and construct the sequence of segments of the line corresponding to sub_mesh_1 by adding to the line in the reference configuration the displacement field
 
@@ -2414,7 +2414,7 @@ def draw_masking_area(ax, axis_min_max, data_u_msh, data_ref_boundary_vertices_m
                    edgecolor='white', 
                    facecolor='white', 
                    clip_on=False,
-                   zorder=z_order)
+                   zorder=zorder)
     ax.add_patch(poly)
 
     return data_def_boundary_vertices_mesh_1
