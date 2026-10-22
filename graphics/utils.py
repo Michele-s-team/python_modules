@@ -1597,6 +1597,11 @@ def plot_2d_axes(ax, origin, length,
             colorbar_axes = [colorbar_axis]
             colorbar_axes_offset = [colorbar_axis_offset]
 
+        else: 
+
+            colorbar_axes = colorbar_axis
+            colorbar_axes_offset = colorbar_axis_offset
+
         # Get axes position in figure coordinates
         ax_position_size = ax.get_position()
 
@@ -1917,15 +1922,17 @@ interpolate a set of discrete data for a surface f(x, y) into agrid  of points. 
         - 'scale_factor': the scale factor for the field f
         - 'label_x_column' ... the labels for x, y, and f in 'data'
         - 'method': the interpolation method. If it is equal to 'rbf', the RBFInterpolator(which extrapolates in regions where the original data is not defined) is used. If 'griddata', the griddata method is used.
+        - 'griddata_method' ('cubic'): the interpolation method to be used if 'griddata' is chosen 
         - 'f_min': the minimal value of the field with recspect to which the rescaling with 'scale_factor' will be made, if f_min != None
         - 'margin': if set, this margin reduces the rectangle defined by 'mins' 'maxs' on all its sides, in order to avoid issues with data values at the boundary of the rectangle
 '''
 
 
 def interpolate_surface(data, mins, maxs, n_bins,
-                        scale_factor=1,
+                        scale_factor=const.default_scale_factor,
                         f_min=None,
                         method='rbf',
+                        griddata_method='cubic',
                         label_x_column=':0', label_y_column=':1', label_f_column='f',
                         margin=0):
     
@@ -1957,7 +1964,7 @@ def interpolate_surface(data, mins, maxs, n_bins,
 
     elif method == 'griddata':
 
-        Z = griddata(points, values, (X, Y), method='cubic')
+        Z = griddata(points, values, (X, Y), method=griddata_method)
 
     norm_Z_min, norm_Z_max, norm_Z = cal.min_max_scalar_field(Z)
 

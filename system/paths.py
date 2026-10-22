@@ -1,9 +1,14 @@
 import os
 
 # 1. root paths
+
 # 1.1 root path for latex modules
 latex_modules_root_path = '/Users/michelecastellana/Documents/latex_modules'
-# 1.2 root path for latex_modules/finite_elements
+
+# 1.2 root path for latex modules/ale
+latex_modules_ale_root_path = '/Users/michelecastellana/Documents/latex_modules/ale'
+
+# 1.3 root path for latex_modules/finite_elements
 root_path = os.path.join(latex_modules_root_path, 'finite_elements')
 
 # 2. definitions
