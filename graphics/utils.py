@@ -1,9 +1,11 @@
 from matplotlib.collections import LineCollection
+from matplotlib.patches import Polygon
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import os
 from scipy.interpolate import griddata
 from scipy.interpolate import interp1d
+from scipy.interpolate import NearestNDInterpolator
 from scipy.interpolate import RBFInterpolator
 
 
@@ -2326,3 +2328,93 @@ Return values:
 def azimuth_altitude(n, N, azimuth_min_max, altitude_min_max):
 
     return azimuth_min_max[0] + (azimuth_min_max[1] - azimuth_min_max[0]) * n / N, altitude_min_max[0] + (altitude_min_max[1] - altitude_min_max[0]) * (1 - np.cos(2 * np.pi * n / N)) / 2
+
+
+
+'''
+draw a masking area in an given by a rectangle on bottom and a curve as top edge of the rectangle
+Input values: 
+    * Mandatory: 
+        - `ax`: the axis where the masking area will be drawn
+        - `axis_min_max`: [[x_min, x_max], [y_min, y_max]] boundaries of the axis
+        - `data_u_mesh`: pandas dataframe for the displacement field `u` of the mesh
+        - `data_ref_boundary_vertices_mesh_1`: pandas dataframe containing the coordinates of the vertices of the curve on the top edge in the reference configuration
+        - `parameters`: pandas dataframe for the figure parameters
+        - `mesh_parameters`: pandas dataframe for the mesh parameters
+    * Optional: 
+        - `margin`: margin to be used for the mask
+
+Return values: 
+'''
+def draw_masking_area(ax, axis_min_max, data_u_msh, data_ref_boundary_vertices_mesh_1, parameters, mesh_parameters,
+                    margin=[0]*2):
+
+    # 1. interpolate the mesh displacement field and construct the sequence of segments of the line corresponding to sub_mesh_1 by adding to the line in the reference configuration the displacement field
+
+    U_interp_x = NearestNDInterpolator(data_u_msh[[':0', ':1']].values, data_u_msh['f:0'].values)
+    U_interp_y = NearestNDInterpolator(data_u_msh[[':0', ':1']].values, data_u_msh['f:1'].values)
+
+    h_step = np.max(data_u_msh[':1'])
+
+    data_def_boundary_vertices_mesh_1 = []
+    for _, row in data_ref_boundary_vertices_mesh_1.iterrows():
+        data_def_boundary_vertices_mesh_1.append(
+            np.add(
+                [row[':0'], row[':1']],
+                [U_interp_x(row[':0'], row[':1']),
+                 U_interp_y(row[':0'], row[':1'])]
+            )
+        )
+
+
+    # 2.  add to the sequence of lines above the top-left and top-right and bottom-right extremal points of the region to cover
+    # 2.1 two points at the bottom-right corner
+    data_def_boundary_vertices_mesh_1.insert(0, (
+        mesh_parameters['L'] + U_interp_x(mesh_parameters['L'], h_step),
+        h_step + U_interp_y(mesh_parameters['L'], h_step)
+    )
+    )
+    data_def_boundary_vertices_mesh_1.insert(0, (
+        mesh_parameters['L'] + U_interp_x(mesh_parameters['L'], h_step) +
+        margin[0] * (axis_min_max[0][1] - axis_min_max[0][0]),
+        h_step + U_interp_y(mesh_parameters['L'], h_step)
+    )
+    )
+
+    # 2.2 two points at bottom-left corner
+    data_def_boundary_vertices_mesh_1.append(
+        [data_def_boundary_vertices_mesh_1[-1][0], 0]
+    )
+
+    data_def_boundary_vertices_mesh_1.append(
+        [data_def_boundary_vertices_mesh_1[-1][0] - (margin[0] * (axis_min_max[0]
+                      [1] - axis_min_max[0][0])), 0]
+    )
+
+    # 2.3 top-left point
+    data_def_boundary_vertices_mesh_1.append((
+        data_def_boundary_vertices_mesh_1[-1][0],
+        axis_min_max[1][1] + margin[1] *
+        (axis_min_max[1][1] - axis_min_max[1][0])
+    ))
+    # 2.4 top-right point
+    data_def_boundary_vertices_mesh_1.append((
+        mesh_parameters['L'] + U_interp_x(mesh_parameters['L'], h_step) +  margin[0] * (axis_min_max[0][1] - axis_min_max[0][0]),
+        axis_min_max[1][1] + margin[1] *
+        (axis_min_max[1][1] - axis_min_max[1][0])
+    ))
+
+
+
+    # 3. plot the  polygon in order to hide the arrows
+    poly = Polygon(data_def_boundary_vertices_mesh_1, fill=True,
+                   linewidth=parameters['plot_line_width'], 
+                   edgecolor='white', 
+                   facecolor='white', 
+                   clip_on=False,
+                   zorder=const.high_z_order)
+    ax.add_patch(poly)
+
+    return data_def_boundary_vertices_mesh_1
+    
+

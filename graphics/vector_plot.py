@@ -276,21 +276,28 @@ Input values:
                         ...
                     ]
                 ]
-        - 'shaft_length': length of the shaft of the arrows
-        - 'head_over_shaft_length': ratio between the length of the head and the length of the shaft of the arrows
-        - 'head_angle': angle of between the head and the shaft of the arrows
-        -  'line_width': line width of the arrows
-        - 'alpha': transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
-        - 'color': color of the arrows, or 'color_from_map' to get the color from a colormap
-        -  'z_order': z-order of the arrows
+       
     * Optional:
-        - 'clip_on': if False, the arrow will be plotted even if it lies outside the axes' limits
-        - 'threshold_arrow_length': the threshold for arrow length, arrow with length smaller than this threshold will not be plotted 
+         - 'shaft_length' (const.default_shaft_length): length of the shaft of the arrows
+        - 'head_over_shaft_length' (const.default_head_over_shaft_length): ratio between the length of the head and the length of the shaft of the arrows
+        - 'head_angle' (const.default_head_angle): angle of between the head and the shaft of the arrows
+        - 'line_width' (const.default_line_width): line width of the arrows
+        - 'alpha' (const.default_alpha): transparency of the arrows, between 0 (fully transparent) and 1 (fully opaque)
+        - 'color' (const.default_color): color of the arrows, or 'color_from_map' to get the color from a colormap
+        - 'z_order' (onst.default_z_order): z-order of the arrows
+        - 'clip_on' (onst.default_clip_on): if False, the arrow will be plotted even if it lies outside the axes' limits
+        - 'threshold_arrow_length' (const.default_threshold_arrow_length): the threshold for arrow length, arrow with length smaller than this threshold will not be plotted 
 '''
 
 
-def plot_2d_vector_field(ax, grid_r, grid_v, shaft_length, head_over_shaft_length, head_angle, line_width, alpha, color, z_order,
-                         clip_on=True,
+def plot_2d_vector_field(ax, grid_r, grid_v, 
+                         shaft_length=const.default_shaft_length, 
+                         head_over_shaft_length=const.default_head_over_shaft_length, head_angle=const.default_head_angle, 
+                         line_width=const.default_line_width, 
+                         alpha=const.default_alpha, 
+                         color=const.default_color, 
+                         z_order=const.default_z_order,
+                         clip_on=const.default_clip_on,
                          threshold_arrow_length=const.default_threshold_arrow_length):
 
     grid_norm_v, _, _, norm_v = norm_vector_field(grid_v)

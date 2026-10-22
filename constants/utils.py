@@ -15,6 +15,8 @@ default_label_format = 'f'
 colorbar_shrink_value = 0.2
 colorbar_aspect_value = 10
 
+default_clip_on = True
+
 default_head_length = 0.5
 default_shaft_length = 1
 default_legend_arrow_length = 0.1
