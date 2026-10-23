@@ -101,7 +101,7 @@ Input values:
 Return values:
     - 'norm_v_min_max': [norm_v_min, norm_v_max] the minimal and maximal value of the norm found 
 '''
-def min_max_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min_max):
+def min_max_interpolated_vector_field(n_min, n_max, stride, file_path, file_name, n_bins, min_max):
     
     # initialize norm_v_min_max
     norm_v_min_max = [np.inf,-np.inf]
