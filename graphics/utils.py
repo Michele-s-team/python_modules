@@ -1647,6 +1647,7 @@ Input values
         - 'line_width': the line with with which the color map will be plotted
         - 'plot_label': the plot label of the curve
         - 'alpha': the transparency
+        - 'line_style' (const.default_line_style): the line style of the curve
         - 'z_order': the z order with which the curve will be drawn
         - 'legend': the text of the legend of the curve
 '''
