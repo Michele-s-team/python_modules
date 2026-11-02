@@ -311,12 +311,12 @@ Input values:
     - 'n_bins' : [n_x, n_y] the bins used to make the interpolation
     
 Return values:
-    - 'X_curr_min_max_abs': the absolute min and max of X in the current configuration computed across all snapshots [[X_curr_min, X_curr_max], [Y_curr_min, Y_curr_max]]
+    - 'X_cur_min_max_abs': the absolute min and max of X in the current configuration computed across all snapshots [[X_curr_min, X_curr_max], [Y_curr_min, Y_curr_max]]
 
 '''
-def X_curr_min_max_abs(snapshot_min, snapshot_max, snapshot_stride, snapshot_nodal_values_path, X_ref_min_max, n_bins):
+def X_cur_min_max_abs(snapshot_min, snapshot_max, snapshot_stride, snapshot_nodal_values_path, X_ref_min_max, n_bins):
     
-    X_curr_min_max_abs = [[np.inf,-np.inf],[np.inf,-np.inf]]
+    X_cur_min_max_abs = [[np.inf,-np.inf],[np.inf,-np.inf]]
 
     # run through all snapshots
     for n_snapshot in range(snapshot_min, snapshot_max, snapshot_stride):
@@ -337,14 +337,14 @@ def X_curr_min_max_abs(snapshot_min, snapshot_max, snapshot_stride, snapshot_nod
         
         # update the absolute min and max according to the min-max of the snapshot 
         for i in range(2):
-            if X_curr_min_max[i][0] < X_curr_min_max_abs[i][0]:
-                X_curr_min_max_abs[i][0] = X_curr_min_max[i][0]
+            if X_curr_min_max[i][0] < X_cur_min_max_abs[i][0]:
+                X_cur_min_max_abs[i][0] = X_curr_min_max[i][0]
                 
-            if X_curr_min_max[i][1] > X_curr_min_max_abs[i][1]:
-                X_curr_min_max_abs[i][1] = X_curr_min_max[i][1]
+            if X_curr_min_max[i][1] > X_cur_min_max_abs[i][1]:
+                X_cur_min_max_abs[i][1] = X_curr_min_max[i][1]
                 
 
-    return X_curr_min_max_abs
+    return X_cur_min_max_abs
 # 
 
 '''
