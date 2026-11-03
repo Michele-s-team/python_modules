@@ -19,7 +19,7 @@ Input values:
     * Optional:
         - `scale` (`const.default_tick_scale`): the scale of the ticks. If "lin" ("log"), ticks will be generated in linear (log) scale
         - `log_base` (`const.default_log_base`): the base of the log for log-scale ticks 
-        - `n_bins`: maximal number of intervals between ticks
+        - `n_bins`: maximal number of intervals between ticks. This methods generates `n_bins` ticks to the most. 
         - `prune` ("both"): whether to prune smallest and largest generated tick, it can be 'lower', 'upper', 'both' or `None`
         - `steps` (const.default_tick_steps): multiples according to which ticks will be generated. For example, if `steps= [1,5]` ticks will be placed at multiples of `1` an `5`
 
@@ -49,6 +49,28 @@ def generate_ticks(min, max,
                     nbins=n_bins, 
                     steps=steps,
                     prune=prune).tick_values(tick_min, tick_max)
+
+    if len(ticks) > n_bins + 1:
+        # `MaxNLocator` generated more than `n_bins+1` ticks -> remove some
+
+        stride = int(np.ceil(len(ticks) / n_bins))
+        # anchor at 0 if present, so the kept ticks stay "nice"
+        if np.any(np.isclose(ticks, 0)):
+            # an entry of `ticks` is clsoe to `0` 
+
+            # find the position of the `0` tick in `ticks`
+            zero_tick_position = int(np.argmin(np.abs(ticks)))
+
+            # set `start` in such a way thtat the purged `ticks` contains the zero tick
+            start = zero_tick_position % stride  
+
+        else :
+            # no entry in ticks is close to `0` -> set `start` to `0`
+            start = 0
+
+        # purge the ticks : take `ticks` starting from the entry `start` with stride `stride`
+        ticks = ticks[start::stride]
+    
 
     return ticks
 
